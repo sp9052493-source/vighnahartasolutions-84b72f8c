@@ -18,6 +18,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/sevakart-logo.png";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles: AppRole[] };
 
@@ -67,9 +68,7 @@ function NavLinks({ role, onNavigate }: { role: AppRole; onNavigate?: () => void
 function Brand() {
   return (
     <div className="flex items-center gap-2.5 px-5 py-5">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-gradient text-[oklch(0.25_0.06_60)]">
-        <ShieldCheck className="h-5 w-5" />
-      </div>
+      <img src={logo} alt="Sevakart logo" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
       <div className="leading-tight">
         <div className="font-display text-base font-bold text-sidebar-foreground">Sevakart</div>
         <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Govt Documents Portal</div>
