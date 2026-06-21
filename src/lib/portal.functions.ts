@@ -86,6 +86,34 @@ function buildResult(code: string, input: string) {
   }
 }
 
+async function fetchFromProvider(
+  service: { code: string; api_endpoint: string | null; api_provider: string | null },
+  input: string,
+) {
+  const apiKey = process.env.KYC_API_KEY;
+  if (!service.api_endpoint) throw new Error("API endpoint is not configured for this service.");
+  const res = await fetch(service.api_endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+    },
+    body: JSON.stringify({ id_number: input, document: service.code }),
+  });
+  if (!res.ok) {
+    throw new Error(`Provider returned ${res.status}. Please verify the number and try again.`);
+  }
+  const json = (await res.json()) as any;
+  const fields = json?.fields ?? json?.data ?? json;
+  return {
+    reference: json?.reference || "SK" + Math.random().toString(36).slice(2, 10).toUpperCase(),
+    fetched_at: new Date().toISOString(),
+    mode: "LIVE",
+    provider: service.api_provider || "api",
+    fields: typeof fields === "object" ? fields : { Result: String(fields) },
+  };
+}
+
 export const processDocumentRequest = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => requestSchema.parse(d))
@@ -104,14 +132,17 @@ export const processDocumentRequest = createServerFn({ method: "POST" })
 
     const { data: service, error: svcErr } = await supabase
       .from("services")
-      .select("id, code, name, price, active")
+      .select("id, code, name, price, active, api_enabled, api_endpoint, api_provider")
       .eq("id", data.serviceId)
       .single();
     if (svcErr || !service || !service.active) {
       throw new Error("Service is not available.");
     }
 
-    const result = buildResult(service.code, data.inputValue);
+    const result =
+      service.api_enabled && service.api_endpoint
+        ? await fetchFromProvider(service as any, data.inputValue)
+        : buildResult(service.code, data.inputValue);
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: req, error } = await supabaseAdmin.rpc("complete_document_request", {
