@@ -137,7 +137,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-2 lg:hidden">
-            <ShieldCheck className="h-5 w-5 text-primary" />
+            <img src={logo} alt="Sevakart logo" width={28} height={28} className="h-7 w-7 object-contain" />
             <span className="font-display font-bold">Sevakart</span>
           </div>
           <div className="ml-auto flex items-center gap-3">
