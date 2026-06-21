@@ -95,6 +95,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Sevakart Portal — Government Documents Services" },
+      { name: "description", content: "Gov Docs Hub is a portal for accessing and managing government documents like driving licenses and PAN cards." },
+      { property: "og:description", content: "Gov Docs Hub is a portal for accessing and managing government documents like driving licenses and PAN cards." },
+      { name: "twitter:description", content: "Gov Docs Hub is a portal for accessing and managing government documents like driving licenses and PAN cards." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2cde8eeb-71e7-4278-85fb-e1ab6c782fa4/id-preview-307363c0--73bc893e-977f-47db-b9f3-2833c5017e41.lovable.app-1782071998246.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2cde8eeb-71e7-4278-85fb-e1ab6c782fa4/id-preview-307363c0--73bc893e-977f-47db-b9f3-2833c5017e41.lovable.app-1782071998246.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
