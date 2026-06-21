@@ -187,6 +187,10 @@ const serviceSchema = z.object({
   retailer_commission: z.number().min(0).max(100000),
   distributor_commission: z.number().min(0).max(100000),
   active: z.boolean(),
+  api_provider: z.string().trim().max(40).optional(),
+  api_endpoint: z.string().trim().max(500).optional().or(z.literal("")),
+  api_enabled: z.boolean().optional(),
+  api_notes: z.string().trim().max(500).optional().or(z.literal("")),
 });
 
 export const adminUpdateService = createServerFn({ method: "POST" })
@@ -202,8 +206,113 @@ export const adminUpdateService = createServerFn({ method: "POST" })
         retailer_commission: data.retailer_commission,
         distributor_commission: data.distributor_commission,
         active: data.active,
+        api_provider: data.api_provider ?? "demo",
+        api_endpoint: data.api_endpoint || null,
+        api_enabled: data.api_enabled ?? false,
+        api_notes: data.api_notes || null,
       })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+const updateUserSchema = z.object({
+  userId: z.string().uuid(),
+  fullName: z.string().trim().min(2).max(120),
+  phone: z.string().trim().max(20).optional().or(z.literal("")),
+  businessName: z.string().trim().max(160).optional().or(z.literal("")),
+  parentId: z.string().uuid().optional().or(z.literal("")),
+});
+
+export const adminUpdateUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => updateUserSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        full_name: data.fullName,
+        phone: data.phone || null,
+        business_name: data.businessName || null,
+        parent_id: data.parentId || null,
+      })
+      .eq("id", data.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminMemberDetail = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ userId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const uid = data.userId;
+
+    const [{ data: profile }, { data: roleRow }, { data: wallet }, { data: reqs }, { data: txns }] =
+      await Promise.all([
+        supabaseAdmin.from("profiles").select("*").eq("id", uid).maybeSingle(),
+        supabaseAdmin.from("user_roles").select("role").eq("user_id", uid).maybeSingle(),
+        supabaseAdmin.from("wallets").select("balance").eq("user_id", uid).maybeSingle(),
+        supabaseAdmin
+          .from("document_requests")
+          .select("id, service_name, input_value, status, cost, created_at")
+          .eq("user_id", uid)
+          .order("created_at", { ascending: false })
+          .limit(500),
+        supabaseAdmin
+          .from("wallet_transactions")
+          .select("id, amount, type, description, balance_after, created_at")
+          .eq("user_id", uid)
+          .order("created_at", { ascending: false })
+          .limit(50),
+      ]);
+
+    const allReqs = reqs || [];
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthReqs = allReqs.filter((r: any) => new Date(r.created_at) >= monthStart);
+    const totalSpent = allReqs.reduce((s: number, r: any) => s + Number(r.cost), 0);
+    const monthSpent = monthReqs.reduce((s: number, r: any) => s + Number(r.cost), 0);
+
+    // last 6 months trend
+    const months: { label: string; count: number; spent: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const next = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+      const inMonth = allReqs.filter(
+        (r: any) => new Date(r.created_at) >= d && new Date(r.created_at) < next,
+      );
+      months.push({
+        label: d.toLocaleString("en-IN", { month: "short" }),
+        count: inMonth.length,
+        spent: inMonth.reduce((s: number, r: any) => s + Number(r.cost), 0),
+      });
+    }
+
+    // by service breakdown
+    const byServiceMap = new Map<string, number>();
+    for (const r of allReqs) byServiceMap.set(r.service_name, (byServiceMap.get(r.service_name) || 0) + 1);
+    const byService = Array.from(byServiceMap.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+
+    return {
+      profile,
+      role: roleRow?.role || "retailer",
+      balance: Number(wallet?.balance ?? 0),
+      stats: {
+        totalRequests: allReqs.length,
+        monthRequests: monthReqs.length,
+        totalSpent,
+        monthSpent,
+        completed: allReqs.filter((r: any) => r.status === "completed").length,
+      },
+      months,
+      byService,
+      recentRequests: allReqs.slice(0, 20),
+      transactions: txns || [],
+    };
   });
