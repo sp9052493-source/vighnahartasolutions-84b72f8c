@@ -119,7 +119,7 @@ export const processDocumentRequest = createServerFn({ method: "POST" })
       p_service_id: service.id,
       p_input: data.inputValue,
       p_result: result,
-      p_doc_url: null,
+      p_doc_url: "",
     });
 
     if (error) {
