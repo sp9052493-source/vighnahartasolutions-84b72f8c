@@ -11,7 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
+import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -23,9 +26,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedServicesRoute = AuthenticatedServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -37,31 +55,49 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/wallet': typeof AuthenticatedWalletRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/wallet': typeof AuthenticatedWalletRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/wallet': typeof AuthenticatedWalletRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/services'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/requests'
+    | '/services'
+    | '/settings'
+    | '/wallet'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/services'
+  to: '/' | '/dashboard' | '/requests' | '/services' | '/settings' | '/wallet'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_authenticated/dashboard'
+    | '/_authenticated/requests'
     | '/_authenticated/services'
+    | '/_authenticated/settings'
+    | '/_authenticated/wallet'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -85,11 +121,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/wallet': {
+      id: '/_authenticated/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof AuthenticatedWalletRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/services': {
       id: '/_authenticated/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof AuthenticatedServicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/requests': {
+      id: '/_authenticated/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof AuthenticatedRequestsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -104,12 +161,18 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedWalletRoute: AuthenticatedWalletRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
