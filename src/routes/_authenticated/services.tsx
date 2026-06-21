@@ -26,6 +26,14 @@ const ICONS: Record<string, typeof CreditCard> = {
   PASSPORT: BookUser,
 };
 
+const TONES: Record<string, string> = {
+  DL: "from-[oklch(0.55_0.15_255)] to-[oklch(0.4_0.12_265)]",
+  PAN: "from-[oklch(0.7_0.16_55)] to-[oklch(0.62_0.16_45)]",
+  AADHAAR: "from-[oklch(0.6_0.15_155)] to-[oklch(0.5_0.13_160)]",
+  VOTER: "from-[oklch(0.58_0.18_25)] to-[oklch(0.5_0.16_20)]",
+  PASSPORT: "from-[oklch(0.5_0.13_300)] to-[oklch(0.42_0.12_295)]",
+};
+
 function Services() {
   const { data: services } = useServices();
   const { data: me } = useMe();
@@ -64,10 +72,11 @@ function Services() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {activeServices.map((s) => {
           const Icon = ICONS[s.code] ?? CreditCard;
+          const tone = TONES[s.code] ?? "from-primary to-[oklch(0.26_0.08_262)]";
           return (
             <Card key={s.id} className="flex flex-col p-5 shadow-card transition-shadow hover:shadow-elegant">
               <div className="flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${tone} text-primary-foreground shadow-sm`}>
                   <Icon className="h-6 w-6" />
                 </div>
                 <span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent-foreground">

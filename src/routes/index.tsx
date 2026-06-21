@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero-portal.jpg";
+import logo from "@/assets/sevakart-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,11 +36,11 @@ export const Route = createFileRoute("/")({
 });
 
 const SERVICES = [
-  { icon: CreditCard, name: "Driving License", desc: "Fetch DL details and download as PDF." },
-  { icon: IdCard, name: "PAN Card", desc: "Verify and download PAN records." },
-  { icon: Fingerprint, name: "Aadhaar", desc: "Aadhaar verification with masked output." },
-  { icon: Vote, name: "Voter ID", desc: "EPIC details and downloadable extract." },
-  { icon: BookUser, name: "Passport", desc: "Check passport status as PDF." },
+  { icon: CreditCard, name: "Driving License", desc: "Fetch DL details and download as PDF.", tone: "from-[oklch(0.55_0.15_255)] to-[oklch(0.4_0.12_265)]" },
+  { icon: IdCard, name: "PAN Card", desc: "Verify and download PAN records.", tone: "from-[oklch(0.7_0.16_55)] to-[oklch(0.62_0.16_45)]" },
+  { icon: Fingerprint, name: "Aadhaar", desc: "Aadhaar verification with masked output.", tone: "from-[oklch(0.6_0.15_155)] to-[oklch(0.5_0.13_160)]" },
+  { icon: Vote, name: "Voter ID", desc: "EPIC details and downloadable extract.", tone: "from-[oklch(0.58_0.18_25)] to-[oklch(0.5_0.16_20)]" },
+  { icon: BookUser, name: "Passport", desc: "Check passport status as PDF.", tone: "from-[oklch(0.5_0.13_300)] to-[oklch(0.42_0.12_295)]" },
 ];
 
 const ROLES = [
@@ -55,9 +56,7 @@ function Index() {
       <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-hero text-primary-foreground">
-              <ShieldCheck className="h-5 w-5" />
-            </div>
+            <img src={logo} alt="Sevakart logo" width={40} height={40} className="h-10 w-10 object-contain" />
             <div className="leading-tight">
               <div className="font-display text-base font-bold">Sevakart Portal</div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Govt Documents Services</div>
@@ -120,7 +119,7 @@ function Index() {
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s) => (
             <div key={s.name} className="rounded-xl border border-border bg-card p-6 shadow-card transition-shadow hover:shadow-elegant">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${s.tone} text-primary-foreground shadow-sm`}>
                 <s.icon className="h-6 w-6" />
               </div>
               <h3 className="mt-4 font-display text-lg font-semibold">{s.name}</h3>
@@ -177,7 +176,7 @@ function Index() {
       <footer className="border-t border-border py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row lg:px-6">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-primary" />
+            <img src={logo} alt="Sevakart logo" width={24} height={24} className="h-6 w-6 object-contain" />
             <span className="font-medium text-foreground">Sevakart Portal</span>
           </div>
           <p>© {new Date().getFullYear()} Sevakart. For authorised members only.</p>
