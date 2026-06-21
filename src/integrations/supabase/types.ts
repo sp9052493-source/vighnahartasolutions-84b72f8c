@@ -100,6 +100,10 @@ export type Database = {
       services: {
         Row: {
           active: boolean
+          api_enabled: boolean
+          api_endpoint: string | null
+          api_notes: string | null
+          api_provider: string
           category: string
           code: string
           created_at: string
@@ -114,6 +118,10 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          api_enabled?: boolean
+          api_endpoint?: string | null
+          api_notes?: string | null
+          api_provider?: string
           category?: string
           code: string
           created_at?: string
@@ -128,6 +136,10 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          api_enabled?: boolean
+          api_endpoint?: string | null
+          api_notes?: string | null
+          api_provider?: string
           category?: string
           code?: string
           created_at?: string
