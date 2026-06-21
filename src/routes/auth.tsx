@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { ShieldCheck, Lock, Loader2, ArrowLeft } from "lucide-react";
+import { Lock, Loader2, ArrowLeft } from "lucide-react";
 import logo from "@/assets/sevakart-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
