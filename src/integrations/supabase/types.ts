@@ -216,6 +216,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_adjust_wallet: {
+        Args: { p_amount: number; p_description: string; p_user_id: string }
+        Returns: number
+      }
+      complete_document_request: {
+        Args: {
+          p_doc_url: string
+          p_input: string
+          p_result: Json
+          p_service_id: string
+          p_user_id: string
+        }
+        Returns: {
+          cost: number
+          created_at: string
+          document_url: string | null
+          error_message: string | null
+          id: string
+          input_value: string
+          result_data: Json | null
+          service_id: string
+          service_name: string
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "document_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_my_role: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
