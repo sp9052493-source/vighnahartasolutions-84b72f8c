@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero-portal.jpg";
+import logo from "@/assets/sevakart-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,11 +36,11 @@ export const Route = createFileRoute("/")({
 });
 
 const SERVICES = [
-  { icon: CreditCard, name: "Driving License", desc: "Fetch DL details and download as PDF." },
-  { icon: IdCard, name: "PAN Card", desc: "Verify and download PAN records." },
-  { icon: Fingerprint, name: "Aadhaar", desc: "Aadhaar verification with masked output." },
-  { icon: Vote, name: "Voter ID", desc: "EPIC details and downloadable extract." },
-  { icon: BookUser, name: "Passport", desc: "Check passport status as PDF." },
+  { icon: CreditCard, name: "Driving License", desc: "Fetch DL details and download as PDF.", tone: "from-[oklch(0.55_0.15_255)] to-[oklch(0.4_0.12_265)]" },
+  { icon: IdCard, name: "PAN Card", desc: "Verify and download PAN records.", tone: "from-[oklch(0.7_0.16_55)] to-[oklch(0.62_0.16_45)]" },
+  { icon: Fingerprint, name: "Aadhaar", desc: "Aadhaar verification with masked output.", tone: "from-[oklch(0.6_0.15_155)] to-[oklch(0.5_0.13_160)]" },
+  { icon: Vote, name: "Voter ID", desc: "EPIC details and downloadable extract.", tone: "from-[oklch(0.58_0.18_25)] to-[oklch(0.5_0.16_20)]" },
+  { icon: BookUser, name: "Passport", desc: "Check passport status as PDF.", tone: "from-[oklch(0.5_0.13_300)] to-[oklch(0.42_0.12_295)]" },
 ];
 
 const ROLES = [
