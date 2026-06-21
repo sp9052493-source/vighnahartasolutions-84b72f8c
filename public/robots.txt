@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /members
+Disallow: /requests
+Disallow: /services
+Disallow: /manage-services
+Disallow: /settings
