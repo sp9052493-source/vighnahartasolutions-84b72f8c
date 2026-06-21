@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { ShieldCheck, Lock, Loader2, ArrowLeft } from "lucide-react";
+import logo from "@/assets/sevakart-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,9 +61,7 @@ function AuthPage() {
       {/* Brand panel */}
       <div className="relative hidden flex-col justify-between bg-hero p-12 text-primary-foreground lg:flex">
         <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-gradient text-[oklch(0.25_0.06_60)]">
-            <ShieldCheck className="h-6 w-6" />
-          </div>
+          <img src={logo} alt="Sevakart logo" width={48} height={48} className="h-12 w-12 object-contain" />
           <div>
             <div className="font-display text-lg font-bold">Sevakart Portal</div>
             <div className="text-xs uppercase tracking-wider text-primary-foreground/60">
@@ -91,7 +90,7 @@ function AuthPage() {
             <ArrowLeft className="h-4 w-4" /> Back to home
           </Link>
           <div className="mb-6 flex items-center gap-2 lg:hidden">
-            <ShieldCheck className="h-6 w-6 text-primary" />
+            <img src={logo} alt="Sevakart logo" width={32} height={32} className="h-8 w-8 object-contain" />
             <span className="font-display text-lg font-bold">Sevakart Portal</span>
           </div>
 
