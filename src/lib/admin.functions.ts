@@ -101,7 +101,7 @@ export const adminListUsers = createServerFn({ method: "GET" })
 
 const adjustSchema = z.object({
   userId: z.string().uuid(),
-  amount: z.number().refine((n) => n !== 0, "Amount cannot be zero").gte(-1000000).lte(1000000),
+  amount: z.number().gte(-1000000).lte(1000000).refine((n) => n !== 0, "Amount cannot be zero"),
   description: z.string().trim().max(160).optional(),
 });
 
