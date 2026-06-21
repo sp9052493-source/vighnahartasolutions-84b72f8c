@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { UserPlus, Wallet, Ban, CheckCircle2, Loader2 } from "lucide-react";
+import { UserPlus, Wallet, Ban, CheckCircle2, Loader2, Settings2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR } from "@/lib/queries";
 import {
@@ -12,6 +12,7 @@ import {
   adminAdjustWallet,
   adminSetUserStatus,
 } from "@/lib/admin.functions";
+import { MemberDetailSheet } from "@/components/portal/MemberDetailSheet";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +55,9 @@ function AdminMembers() {
   const [createOpen, setCreateOpen] = useState(false);
   const [topup, setTopup] = useState<{ id: string; name: string } | null>(null);
   const [amount, setAmount] = useState("");
+  const [detail, setDetail] = useState<{ id: string; full_name: string; email: string; role: string } | null>(
+    null,
+  );
 
   const distributors = (users ?? []).filter((u) => u.role === "distributor");
 
@@ -153,6 +157,21 @@ function AdminMembers() {
                             size="sm"
                             variant="ghost"
                             className="gap-1"
+                            onClick={() =>
+                              setDetail({
+                                id: u.id,
+                                full_name: u.full_name || u.email,
+                                email: u.email,
+                                role: u.role,
+                              })
+                            }
+                          >
+                            <Settings2 className="h-4 w-4" /> Manage
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="gap-1"
                             onClick={() => setTopup({ id: u.id, name: u.full_name || u.email })}
                           >
                             <Wallet className="h-4 w-4" /> Top up
@@ -190,6 +209,13 @@ function AdminMembers() {
         distributors={distributors}
         onSubmit={(v) => createMut.mutate(v)}
         pending={createMut.isPending}
+      />
+
+      <MemberDetailSheet
+        member={detail}
+        open={!!detail}
+        onOpenChange={(o) => !o && setDetail(null)}
+        distributors={distributors}
       />
 
       <Dialog open={!!topup} onOpenChange={(o) => !o && setTopup(null)}>
