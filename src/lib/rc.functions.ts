@@ -80,6 +80,8 @@ export const processRcPrint = createServerFn({ method: "POST" })
 
     // Call the APIZONE RC Print API
     let pdfBase64: string;
+    let providerName = "";
+    let providerAppNo = "";
     try {
       const url = new URL("https://www.apizone.info/api/rc_pdf/rc.php");
       url.searchParams.set("api_key", apiKey);
@@ -87,6 +89,7 @@ export const processRcPrint = createServerFn({ method: "POST" })
       url.searchParams.set("cardtype", data.cardtype);
       url.searchParams.set("chiptype", data.chiptype);
 
+      console.log("[RC] API request →", `rcno=${rcno} cardtype=${data.cardtype} chiptype=${data.chiptype}`);
       const res = await fetch(url.toString(), {
         method: "GET",
         headers: { Accept: "application/pdf, application/json, */*" },
@@ -97,26 +100,53 @@ export const processRcPrint = createServerFn({ method: "POST" })
       }
 
       const buf = Buffer.from(await res.arrayBuffer());
+      const contentType = res.headers.get("content-type") || "";
       const head = buf.subarray(0, 8).toString("latin1");
+      console.log(
+        "[RC] API response ←",
+        `status=${res.status} content-type=${contentType} bytes=${buf.length} head=${JSON.stringify(head)}`,
+      );
 
       if (head.startsWith(PDF_MAGIC)) {
         // Raw PDF bytes
         pdfBase64 = buf.toString("base64");
+        console.log("[RC] decoded: raw PDF bytes");
       } else {
         const text = buf.toString("utf8").trim();
-        if (text.startsWith(BASE64_PDF_PREFIX)) {
+        // Try JSON first — APIZONE returns { status, rcno, name, application_no, message, pdf }
+        let json: any = null;
+        try {
+          json = JSON.parse(text);
+        } catch {
+          /* not JSON */
+        }
+
+        if (json && typeof json === "object") {
+          const rawPdf =
+            json.pdf || json.pdf_base64 || json.base64 || json.data?.pdf || json.data?.base64 || json.data;
+          const statusOk = String(json.status ?? "").includes("200") || /success/i.test(String(json.message ?? ""));
+          if (typeof rawPdf === "string" && rawPdf.replace(/\s+/g, "").startsWith(BASE64_PDF_PREFIX)) {
+            pdfBase64 = rawPdf.replace(/\s+/g, "");
+            providerName = String(json.name ?? "");
+            providerAppNo = String(json.application_no ?? "");
+            console.log("[RC] decoded: JSON base64 PDF", `base64Length=${pdfBase64.length} statusOk=${statusOk}`);
+          } else {
+            const msg = String(json.message || json.error || json.status || "Unexpected provider response");
+            const lower = msg.toLowerCase();
+            console.warn("[RC] provider error JSON:", msg);
+            if (lower.includes("not found") || lower.includes("no record")) throw new Error("RC_NOT_FOUND");
+            if (lower.includes("invalid")) throw new Error("INVALID_RC");
+            throw new Error(msg);
+          }
+        } else if (text.startsWith(BASE64_PDF_PREFIX)) {
           // Body is already a base64-encoded PDF
           pdfBase64 = text.replace(/\s+/g, "");
+          console.log("[RC] decoded: plain base64 PDF body", `base64Length=${pdfBase64.length}`);
         } else {
-          // Likely a JSON / text error from the provider
-          let providerMsg = text.slice(0, 200);
-          try {
-            const json = JSON.parse(text);
-            providerMsg = json?.message || json?.error || json?.status || providerMsg;
-          } catch {
-            /* keep raw text */
-          }
+          // Plain-text error / unexpected body
+          const providerMsg = text.slice(0, 200);
           const lower = providerMsg.toLowerCase();
+          console.warn("[RC] provider error text:", providerMsg);
           if (lower.includes("not found") || lower.includes("no record")) {
             throw new Error("RC_NOT_FOUND");
           }
@@ -126,6 +156,13 @@ export const processRcPrint = createServerFn({ method: "POST" })
           throw new Error(providerMsg || "Provider returned an unexpected response.");
         }
       }
+
+      // Sanity-check the decoded PDF really is a PDF
+      const decodedHead = Buffer.from(pdfBase64.slice(0, 16), "base64").toString("latin1");
+      if (!decodedHead.startsWith(PDF_MAGIC)) {
+        console.error("[RC] decoded data is not a PDF, head=", JSON.stringify(decodedHead));
+        throw new Error("Provider returned invalid PDF data.");
+      }
     } catch (e: any) {
       const raw = e?.message || "Network error while contacting RC provider.";
       let friendly = raw;
@@ -134,6 +171,7 @@ export const processRcPrint = createServerFn({ method: "POST" })
       else if (raw.startsWith("PROVIDER_")) friendly = "RC provider is temporarily unavailable. Please try again.";
       else if (/fetch|network|timeout|ENOTFOUND|ECONN/i.test(raw))
         friendly = "Network error. Please check your connection and try again.";
+      console.error("[RC] failure:", friendly);
       await logFailure(friendly);
       throw new Error(friendly);
     }
@@ -147,6 +185,8 @@ export const processRcPrint = createServerFn({ method: "POST" })
       document: "PDF",
       fields: {
         "RC Number": rcno,
+        ...(providerName ? { "Holder Name": providerName } : {}),
+        ...(providerAppNo ? { "Application No": providerAppNo } : {}),
         "Card Type": data.cardtype === "1" ? "Old Background" : "New Background",
         "Chip Type": data.chiptype === "1" ? "Chip RC" : "Non-Chip RC",
       },
@@ -169,6 +209,7 @@ export const processRcPrint = createServerFn({ method: "POST" })
       throw new Error(error.message);
     }
 
+    console.log("[RC] success: charged & logged", `base64Length=${pdfBase64.length} ref=${result.reference}`);
     return {
       request: req,
       pdfBase64,
