@@ -54,13 +54,13 @@ function NavLinks({ role, onNavigate }: { role: AppRole; onNavigate?: () => void
             to={item.to}
             onClick={onNavigate}
             className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+              "flex items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-medium transition-colors",
               active
                 ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
                 : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
             )}
           >
-            <item.icon className="h-4.5 w-4.5 shrink-0" />
+            <item.icon className="h-5 w-5 shrink-0" />
             {item.label}
           </Link>
         );
@@ -72,10 +72,10 @@ function NavLinks({ role, onNavigate }: { role: AppRole; onNavigate?: () => void
 function Brand() {
   return (
     <div className="flex items-center gap-2.5 px-5 py-5">
-      <img src={logo} alt="Sevakart logo" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
+      <img src={logo} alt="Sevakart logo" width={48} height={48} className="h-12 w-12 shrink-0 object-contain" />
       <div className="leading-tight">
-        <div className="font-display text-base font-bold text-sidebar-foreground">Sevakart</div>
-        <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Govt Documents Portal</div>
+        <div className="font-display text-lg font-bold text-sidebar-foreground">Sevakart</div>
+        <div className="text-xs uppercase tracking-wider text-sidebar-foreground/60">Govt Documents Portal</div>
       </div>
     </div>
   );
@@ -141,8 +141,8 @@ export function PortalShell({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-2 lg:hidden">
-            <img src={logo} alt="Sevakart logo" width={28} height={28} className="h-7 w-7 object-contain" />
-            <span className="font-display font-bold">Sevakart</span>
+            <img src={logo} alt="Sevakart logo" width={34} height={34} className="h-8 w-8 object-contain" />
+            <span className="font-display text-lg font-bold">Sevakart</span>
           </div>
           <div className="ml-auto flex items-center gap-3">
             <div className="hidden text-right sm:block">
