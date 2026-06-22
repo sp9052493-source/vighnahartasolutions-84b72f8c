@@ -107,7 +107,7 @@ function AdminMembers() {
 
       <Card className="overflow-hidden shadow-card">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-[15px]">
             <thead className="bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-5 py-3">Name</th>
