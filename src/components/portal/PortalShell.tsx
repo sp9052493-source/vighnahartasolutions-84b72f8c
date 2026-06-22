@@ -72,10 +72,10 @@ function NavLinks({ role, onNavigate }: { role: AppRole; onNavigate?: () => void
 function Brand() {
   return (
     <div className="flex items-center gap-2.5 px-5 py-5">
-      <img src={logo} alt="Sevakart logo" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
+      <img src={logo} alt="Sevakart logo" width={48} height={48} className="h-12 w-12 shrink-0 object-contain" />
       <div className="leading-tight">
-        <div className="font-display text-base font-bold text-sidebar-foreground">Sevakart</div>
-        <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Govt Documents Portal</div>
+        <div className="font-display text-lg font-bold text-sidebar-foreground">Sevakart</div>
+        <div className="text-xs uppercase tracking-wider text-sidebar-foreground/60">Govt Documents Portal</div>
       </div>
     </div>
   );
