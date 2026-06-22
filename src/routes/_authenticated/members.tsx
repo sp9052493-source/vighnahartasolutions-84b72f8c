@@ -95,11 +95,13 @@ function AdminMembers() {
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Members</h1>
-          <p className="text-sm text-muted-foreground">Create and manage retailer & distributor accounts.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Members</h1>
+          <p className="text-base text-muted-foreground">
+            Create, edit and fully manage retailer &amp; distributor accounts.
+          </p>
         </div>
-        <Button onClick={() => setCreateOpen(true)} className="gap-2">
-          <UserPlus className="h-4 w-4" /> New Account
+        <Button onClick={() => setCreateOpen(true)} size="lg" className="gap-2 text-base">
+          <UserPlus className="h-5 w-5" /> New Account
         </Button>
       </div>
 
