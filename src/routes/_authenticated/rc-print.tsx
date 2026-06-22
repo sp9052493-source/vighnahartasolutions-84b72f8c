@@ -58,15 +58,32 @@ function RcPrint() {
     mutationFn: (vars: { rcno: string; cardtype: "1" | "2"; chiptype: "1" | "2" }) =>
       rcFn({ data: vars }),
     onSuccess: (res: any) => {
+      console.log("[RC] server response:", {
+        reference: res?.reference,
+        fileName: res?.fileName,
+        base64Length: res?.pdfBase64?.length,
+      });
+      if (!res?.pdfBase64) {
+        toast.error("No PDF data returned from server.");
+        return;
+      }
       const url = base64ToBlobUrl(res.pdfBase64);
+      console.log("[RC] blob object URL created:", url);
       setPdf({ url, fileName: res.fileName, reference: res.reference });
-      window.open(url, "_blank", "noopener,noreferrer");
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+      if (!win) {
+        console.warn("[RC] popup blocked — use the preview/buttons below");
+        toast.message("Pop-up blocked — use the preview or buttons below to view the PDF.");
+      }
       toast.success("RC PDF generated successfully");
       queryClient.invalidateQueries({ queryKey: ["me"] });
       queryClient.invalidateQueries({ queryKey: ["my-requests"] });
       queryClient.invalidateQueries({ queryKey: ["my-transactions"] });
     },
-    onError: (e: any) => toast.error(e?.message || "Request failed"),
+    onError: (e: any) => {
+      console.error("[RC] request error:", e?.message);
+      toast.error(e?.message || "Request failed");
+    },
   });
 
   function submit(e: React.FormEvent) {
