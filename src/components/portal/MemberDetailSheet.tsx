@@ -54,7 +54,7 @@ export function MemberDetailSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
+          <SheetTitle className="flex items-center gap-2 text-xl">
             {member?.full_name || member?.email}
             {member && (
               <Badge variant="outline" className="capitalize">
@@ -62,7 +62,7 @@ export function MemberDetailSheet({
               </Badge>
             )}
           </SheetTitle>
-          <SheetDescription>{member?.email}</SheetDescription>
+          <SheetDescription className="text-base">{member?.email}</SheetDescription>
         </SheetHeader>
 
         {isLoading || !data ? (
