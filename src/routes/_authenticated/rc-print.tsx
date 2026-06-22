@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/rc-print")({
 });
 
 function base64ToBlobUrl(base64: string) {
-  const byteChars = atob(base64);
+  const byteChars = atob(base64.replace(/\s+/g, ""));
   const bytes = new Uint8Array(byteChars.length);
   for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
   return URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
