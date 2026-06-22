@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/rc-print")({
 });
 
 function base64ToBlobUrl(base64: string) {
-  const byteChars = atob(base64);
+  const byteChars = atob(base64.replace(/\s+/g, ""));
   const bytes = new Uint8Array(byteChars.length);
   for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
   return URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
@@ -58,15 +58,32 @@ function RcPrint() {
     mutationFn: (vars: { rcno: string; cardtype: "1" | "2"; chiptype: "1" | "2" }) =>
       rcFn({ data: vars }),
     onSuccess: (res: any) => {
+      console.log("[RC] server response:", {
+        reference: res?.reference,
+        fileName: res?.fileName,
+        base64Length: res?.pdfBase64?.length,
+      });
+      if (!res?.pdfBase64) {
+        toast.error("No PDF data returned from server.");
+        return;
+      }
       const url = base64ToBlobUrl(res.pdfBase64);
+      console.log("[RC] blob object URL created:", url);
       setPdf({ url, fileName: res.fileName, reference: res.reference });
-      window.open(url, "_blank", "noopener,noreferrer");
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+      if (!win) {
+        console.warn("[RC] popup blocked — use the preview/buttons below");
+        toast.message("Pop-up blocked — use the preview or buttons below to view the PDF.");
+      }
       toast.success("RC PDF generated successfully");
       queryClient.invalidateQueries({ queryKey: ["me"] });
       queryClient.invalidateQueries({ queryKey: ["my-requests"] });
       queryClient.invalidateQueries({ queryKey: ["my-transactions"] });
     },
-    onError: (e: any) => toast.error(e?.message || "Request failed"),
+    onError: (e: any) => {
+      console.error("[RC] request error:", e?.message);
+      toast.error(e?.message || "Request failed");
+    },
   });
 
   function submit(e: React.FormEvent) {
@@ -221,6 +238,23 @@ function RcPrint() {
           )}
         </Card>
       </div>
+
+      {pdf && (
+        <Card className="overflow-hidden shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3">
+            <h2 className="font-display text-lg font-semibold">PDF Preview</h2>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={downloadPdf} className="gap-2">
+                <Download className="h-4 w-4" /> Download
+              </Button>
+              <Button size="sm" variant="outline" onClick={printPdf} className="gap-2">
+                <Printer className="h-4 w-4" /> Print
+              </Button>
+            </div>
+          </div>
+          <iframe src={pdf.url} title="RC PDF preview" className="h-[640px] w-full bg-muted" />
+        </Card>
+      )}
 
       <Card className="overflow-hidden shadow-card">
         <div className="border-b border-border px-5 py-4">
