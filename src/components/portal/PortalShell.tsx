@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   FileStack,
   Car,
+  CreditCard,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
@@ -27,6 +28,7 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "distributor", "retailer"] },
   { to: "/services", label: "Services", icon: FileStack, roles: ["distributor", "retailer"] },
   { to: "/rc-print", label: "Vehicle RC Print", icon: Car, roles: ["distributor", "retailer"] },
+  { to: "/aadhaar-to-pan", label: "Aadhaar to PAN", icon: CreditCard, roles: ["distributor", "retailer"] },
   { to: "/requests", label: "My Requests", icon: FileText, roles: ["distributor", "retailer"] },
   { to: "/wallet", label: "Wallet", icon: Wallet, roles: ["admin", "distributor", "retailer"] },
   { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
