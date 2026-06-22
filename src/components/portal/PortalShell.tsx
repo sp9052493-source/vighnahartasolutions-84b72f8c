@@ -11,6 +11,7 @@ import {
   LogOut,
   ShieldCheck,
   FileStack,
+  Car,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
@@ -25,6 +26,7 @@ type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles:
 const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "distributor", "retailer"] },
   { to: "/services", label: "Services", icon: FileStack, roles: ["distributor", "retailer"] },
+  { to: "/rc-print", label: "Vehicle RC Print", icon: Car, roles: ["distributor", "retailer"] },
   { to: "/requests", label: "My Requests", icon: FileText, roles: ["distributor", "retailer"] },
   { to: "/wallet", label: "Wallet", icon: Wallet, roles: ["admin", "distributor", "retailer"] },
   { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
