@@ -239,6 +239,23 @@ function RcPrint() {
         </Card>
       </div>
 
+      {pdf && (
+        <Card className="overflow-hidden shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3">
+            <h2 className="font-display text-lg font-semibold">PDF Preview</h2>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={downloadPdf} className="gap-2">
+                <Download className="h-4 w-4" /> Download
+              </Button>
+              <Button size="sm" variant="outline" onClick={printPdf} className="gap-2">
+                <Printer className="h-4 w-4" /> Print
+              </Button>
+            </div>
+          </div>
+          <iframe src={pdf.url} title="RC PDF preview" className="h-[640px] w-full bg-muted" />
+        </Card>
+      )}
+
       <Card className="overflow-hidden shadow-card">
         <div className="border-b border-border px-5 py-4">
           <h2 className="font-display text-lg font-semibold">RC Transaction History</h2>
