@@ -93,7 +93,39 @@ async function handle(request: Request) {
     return fail("gateway reported non-success");
   }
 
-  // Success — credit the wallet exactly once for the stored amount
+  // Success — credit the wallet exactly once for the stored amount.
+  //
+  // Atomically "claim" the order by flipping credited false -> true in a single
+  // conditional UPDATE. Because order_id is UNIQUE and the WHERE clause requires
+  // credited = false, only ONE concurrent redirect can ever win this claim. Any
+  // other redirect (running in parallel, or a later retry) matches zero rows and
+  // skips the wallet credit entirely — eliminating the read-check-then-write race
+  // that previously allowed double-credit.
+  const { data: claimed, error: claimErr } = await supabaseAdmin
+    .from("payment_orders")
+    .update({
+      status: "success",
+      credited: true,
+      provider_txn_id: providerTxnId,
+      provider_response: params,
+    })
+    .eq("order_id", orderId)
+    .eq("credited", false)
+    .select("id")
+    .maybeSingle();
+
+  if (claimErr) {
+    console.error("[PAYTM-RETURN] claim failed:", claimErr.message);
+    return fail("could not claim order for crediting");
+  }
+
+  // No row claimed → another redirect already credited this order. Idempotent success.
+  if (!claimed) {
+    console.log("[PAYTM-RETURN] already credited (claim no-op)", `order_id=${orderId}`);
+    return Response.redirect(`${base}?recharge=success&order_id=${encodeURIComponent(orderId)}`, 302);
+  }
+
+  // We exclusively own the credit for this order — perform it exactly once.
   const { error: creditErr } = await supabaseAdmin.rpc("admin_adjust_wallet", {
     p_user_id: order.user_id,
     p_amount: Number(order.amount),
@@ -102,22 +134,13 @@ async function handle(request: Request) {
 
   if (creditErr) {
     console.error("[PAYTM-RETURN] credit failed:", creditErr.message);
+    // Release the claim so the credit can be retried on a subsequent redirect.
     await supabaseAdmin
       .from("payment_orders")
-      .update({ status: "failed", provider_txn_id: providerTxnId, provider_response: params })
+      .update({ status: "failed", credited: false, provider_txn_id: providerTxnId, provider_response: params })
       .eq("order_id", orderId);
     return fail("wallet credit failed");
   }
-
-  await supabaseAdmin
-    .from("payment_orders")
-    .update({
-      status: "success",
-      credited: true,
-      provider_txn_id: providerTxnId,
-      provider_response: params,
-    })
-    .eq("order_id", orderId);
 
   console.log("[PAYTM-RETURN] credited", `order_id=${orderId} amount=${order.amount}`);
   return Response.redirect(`${base}?recharge=success&order_id=${encodeURIComponent(orderId)}`, 302);
