@@ -176,12 +176,20 @@ export const processDlPrint = createServerFn({ method: "POST" })
       },
     };
 
+    let docPath = "";
+    try {
+      const { uploadDocumentPdf } = await import("@/lib/documents.server");
+      docPath = await uploadDocumentPdf(userId, `DL_${dlno}.pdf`, pdfBase64);
+    } catch (e: any) {
+      console.error("[DL] could not persist PDF:", e?.message);
+    }
+
     const { data: req, error } = await supabaseAdmin.rpc("complete_document_request", {
       p_user_id: userId,
       p_service_id: service.id,
       p_input: dlno,
       p_result: result,
-      p_doc_url: "",
+      p_doc_url: docPath,
     });
 
     if (error) {

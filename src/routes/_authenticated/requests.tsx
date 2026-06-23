@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DocumentDialog } from "@/components/portal/DocumentDialog";
+import { DocumentDownloadButton } from "@/components/portal/DocumentDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/requests")({
   head: () => ({ meta: [{ title: "My Requests — Sevakart Portal" }] }),
@@ -53,10 +54,15 @@ function Requests() {
                   <td className="px-5 py-3 text-muted-foreground">
                     {new Date(r.created_at).toLocaleString("en-IN")}
                   </td>
-                  <td className="px-5 py-3 text-right">
-                    <Button size="sm" variant="ghost" onClick={() => setSelected(r)}>
-                      View
-                    </Button>
+                  <td className="px-5 py-3">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button size="sm" variant="ghost" onClick={() => setSelected(r)}>
+                        View
+                      </Button>
+                      {r.status === "completed" && (r as any).document_url && (
+                        <DocumentDownloadButton requestId={r.id} hasFile={!!(r as any).document_url} />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
