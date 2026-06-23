@@ -91,6 +91,21 @@ export function useMyTransactions() {
   });
 }
 
+export function useMyOrders() {
+  return useQuery({
+    queryKey: ["my-orders"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payment_orders")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function formatINR(n: number) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
