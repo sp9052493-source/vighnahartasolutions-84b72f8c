@@ -71,8 +71,8 @@ function AuthPage() {
             <ArrowLeft className="h-5 w-5" /> Back to home
           </Link>
           <div className="mb-6 flex items-center gap-2 lg:hidden">
-            <img src={logo} alt="Sevakart logo" width={40} height={40} className="h-10 w-10 object-contain" />
-            <span className="font-display text-xl font-bold">Sevakart Portal</span>
+            <img src={logo} alt="Sevakart logo" width={52} height={52} className="h-13 w-13 object-contain" />
+            <span className="font-display text-2xl font-bold">Sevakart Portal</span>
           </div>
 
           <h1 className="mt-2 text-2xl font-bold">Member Login</h1>
