@@ -64,6 +64,48 @@ export type Database = {
           },
         ]
       }
+      payment_orders: {
+        Row: {
+          amount: number
+          created_at: string
+          credited: boolean
+          id: string
+          order_id: string
+          provider: string
+          provider_response: Json | null
+          provider_txn_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          credited?: boolean
+          id?: string
+          order_id: string
+          provider?: string
+          provider_response?: Json | null
+          provider_txn_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          credited?: boolean
+          id?: string
+          order_id?: string
+          provider?: string
+          provider_response?: Json | null
+          provider_txn_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           business_name: string | null

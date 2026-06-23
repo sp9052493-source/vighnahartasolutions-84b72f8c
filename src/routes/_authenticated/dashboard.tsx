@@ -9,8 +9,11 @@ import {
   ArrowUpRight,
   FileStack,
   Clock,
+  IdCard,
+  Wheat,
+  CreditCard,
 } from "lucide-react";
-import { useMe, useMyRequests, formatINR } from "@/lib/queries";
+import { useMe, useMyRequests, useMyOrders, formatINR } from "@/lib/queries";
 import { adminStats, adminListRequests } from "@/lib/admin.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -118,10 +121,14 @@ function AdminDashboard() {
 
 function MemberDashboard({ greeting, balance }: { greeting: string; balance: number }) {
   const { data: requests } = useMyRequests();
+  const { data: orders } = useMyOrders();
   const total = requests?.length ?? 0;
   const today = (requests ?? []).filter(
     (r) => new Date(r.created_at).toDateString() === new Date().toDateString(),
   ).length;
+  const dlCount = (requests ?? []).filter((r) => r.service_name === "Driving License").length;
+  const rationCount = (requests ?? []).filter((r) => r.service_name === "Ration Card Print").length;
+  const rechargeCount = (orders ?? []).filter((o) => o.status === "success").length;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -145,6 +152,12 @@ function MemberDashboard({ greeting, balance }: { greeting: string; balance: num
         <StatCard label="Total Requests" value={String(total)} icon={FileText} />
         <StatCard label="Today" value={String(today)} icon={Clock} />
         <StatCard label="Wallet" value={formatINR(balance)} icon={Wallet} />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+        <StatCard label="DL Transactions" value={String(dlCount)} icon={IdCard} />
+        <StatCard label="Ration Transactions" value={String(rationCount)} icon={Wheat} />
+        <StatCard label="Recharge Transactions" value={String(rechargeCount)} icon={CreditCard} />
       </div>
 
       <Card className="overflow-hidden shadow-card">

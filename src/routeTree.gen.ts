@@ -17,11 +17,15 @@ import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
+import { Route as AuthenticatedRechargeRouteImport } from './routes/_authenticated/recharge'
 import { Route as AuthenticatedRcPrintRouteImport } from './routes/_authenticated/rc-print'
+import { Route as AuthenticatedRationPrintRouteImport } from './routes/_authenticated/ration-print'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authenticated/manage-services'
+import { Route as AuthenticatedDlPrintRouteImport } from './routes/_authenticated/dl-print'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAadhaarToPanRouteImport } from './routes/_authenticated/aadhaar-to-pan'
+import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/paytm-return'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -62,11 +66,22 @@ const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
   path: '/requests',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRechargeRoute = AuthenticatedRechargeRouteImport.update({
+  id: '/recharge',
+  path: '/recharge',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedRcPrintRoute = AuthenticatedRcPrintRouteImport.update({
   id: '/rc-print',
   path: '/rc-print',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRationPrintRoute =
+  AuthenticatedRationPrintRouteImport.update({
+    id: '/ration-print',
+    path: '/ration-print',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMembersRoute = AuthenticatedMembersRouteImport.update({
   id: '/members',
   path: '/members',
@@ -78,6 +93,11 @@ const AuthenticatedManageServicesRoute =
     path: '/manage-services',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDlPrintRoute = AuthenticatedDlPrintRouteImport.update({
+  id: '/dl-print',
+  path: '/dl-print',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -89,6 +109,11 @@ const AuthenticatedAadhaarToPanRoute =
     path: '/aadhaar-to-pan',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicPaytmReturnRoute = ApiPublicPaytmReturnRouteImport.update({
+  id: '/api/public/paytm-return',
+  path: '/api/public/paytm-return',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,13 +121,17 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dl-print': typeof AuthenticatedDlPrintRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
+  '/ration-print': typeof AuthenticatedRationPrintRoute
   '/rc-print': typeof AuthenticatedRcPrintRoute
+  '/recharge': typeof AuthenticatedRechargeRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,13 +139,17 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dl-print': typeof AuthenticatedDlPrintRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
+  '/ration-print': typeof AuthenticatedRationPrintRoute
   '/rc-print': typeof AuthenticatedRcPrintRoute
+  '/recharge': typeof AuthenticatedRechargeRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -126,13 +159,17 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dl-print': typeof AuthenticatedDlPrintRoute
   '/_authenticated/manage-services': typeof AuthenticatedManageServicesRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
+  '/_authenticated/ration-print': typeof AuthenticatedRationPrintRoute
   '/_authenticated/rc-print': typeof AuthenticatedRcPrintRoute
+  '/_authenticated/recharge': typeof AuthenticatedRechargeRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
+  '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -142,13 +179,17 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/aadhaar-to-pan'
     | '/dashboard'
+    | '/dl-print'
     | '/manage-services'
     | '/members'
+    | '/ration-print'
     | '/rc-print'
+    | '/recharge'
     | '/requests'
     | '/services'
     | '/settings'
     | '/wallet'
+    | '/api/public/paytm-return'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -156,13 +197,17 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/aadhaar-to-pan'
     | '/dashboard'
+    | '/dl-print'
     | '/manage-services'
     | '/members'
+    | '/ration-print'
     | '/rc-print'
+    | '/recharge'
     | '/requests'
     | '/services'
     | '/settings'
     | '/wallet'
+    | '/api/public/paytm-return'
   id:
     | '__root__'
     | '/'
@@ -171,13 +216,17 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/aadhaar-to-pan'
     | '/_authenticated/dashboard'
+    | '/_authenticated/dl-print'
     | '/_authenticated/manage-services'
     | '/_authenticated/members'
+    | '/_authenticated/ration-print'
     | '/_authenticated/rc-print'
+    | '/_authenticated/recharge'
     | '/_authenticated/requests'
     | '/_authenticated/services'
     | '/_authenticated/settings'
     | '/_authenticated/wallet'
+    | '/api/public/paytm-return'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -185,6 +234,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicPaytmReturnRoute: typeof ApiPublicPaytmReturnRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,11 +295,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRequestsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/recharge': {
+      id: '/_authenticated/recharge'
+      path: '/recharge'
+      fullPath: '/recharge'
+      preLoaderRoute: typeof AuthenticatedRechargeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/rc-print': {
       id: '/_authenticated/rc-print'
       path: '/rc-print'
       fullPath: '/rc-print'
       preLoaderRoute: typeof AuthenticatedRcPrintRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ration-print': {
+      id: '/_authenticated/ration-print'
+      path: '/ration-print'
+      fullPath: '/ration-print'
+      preLoaderRoute: typeof AuthenticatedRationPrintRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/members': {
@@ -266,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedManageServicesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dl-print': {
+      id: '/_authenticated/dl-print'
+      path: '/dl-print'
+      fullPath: '/dl-print'
+      preLoaderRoute: typeof AuthenticatedDlPrintRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -280,15 +351,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAadhaarToPanRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/paytm-return': {
+      id: '/api/public/paytm-return'
+      path: '/api/public/paytm-return'
+      fullPath: '/api/public/paytm-return'
+      preLoaderRoute: typeof ApiPublicPaytmReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAadhaarToPanRoute: typeof AuthenticatedAadhaarToPanRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDlPrintRoute: typeof AuthenticatedDlPrintRoute
   AuthenticatedManageServicesRoute: typeof AuthenticatedManageServicesRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
+  AuthenticatedRationPrintRoute: typeof AuthenticatedRationPrintRoute
   AuthenticatedRcPrintRoute: typeof AuthenticatedRcPrintRoute
+  AuthenticatedRechargeRoute: typeof AuthenticatedRechargeRoute
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -298,9 +379,12 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAadhaarToPanRoute: AuthenticatedAadhaarToPanRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDlPrintRoute: AuthenticatedDlPrintRoute,
   AuthenticatedManageServicesRoute: AuthenticatedManageServicesRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
+  AuthenticatedRationPrintRoute: AuthenticatedRationPrintRoute,
   AuthenticatedRcPrintRoute: AuthenticatedRcPrintRoute,
+  AuthenticatedRechargeRoute: AuthenticatedRechargeRoute,
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
@@ -315,6 +399,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicPaytmReturnRoute: ApiPublicPaytmReturnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

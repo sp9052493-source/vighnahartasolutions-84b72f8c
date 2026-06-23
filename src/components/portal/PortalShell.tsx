@@ -13,6 +13,8 @@ import {
   FileStack,
   Car,
   CreditCard,
+  IdCard,
+  Wheat,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
@@ -28,9 +30,12 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "distributor", "retailer"] },
   { to: "/services", label: "Services", icon: FileStack, roles: ["distributor", "retailer"] },
   { to: "/rc-print", label: "Vehicle RC Print", icon: Car, roles: ["distributor", "retailer"] },
+  { to: "/dl-print", label: "Driving Licence Print", icon: IdCard, roles: ["distributor", "retailer"] },
+  { to: "/ration-print", label: "Ration Card Print", icon: Wheat, roles: ["distributor", "retailer"] },
   { to: "/aadhaar-to-pan", label: "Aadhaar to PAN", icon: CreditCard, roles: ["distributor", "retailer"] },
   { to: "/requests", label: "My Requests", icon: FileText, roles: ["distributor", "retailer"] },
   { to: "/wallet", label: "Wallet", icon: Wallet, roles: ["admin", "distributor", "retailer"] },
+  { to: "/recharge", label: "Wallet Recharge", icon: CreditCard, roles: ["distributor", "retailer"] },
   { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
   { to: "/manage-services", label: "Service Pricing", icon: SlidersHorizontal, roles: ["admin"] },
   { to: "/settings", label: "Settings", icon: Settings, roles: ["admin", "distributor", "retailer"] },
