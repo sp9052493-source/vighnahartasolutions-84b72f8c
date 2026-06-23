@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { DocumentDownloadButton } from "@/components/portal/DocumentDownloadButton";
 import {
   Select,
   SelectContent,
@@ -254,6 +255,7 @@ function DlPrint() {
                 <th className="px-5 py-3">Status</th>
                 <th className="px-5 py-3">Cost</th>
                 <th className="px-5 py-3">Date &amp; Time</th>
+                <th className="px-5 py-3 text-right">Document</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -275,11 +277,18 @@ function DlPrint() {
                   <td className="px-5 py-3 text-muted-foreground">
                     {new Date(r.created_at).toLocaleString("en-IN")}
                   </td>
+                  <td className="px-5 py-3 text-right">
+                    {r.status === "completed" && (r as any).document_url ? (
+                      <DocumentDownloadButton requestId={r.id} hasFile={!!(r as any).document_url} />
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
                 </tr>
               ))}
               {dlRequests.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-5 py-12 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-5 py-12 text-center text-muted-foreground">
                     <IdCard className="mx-auto mb-2 h-8 w-8 opacity-40" />
                     No DL requests yet.
                   </td>
