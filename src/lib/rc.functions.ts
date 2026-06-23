@@ -192,12 +192,21 @@ export const processRcPrint = createServerFn({ method: "POST" })
       },
     };
 
+    // Persist the generated PDF so it can be re-downloaded from history
+    let docPath = "";
+    try {
+      const { uploadDocumentPdf } = await import("@/lib/documents.server");
+      docPath = await uploadDocumentPdf(userId, `RC_${rcno}.pdf`, pdfBase64);
+    } catch (e: any) {
+      console.error("[RC] could not persist PDF:", e?.message);
+    }
+
     const { data: req, error } = await supabaseAdmin.rpc("complete_document_request", {
       p_user_id: userId,
       p_service_id: service.id,
       p_input: rcno,
       p_result: result,
-      p_doc_url: "",
+      p_doc_url: docPath,
     });
 
     if (error) {
