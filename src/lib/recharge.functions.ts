@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader, getRequestUrl } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -12,16 +11,6 @@ const rechargeSchema = z.object({
 });
 
 const PAYTM_CREATE_URL = "https://www.mypancard.in/paytm/create";
-
-function resolveOrigin(): string {
-  const fromHeader = getRequestHeader("origin");
-  if (fromHeader) return fromHeader.replace(/\/$/, "");
-  try {
-    return new URL(getRequestUrl()).origin;
-  } catch {
-    return "https://sevakart.lovable.app";
-  }
-}
 
 /**
  * Creates a Paytm wallet-recharge order via the mypancard.in payment API and
@@ -52,7 +41,18 @@ export const createRechargeOrder = createServerFn({ method: "POST" })
 
     const orderId =
       "SKR" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
-    const origin = resolveOrigin();
+    const { getRequestHeader, getRequestUrl } = await import("@tanstack/react-start/server");
+    let origin = "https://sevakart.lovable.app";
+    const fromHeader = getRequestHeader("origin");
+    if (fromHeader) {
+      origin = fromHeader.replace(/\/$/, "");
+    } else {
+      try {
+        origin = new URL(getRequestUrl()).origin;
+      } catch {
+        /* keep fallback */
+      }
+    }
     const redirectUrl = `${origin}/api/public/paytm-return?order_id=${encodeURIComponent(orderId)}`;
 
     const customerName = (profile?.full_name || "Sevakart User").slice(0, 80);
