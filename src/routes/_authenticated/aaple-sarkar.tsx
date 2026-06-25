@@ -68,26 +68,16 @@ function AapleSarkar() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 shadow-card sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <img
-            src={AAPLE_SARKAR_LOGO}
-            alt="Aaple Sarkar"
-            className="h-16 w-auto shrink-0 rounded-md bg-white p-1 shadow-sm"
-          />
-          <div>
-            <h1 className="font-display text-2xl font-bold">{L("title")}</h1>
-            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{L("subtitle")}</p>
-          </div>
+      <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 shadow-card sm:flex-row sm:items-center">
+        <img
+          src={AAPLE_SARKAR_LOGO}
+          alt="Aaple Sarkar"
+          className="h-16 w-auto shrink-0 rounded-md bg-white p-1 shadow-sm"
+        />
+        <div>
+          <h1 className="font-display text-2xl font-bold">{L("title")}</h1>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{L("subtitle")}</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => setLang((p) => (p === "en" ? "mr" : "en"))}
-          className="shrink-0 gap-2"
-        >
-          <Languages className="h-4 w-4" />
-          {lang === "en" ? "मराठी" : "English"}
-        </Button>
       </div>
 
       <Tabs defaultValue="apply">
@@ -96,7 +86,7 @@ function AapleSarkar() {
           <TabsTrigger value="mine">{L("myApps")}</TabsTrigger>
         </TabsList>
         <TabsContent value="apply" className="mt-5">
-          <ApplyForm lang={lang} />
+          <ApplyForm lang={lang} setLang={setLang} />
         </TabsContent>
         <TabsContent value="mine" className="mt-5">
           <MyApplications lang={lang} />
