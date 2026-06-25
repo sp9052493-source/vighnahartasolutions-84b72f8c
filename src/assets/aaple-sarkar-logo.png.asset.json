@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "cd1abfbd-bda7-4ae7-af7a-cd1bd4736b1f",
-  "project_id": "73bc893e-977f-47db-b9f3-2833c5017e41",
-  "url": "/__l5e/assets-v1/cd1abfbd-bda7-4ae7-af7a-cd1bd4736b1f/aaple-sarkar-logo.png",
-  "r2_key": "a/v1/73bc893e-977f-47db-b9f3-2833c5017e41/cd1abfbd-bda7-4ae7-af7a-cd1bd4736b1f/aaple-sarkar-logo.png",
-  "original_filename": "aaple-sarkar-logo.png",
-  "size": 10358,
   "content_type": "image/png",
-  "created_at": "2026-06-25T16:46:58Z"
+  "created_at": "2026-06-25T16:46:58Z",
+  "original_filename": "aaple-sarkar-logo.png",
+  "project_id": "a277981d-1987-4a45-978e-e56e6e4eba52",
+  "r2_key": "a/v1/a277981d-1987-4a45-978e-e56e6e4eba52/cd1abfbd-bda7-4ae7-af7a-cd1bd4736b1f/aaple-sarkar-logo.png",
+  "size": 10358,
+  "url": "/__l5e/assets-v1/cd1abfbd-bda7-4ae7-af7a-cd1bd4736b1f/aaple-sarkar-logo.png",
+  "version": 1
 }
