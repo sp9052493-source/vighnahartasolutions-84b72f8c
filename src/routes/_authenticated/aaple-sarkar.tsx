@@ -97,29 +97,66 @@ function AapleSarkar() {
   );
 }
 
-function ApplyForm({ lang }: { lang: Lang }) {
+const EMPTY_FORM = {
+  applicantName: "",
+  applicantNameMr: "",
+  fatherName: "",
+  fatherNameMr: "",
+  mobile: "",
+  email: "",
+  address: "",
+  addressMr: "",
+  district: "",
+  taluka: "",
+  pincode: "",
+  purpose: "",
+  notes: "",
+};
+
+function ApplyForm({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const L = (k: keyof typeof TX) => t(k, lang);
   const queryClient = useQueryClient();
   const submitFn = useServerFn(submitAapleSarkarApplication);
+  const translateFn = useServerFn(translateToMarathi);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const [service, setService] = useState<SarkarService | null>(null);
   const [files, setFiles] = useState<FileItem[]>([]);
   const [receipt, setReceipt] = useState<{ receiptNo: string; status: string } | null>(null);
-  const [form, setForm] = useState({
-    applicantName: "",
-    applicantNameMr: "",
-    fatherName: "",
-    mobile: "",
-    email: "",
-    address: "",
-    district: "",
-    taluka: "",
-    pincode: "",
-    purpose: "",
-    notes: "",
-  });
+  const [form, setForm] = useState({ ...EMPTY_FORM });
 
   const set = (k: keyof typeof form, v: string) => setForm((p) => ({ ...p, [k]: v }));
+
+  // Open the form when a service is selected and scroll it into view.
+  useEffect(() => {
+    if (service && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [service]);
+
+  const translate = useMutation({
+    mutationFn: () =>
+      translateFn({
+        data: {
+          fields: {
+            applicantName: form.applicantName,
+            fatherName: form.fatherName,
+            address: form.address,
+          },
+        },
+      }),
+    onSuccess: (res: any) => {
+      const tr = res?.translations ?? {};
+      setForm((p) => ({
+        ...p,
+        applicantNameMr: tr.applicantName || p.applicantNameMr,
+        fatherNameMr: tr.fatherName || p.fatherNameMr,
+        addressMr: tr.address || p.addressMr,
+      }));
+      toast.success(lang === "en" ? "Translated to Marathi" : "मराठीत भाषांतर झाले");
+    },
+    onError: (e: any) => toast.error(e?.message || "Translation failed"),
+  });
 
   const mutation = useMutation({
     mutationFn: (vars: any) => submitFn({ data: vars }),
@@ -127,19 +164,7 @@ function ApplyForm({ lang }: { lang: Lang }) {
       setReceipt({ receiptNo: res.receiptNo, status: res.status });
       queryClient.invalidateQueries({ queryKey: ["my-aaple-sarkar"] });
       toast.success(lang === "en" ? "Application submitted" : "अर्ज सादर झाला");
-      setForm({
-        applicantName: "",
-        applicantNameMr: "",
-        fatherName: "",
-        mobile: "",
-        email: "",
-        address: "",
-        district: "",
-        taluka: "",
-        pincode: "",
-        purpose: "",
-        notes: "",
-      });
+      setForm({ ...EMPTY_FORM });
       setFiles([]);
       setService(null);
     },
@@ -171,7 +196,19 @@ function ApplyForm({ lang }: { lang: Lang }) {
     mutation.mutate({
       serviceType: service.type,
       serviceLabel: service.en,
-      ...form,
+      applicantName: form.applicantName,
+      applicantNameMr: form.applicantNameMr,
+      fatherName: form.fatherName,
+      mobile: form.mobile,
+      email: form.email,
+      address: form.address,
+      district: form.district,
+      taluka: form.taluka,
+      pincode: form.pincode,
+      purpose: form.purpose,
+      notes: [form.notes, form.fatherNameMr && `वडील/पती (मराठी): ${form.fatherNameMr}`, form.addressMr && `पत्ता (मराठी): ${form.addressMr}`]
+        .filter(Boolean)
+        .join("\n"),
       documents: files,
     });
   }
@@ -217,9 +254,48 @@ function ApplyForm({ lang }: { lang: Lang }) {
         </div>
       </Card>
 
+      {!service && (
+        <Card className="border-dashed p-8 text-center text-sm text-muted-foreground shadow-card">
+          {L("chooseService")}
+        </Card>
+      )}
+
+      {service && (
+        <div ref={formRef} className="space-y-6">
       {/* Details */}
       <Card className="p-5 shadow-card">
-        <h2 className="font-display text-lg font-semibold">{L("applicantDetails")}</h2>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="font-display text-lg font-semibold">{L("applicantDetails")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{L("translateHint")}</p>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setLang(lang === "en" ? "mr" : "en")}
+            >
+              <Languages className="h-4 w-4" />
+              {lang === "en" ? "मराठी" : "English"}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => translate.mutate()}
+              disabled={translate.isPending || !form.applicantName.trim()}
+            >
+              {translate.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Languages className="h-4 w-4" />
+              )}
+              {translate.isPending ? L("translating") : L("translateBtn")}
+            </Button>
+          </div>
+        </div>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <Field label={L("name")} req>
             <Input value={form.applicantName} onChange={(e) => set("applicantName", e.target.value)} />
@@ -229,6 +305,9 @@ function ApplyForm({ lang }: { lang: Lang }) {
           </Field>
           <Field label={L("father")}>
             <Input value={form.fatherName} onChange={(e) => set("fatherName", e.target.value)} />
+          </Field>
+          <Field label={L("fatherMr")}>
+            <Input value={form.fatherNameMr} onChange={(e) => set("fatherNameMr", e.target.value)} />
           </Field>
           <Field label={L("mobile")} req>
             <Input
@@ -250,6 +329,15 @@ function ApplyForm({ lang }: { lang: Lang }) {
                 rows={2}
                 value={form.address}
                 onChange={(e) => set("address", e.target.value)}
+              />
+            </Field>
+          </div>
+          <div className="sm:col-span-2">
+            <Field label={L("addressMr")}>
+              <Textarea
+                rows={2}
+                value={form.addressMr}
+                onChange={(e) => set("addressMr", e.target.value)}
               />
             </Field>
           </div>
@@ -320,6 +408,8 @@ function ApplyForm({ lang }: { lang: Lang }) {
           {L("submit")}
         </Button>
       </div>
+        </div>
+      )}
 
       <Dialog open={!!receipt} onOpenChange={(o) => !o && setReceipt(null)}>
         <DialogContent>
