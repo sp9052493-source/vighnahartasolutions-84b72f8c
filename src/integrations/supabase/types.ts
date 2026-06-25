@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      aaple_sarkar_applications: {
+        Row: {
+          address: string
+          admin_remarks: string | null
+          applicant_name: string
+          applicant_name_mr: string | null
+          cost: number
+          created_at: string
+          district: string | null
+          documents: Json
+          email: string | null
+          father_name: string | null
+          id: string
+          mobile: string
+          notes: string | null
+          pincode: string | null
+          purpose: string | null
+          receipt_no: string
+          result_doc_url: string | null
+          service_label: string
+          service_type: string
+          status: Database["public"]["Enums"]["application_status"]
+          taluka: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          admin_remarks?: string | null
+          applicant_name: string
+          applicant_name_mr?: string | null
+          cost?: number
+          created_at?: string
+          district?: string | null
+          documents?: Json
+          email?: string | null
+          father_name?: string | null
+          id?: string
+          mobile: string
+          notes?: string | null
+          pincode?: string | null
+          purpose?: string | null
+          receipt_no: string
+          result_doc_url?: string | null
+          service_label: string
+          service_type: string
+          status?: Database["public"]["Enums"]["application_status"]
+          taluka?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          admin_remarks?: string | null
+          applicant_name?: string
+          applicant_name_mr?: string | null
+          cost?: number
+          created_at?: string
+          district?: string | null
+          documents?: Json
+          email?: string | null
+          father_name?: string | null
+          id?: string
+          mobile?: string
+          notes?: string | null
+          pincode?: string | null
+          purpose?: string | null
+          receipt_no?: string
+          result_doc_url?: string | null
+          service_label?: string
+          service_type?: string
+          status?: Database["public"]["Enums"]["application_status"]
+          taluka?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       document_requests: {
         Row: {
           cost: number
@@ -316,6 +394,12 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "distributor" | "retailer"
+      application_status:
+        | "submitted"
+        | "under_review"
+        | "approved"
+        | "rejected"
+        | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -444,6 +528,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "distributor", "retailer"],
+      application_status: [
+        "submitted",
+        "under_review",
+        "approved",
+        "rejected",
+        "completed",
+      ],
     },
   },
 } as const
