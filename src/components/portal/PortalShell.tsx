@@ -40,6 +40,7 @@ const NAV: NavItem[] = [
   { to: "/recharge", label: "Wallet Recharge", icon: CreditCard, roles: ["distributor", "retailer"] },
   { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
   { to: "/manage-services", label: "Service Pricing", icon: SlidersHorizontal, roles: ["admin"] },
+  { to: "/aaple-sarkar-requests", label: "Aaple Sarkar Desk", icon: Landmark, roles: ["admin"] },
   { to: "/settings", label: "Settings", icon: Settings, roles: ["admin", "distributor", "retailer"] },
 ];
 
