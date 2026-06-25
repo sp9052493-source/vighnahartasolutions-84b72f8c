@@ -162,6 +162,19 @@ export const TX = {
   viewDetails: { en: "View", mr: "पहा" },
   noApps: { en: "No applications yet.", mr: "अद्याप कोणतेही अर्ज नाहीत." },
   required: { en: "Required", mr: "आवश्यक" },
+  chooseService: {
+    en: "Choose a service above to open the application form.",
+    mr: "अर्ज फॉर्म उघडण्यासाठी वरील सेवा निवडा.",
+  },
+  translateBtn: { en: "Translate to Marathi", mr: "मराठीत भाषांतर करा" },
+  translating: { en: "Translating…", mr: "भाषांतर सुरू…" },
+  translateHint: {
+    en: "Enter details in English, then translate them to Marathi automatically.",
+    mr: "माहिती इंग्रजीत भरा, नंतर ती आपोआप मराठीत भाषांतरित करा.",
+  },
+  labelLang: { en: "Labels", mr: "लेबल भाषा" },
+  fatherMr: { en: "Father / Husband Name (Marathi)", mr: "वडील / पतीचे नाव (मराठी)" },
+  addressMr: { en: "Full Address (Marathi)", mr: "संपूर्ण पत्ता (मराठी)" },
 } as const;
 
 export function t(key: keyof typeof TX, lang: Lang) {
