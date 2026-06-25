@@ -34,6 +34,7 @@ import {
   listMyAapleSarkar,
   getAapleSarkarDetail,
 } from "@/lib/aaple-sarkar.functions";
+import { translateToMarathi } from "@/lib/translate.functions";
 import {
   AAPLE_SARKAR_LOGO,
   SARKAR_SERVICES,
