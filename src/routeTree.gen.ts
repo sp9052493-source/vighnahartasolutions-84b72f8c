@@ -24,6 +24,7 @@ import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authenticated/manage-services'
 import { Route as AuthenticatedDlPrintRouteImport } from './routes/_authenticated/dl-print'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAapleSarkarRequestsRouteImport } from './routes/_authenticated/aaple-sarkar-requests'
 import { Route as AuthenticatedAapleSarkarRouteImport } from './routes/_authenticated/aaple-sarkar'
 import { Route as AuthenticatedAadhaarToPanRouteImport } from './routes/_authenticated/aadhaar-to-pan'
 import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/paytm-return'
@@ -104,6 +105,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAapleSarkarRequestsRoute =
+  AuthenticatedAapleSarkarRequestsRouteImport.update({
+    id: '/aaple-sarkar-requests',
+    path: '/aaple-sarkar-requests',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAapleSarkarRoute =
   AuthenticatedAapleSarkarRouteImport.update({
     id: '/aaple-sarkar',
@@ -128,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/aaple-sarkar': typeof AuthenticatedAapleSarkarRoute
+  '/aaple-sarkar-requests': typeof AuthenticatedAapleSarkarRequestsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
@@ -147,6 +155,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/aaple-sarkar': typeof AuthenticatedAapleSarkarRoute
+  '/aaple-sarkar-requests': typeof AuthenticatedAapleSarkarRequestsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
@@ -168,6 +177,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/_authenticated/aaple-sarkar': typeof AuthenticatedAapleSarkarRoute
+  '/_authenticated/aaple-sarkar-requests': typeof AuthenticatedAapleSarkarRequestsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dl-print': typeof AuthenticatedDlPrintRoute
   '/_authenticated/manage-services': typeof AuthenticatedManageServicesRoute
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/aadhaar-to-pan'
     | '/aaple-sarkar'
+    | '/aaple-sarkar-requests'
     | '/dashboard'
     | '/dl-print'
     | '/manage-services'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/aadhaar-to-pan'
     | '/aaple-sarkar'
+    | '/aaple-sarkar-requests'
     | '/dashboard'
     | '/dl-print'
     | '/manage-services'
@@ -228,6 +240,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/aadhaar-to-pan'
     | '/_authenticated/aaple-sarkar'
+    | '/_authenticated/aaple-sarkar-requests'
     | '/_authenticated/dashboard'
     | '/_authenticated/dl-print'
     | '/_authenticated/manage-services'
@@ -357,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/aaple-sarkar-requests': {
+      id: '/_authenticated/aaple-sarkar-requests'
+      path: '/aaple-sarkar-requests'
+      fullPath: '/aaple-sarkar-requests'
+      preLoaderRoute: typeof AuthenticatedAapleSarkarRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/aaple-sarkar': {
       id: '/_authenticated/aaple-sarkar'
       path: '/aaple-sarkar'
@@ -384,6 +404,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAadhaarToPanRoute: typeof AuthenticatedAadhaarToPanRoute
   AuthenticatedAapleSarkarRoute: typeof AuthenticatedAapleSarkarRoute
+  AuthenticatedAapleSarkarRequestsRoute: typeof AuthenticatedAapleSarkarRequestsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDlPrintRoute: typeof AuthenticatedDlPrintRoute
   AuthenticatedManageServicesRoute: typeof AuthenticatedManageServicesRoute
@@ -400,6 +421,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAadhaarToPanRoute: AuthenticatedAadhaarToPanRoute,
   AuthenticatedAapleSarkarRoute: AuthenticatedAapleSarkarRoute,
+  AuthenticatedAapleSarkarRequestsRoute: AuthenticatedAapleSarkarRequestsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDlPrintRoute: AuthenticatedDlPrintRoute,
   AuthenticatedManageServicesRoute: AuthenticatedManageServicesRoute,
@@ -426,13 +448,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
