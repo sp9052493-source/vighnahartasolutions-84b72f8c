@@ -53,23 +53,7 @@ const ROLES = [
 function Index() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 lg:px-6">
-          <div className="flex items-center gap-2.5">
-            <img src={logo} alt="Sevakart logo" width={40} height={40} className="h-10 w-10 object-contain" />
-            <div className="leading-tight">
-              <div className="font-display text-base font-bold">Sevakart Portal</div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Govt Documents Services</div>
-            </div>
-          </div>
-          <Link to="/auth">
-            <Button className="gap-2">
-              Member Login <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* Hero */}
       <section className="bg-hero text-primary-foreground">
