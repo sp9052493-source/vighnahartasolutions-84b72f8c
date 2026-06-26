@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero-portal.jpg";
-import logo from "@/assets/sevakart-logo.png";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -52,23 +53,7 @@ const ROLES = [
 function Index() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 lg:px-6">
-          <div className="flex items-center gap-2.5">
-            <img src={logo} alt="Sevakart logo" width={40} height={40} className="h-10 w-10 object-contain" />
-            <div className="leading-tight">
-              <div className="font-display text-base font-bold">Sevakart Portal</div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Govt Documents Services</div>
-            </div>
-          </div>
-          <Link to="/auth">
-            <Button className="gap-2">
-              Member Login <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* Hero */}
       <section className="bg-hero text-primary-foreground">
@@ -173,15 +158,7 @@ function Index() {
         </div>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row lg:px-6">
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="Sevakart logo" width={24} height={24} className="h-6 w-6 object-contain" />
-            <span className="font-medium text-foreground">Sevakart Portal</span>
-          </div>
-          <p>© {new Date().getFullYear()} Sevakart. For authorised members only.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
