@@ -158,15 +158,7 @@ function Index() {
         </div>
       </section>
 
-      <footer className="border-t border-border py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row lg:px-6">
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="Sevakart logo" width={24} height={24} className="h-6 w-6 object-contain" />
-            <span className="font-medium text-foreground">Sevakart Portal</span>
-          </div>
-          <p>© {new Date().getFullYear()} Sevakart. For authorised members only.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
