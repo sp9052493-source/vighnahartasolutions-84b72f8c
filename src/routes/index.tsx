@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero-portal.jpg";
-import logo from "@/assets/sevakart-logo.png";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
