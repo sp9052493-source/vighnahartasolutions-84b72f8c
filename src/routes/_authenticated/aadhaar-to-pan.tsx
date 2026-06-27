@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_authenticated/aadhaar-to-pan")({
-  head: () => ({ meta: [{ title: "Aadhaar to PAN Finder — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Aadhaar to PAN Finder — Vighnaharta Solutions" }] }),
   component: AadhaarToPan,
 });
 

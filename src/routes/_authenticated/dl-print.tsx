@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/dl-print")({
-  head: () => ({ meta: [{ title: "Driving Licence Print — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Driving Licence Print — Vighnaharta Solutions" }] }),
   component: DlPrint,
 });
 

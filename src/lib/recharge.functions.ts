@@ -42,7 +42,7 @@ export const createRechargeOrder = createServerFn({ method: "POST" })
     const orderId =
       "SKR" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
     const { getRequestHeader, getRequestUrl } = await import("@tanstack/react-start/server");
-    let origin = "https://sevakart.lovable.app";
+    let origin = "https://vighnahartasolutions.lovable.app";
     const fromHeader = getRequestHeader("origin");
     if (fromHeader) {
       origin = fromHeader.replace(/\/$/, "");
@@ -55,9 +55,9 @@ export const createRechargeOrder = createServerFn({ method: "POST" })
     }
     const redirectUrl = `${origin}/api/public/paytm-return?order_id=${encodeURIComponent(orderId)}`;
 
-    const customerName = (profile?.full_name || "Sevakart User").slice(0, 80);
+    const customerName = (profile?.full_name || "Vighnaharta Solutions User").slice(0, 80);
     const customerMobile = (profile?.phone || "0000000000").replace(/\D/g, "").slice(-10) || "0000000000";
-    const customerEmail = ((claims as any)?.email as string) || "user@sevakart.in";
+    const customerEmail = ((claims as any)?.email as string) || "user@vighnahartasolutions.in";
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

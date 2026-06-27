@@ -80,10 +80,10 @@ function NavLinks({ role, onNavigate }: { role: AppRole; onNavigate?: () => void
 function Brand() {
   return (
     <div className="flex items-center gap-3 px-5 py-5">
-      <img src={logo} alt="Sevakart logo" width={64} height={64} className="h-16 w-16 shrink-0 object-contain" />
+      <img src={logo} alt="Vighnaharta Solutions logo" width={64} height={64} className="h-16 w-16 shrink-0 object-contain" />
       <div className="leading-tight">
-        <div className="font-display text-2xl font-bold text-sidebar-foreground">Sevakart</div>
-        <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Govt Documents Portal</div>
+        <div className="font-display text-2xl font-bold text-sidebar-foreground">Vighnaharta Solutions</div>
+        <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Powered by Vighnaharta Group Limited</div>
       </div>
     </div>
   );
@@ -149,8 +149,8 @@ export function PortalShell({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-2 lg:hidden">
-            <img src={logo} alt="Sevakart logo" width={44} height={44} className="h-11 w-11 object-contain" />
-            <span className="font-display text-xl font-bold">Sevakart</span>
+            <img src={logo} alt="Vighnaharta Solutions logo" width={44} height={44} className="h-11 w-11 object-contain" />
+            <span className="font-display text-xl font-bold">Vighnaharta Solutions</span>
           </div>
           <div className="ml-auto flex items-center gap-3">
             <div className="hidden text-right sm:block">

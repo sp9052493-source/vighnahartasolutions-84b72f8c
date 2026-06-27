@@ -2,13 +2,13 @@
 // Used across About, Contact, Privacy, Terms, Refund, Checkout pages and the
 // public site footer.
 export const COMPANY = {
-  brand: "Sevakart Portal",
-  legalName: "Vighnaharta Solution",
-  ownerName: "Proprietor, Vighnaharta Solution",
-  mobile: "+91-00000-00000",
-  whatsapp: "+91-00000-00000",
-  email: "support@sevakart.in",
-  addressLine1: "Vighnaharta Solution",
+  brand: "Vighnaharta Solutions",
+  legalName: "Vighnaharta Group Limited",
+  ownerName: "Vighnaharta Group Limited",
+  mobile: "+91-82084-12436",
+  whatsapp: "+91-82084-12436",
+  email: "officialworkmangesh@gmail.com",
+  addressLine1: "Vighnaharta Group Limited",
   addressLine2: "At Shendurwada, Tq. Gangapur",
   city: "Aurangabad",
   state: "Maharashtra",
@@ -23,3 +23,4 @@ export const COMPANY = {
 };
 
 export const fullAddress = `${COMPANY.addressLine1}, ${COMPANY.addressLine2}, ${COMPANY.city}, ${COMPANY.state} – ${COMPANY.pincode}, ${COMPANY.country}`;
+

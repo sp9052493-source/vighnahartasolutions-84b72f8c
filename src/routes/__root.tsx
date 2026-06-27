@@ -79,14 +79,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sevakart Portal — Government Documents Services" },
+      { title: "Vighnaharta Solutions — Government Documents Services" },
       {
         name: "description",
         content:
-          "Sevakart Portal — a secure B2B platform for retailers and distributors to fetch Driving License, PAN, Aadhaar, Voter ID and Passport documents as PDF.",
+          "Vighnaharta Solutions — a secure B2B platform for retailers and distributors to fetch Driving License, PAN, Aadhaar, Voter ID and Passport documents as PDF.",
       },
-      { name: "author", content: "Sevakart" },
-      { property: "og:title", content: "Sevakart Portal — Government Documents Services" },
+      { name: "author", content: "Vighnaharta Solutions" },
+      { property: "og:title", content: "Vighnaharta Solutions — Government Documents Services" },
       {
         property: "og:description",
         content:
@@ -95,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Sevakart Portal — Government Documents Services" },
+      { name: "twitter:title", content: "Vighnaharta Solutions — Government Documents Services" },
       { name: "description", content: "Gov Docs Hub is a portal for accessing and managing government documents like driving licenses and PAN cards." },
       { property: "og:description", content: "Gov Docs Hub is a portal for accessing and managing government documents like driving licenses and PAN cards." },
       { name: "twitter:description", content: "Gov Docs Hub is a portal for accessing and managing government documents like driving licenses and PAN cards." },

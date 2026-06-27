@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({ meta: [{ title: "Settings — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Settings — Vighnaharta Solutions" }] }),
   component: Settings,
 });
 

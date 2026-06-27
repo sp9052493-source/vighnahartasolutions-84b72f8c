@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/ration-print")({
-  head: () => ({ meta: [{ title: "Ration Card Print — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Ration Card Print — Vighnaharta Solutions" }] }),
   component: RationPrint,
 });
 

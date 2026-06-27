@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_authenticated/recharge")({
-  head: () => ({ meta: [{ title: "Wallet Recharge — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Wallet Recharge — Vighnaharta Solutions" }] }),
   component: Recharge,
 });
 

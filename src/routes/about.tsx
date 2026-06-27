@@ -8,9 +8,9 @@ import { COMPANY } from "@/lib/company";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us — Sevakart Portal" },
+      { title: "About Us — Vighnaharta Solutions" },
       { name: "description", content: `${COMPANY.brand}, a unit of ${COMPANY.legalName}, is a B2B platform helping retailers deliver PAN, Aadhaar, DL, RC, Ration Card, bill payments and other citizen services to customers across India.` },
-      { property: "og:title", content: "About Us — Sevakart Portal" },
+      { property: "og:title", content: "About Us — Vighnaharta Solutions" },
       { property: "og:description", content: `${COMPANY.brand} — government documents and digital services for retailers.` },
       { property: "og:url", content: "/about" },
     ],
@@ -63,7 +63,7 @@ function AboutPage() {
           <div>
             <h2 className="font-display text-2xl font-bold">Who we are</h2>
             <p className="mt-4 text-muted-foreground">
-              {COMPANY.legalName} is a proprietorship registered in {COMPANY.state}, India.
+              {COMPANY.legalName} is a company registered in {COMPANY.state}, India.
               Through the {COMPANY.brand} platform we equip small businesses, common service
               centres and stationery shops with the tools they need to deliver fast, accurate
               and affordable citizen services.

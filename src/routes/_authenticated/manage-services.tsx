@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/manage-services")({
-  head: () => ({ meta: [{ title: "Service Pricing — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Service Pricing — Vighnaharta Solutions" }] }),
   component: ManageServices,
 });
 

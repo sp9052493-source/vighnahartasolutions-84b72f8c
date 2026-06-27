@@ -9,7 +9,7 @@ import { DocumentDialog } from "@/components/portal/DocumentDialog";
 import { DocumentDownloadButton } from "@/components/portal/DocumentDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/requests")({
-  head: () => ({ meta: [{ title: "My Requests — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "My Requests — Vighnaharta Solutions" }] }),
   component: Requests,
 });
 

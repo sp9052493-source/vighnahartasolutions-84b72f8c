@@ -5,10 +5,10 @@ import { COMPANY } from "@/lib/company";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms & Conditions — Sevakart Portal" },
+      { title: "Terms & Conditions — Vighnaharta Solutions" },
       { name: "description", content: `Terms and conditions for using ${COMPANY.brand}, operated by ${COMPANY.legalName}.` },
-      { property: "og:title", content: "Terms & Conditions — Sevakart Portal" },
-      { property: "og:description", content: "Service usage rules, payment terms and liability for Sevakart Portal." },
+      { property: "og:title", content: "Terms & Conditions — Vighnaharta Solutions" },
+      { property: "og:description", content: "Service usage rules, payment terms and liability for Vighnaharta Solutions." },
       { property: "og:url", content: "/terms" },
     ],
     links: [{ rel: "canonical", href: "/terms" }],

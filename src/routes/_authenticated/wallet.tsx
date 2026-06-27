@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/wallet")({
-  head: () => ({ meta: [{ title: "Wallet — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Wallet — Vighnaharta Solutions" }] }),
   component: WalletPage,
 });
 

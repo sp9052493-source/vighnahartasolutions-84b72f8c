@@ -9,10 +9,10 @@ import { COMPANY } from "@/lib/company";
 export const Route = createFileRoute("/checkout-flow")({
   head: () => ({
     meta: [
-      { title: "Payment & Checkout Flow — Sevakart Portal" },
+      { title: "Payment & Checkout Flow — Vighnaharta Solutions" },
       { name: "description", content: `Learn how wallet recharge, service selection, payment, order confirmation and invoicing work on ${COMPANY.brand}.` },
-      { property: "og:title", content: "Payment & Checkout Flow — Sevakart Portal" },
-      { property: "og:description", content: "Step-by-step explanation of payments on Sevakart Portal." },
+      { property: "og:title", content: "Payment & Checkout Flow — Vighnaharta Solutions" },
+      { property: "og:description", content: "Step-by-step explanation of payments on Vighnaharta Solutions." },
       { property: "og:url", content: "/checkout-flow" },
     ],
     links: [{ rel: "canonical", href: "/checkout-flow" }],
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/checkout-flow")({
 });
 
 const STEPS = [
-  { icon: Wallet, title: "1. Wallet Recharge", desc: "Log in to your Sevakart account, open the Wallet Recharge page, pick a quick amount or enter a custom value, then proceed to pay through Paytm Payment Gateway." },
+  { icon: Wallet, title: "1. Wallet Recharge", desc: "Log in to your Vighnaharta Solutions account, open the Wallet Recharge page, pick a quick amount or enter a custom value, then proceed to pay through Paytm Payment Gateway." },
   { icon: CreditCard, title: "2. Secure Payment", desc: "You're redirected to Paytm's secure checkout. UPI, debit / credit cards, net banking and Paytm wallet are supported. We never store your card details." },
   { icon: CheckCircle2, title: "3. Order Confirmation", desc: "On successful payment, Paytm redirects you back to the portal. Your wallet is credited automatically and a transaction entry is generated." },
   { icon: ListChecks, title: "4. Service Selection", desc: "Choose any service — PAN, DL, RC, Ration Card, Aaple Sarkar applications and more. The service fee is deducted from your wallet at the time of the request." },

@@ -20,13 +20,13 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sevakart Portal — Government Documents Services" },
+      { title: "Vighnaharta Solutions — Government Documents Services" },
       {
         name: "description",
         content:
-          "Sevakart Portal lets retailers and distributors fetch Driving License, PAN, Aadhaar, Voter ID and Passport documents as PDF, with wallet and commission management.",
+          "Vighnaharta Solutions lets retailers and distributors fetch Driving License, PAN, Aadhaar, Voter ID and Passport documents as PDF, with wallet and commission management.",
       },
-      { property: "og:title", content: "Sevakart Portal — Government Documents Services" },
+      { property: "og:title", content: "Vighnaharta Solutions — Government Documents Services" },
       {
         property: "og:description",
         content: "Secure retailer & distributor portal for government document services.",
@@ -147,7 +147,7 @@ function Index() {
         <div className="rounded-2xl bg-hero px-8 py-12 text-center text-primary-foreground shadow-elegant">
           <h2 className="font-display text-3xl font-bold">Ready to get started?</h2>
           <p className="mx-auto mt-3 max-w-xl text-primary-foreground/75">
-            Sign in to your Sevakart account, or set up the administrator account to begin onboarding
+            Sign in to your Vighnaharta Solutions account, or set up the administrator account to begin onboarding
             distributors and retailers.
           </p>
           <Link to="/auth">
