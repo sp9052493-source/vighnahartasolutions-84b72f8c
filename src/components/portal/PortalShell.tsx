@@ -83,7 +83,7 @@ function Brand() {
       <img src={logo} alt="Vighnaharta Solutions logo" width={64} height={64} className="h-16 w-16 shrink-0 object-contain" />
       <div className="leading-tight">
         <div className="font-display text-2xl font-bold text-sidebar-foreground">Vighnaharta Solutions</div>
-        <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Govt Documents Portal</div>
+        <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Powered by Vighnaharta Group Limited</div>
       </div>
     </div>
   );

@@ -46,7 +46,7 @@ function AuthPage() {
           <div>
             <div className="font-display text-2xl font-bold">Vighnaharta Solutions</div>
             <div className="text-sm uppercase tracking-wider text-primary-foreground/60">
-              Government Documents Services
+              Powered by Vighnaharta Group Limited
             </div>
           </div>
         </Link>
