@@ -9,10 +9,10 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
         <div>
           <div className="flex items-center gap-2.5">
-            <img src={logo} alt="Sevakart Portal logo" width={36} height={36} className="h-9 w-9 object-contain" />
+            <img src={logo} alt="Vighnaharta Solutions logo" width={36} height={36} className="h-9 w-9 object-contain" />
             <div className="leading-tight">
               <div className="font-display text-base font-bold">{COMPANY.brand}</div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">A unit of {COMPANY.legalName}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Powered by {COMPANY.legalName}</div>
             </div>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
