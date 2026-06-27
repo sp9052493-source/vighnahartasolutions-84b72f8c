@@ -63,7 +63,7 @@ function AboutPage() {
           <div>
             <h2 className="font-display text-2xl font-bold">Who we are</h2>
             <p className="mt-4 text-muted-foreground">
-              {COMPANY.legalName} is a proprietorship registered in {COMPANY.state}, India.
+              {COMPANY.legalName} is a company registered in {COMPANY.state}, India.
               Through the {COMPANY.brand} platform we equip small businesses, common service
               centres and stationery shops with the tools they need to deliver fast, accurate
               and affordable citizen services.
