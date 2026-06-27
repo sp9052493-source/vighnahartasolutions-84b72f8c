@@ -48,12 +48,12 @@ export function SiteFooter() {
         </div>
       </div>
 
-        <div className="border-t border-border">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-5 text-xs text-muted-foreground sm:flex-row lg:px-6">
-            <p>© 2026 {COMPANY.brand}. Powered by {COMPANY.legalName}. All Rights Reserved.</p>
-            <p>Payments are processed securely via Paytm Payment Gateway.</p>
-          </div>
+      <div className="border-t border-border">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-5 text-xs text-muted-foreground sm:flex-row lg:px-6">
+          <p>© 2026 {COMPANY.brand}. Powered by {COMPANY.legalName}. All Rights Reserved.</p>
+          <p>Payments are processed securely via Paytm Payment Gateway.</p>
         </div>
+      </div>
     </footer>
   );
 }
