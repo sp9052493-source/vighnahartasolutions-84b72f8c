@@ -14,9 +14,9 @@ import { COMPANY, fullAddress } from "@/lib/company";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Us — Sevakart Portal" },
+      { title: "Contact Us — Vighnaharta Solutions" },
       { name: "description", content: `Reach the ${COMPANY.brand} support team. Call ${COMPANY.mobile}, email ${COMPANY.email}, or visit ${COMPANY.city}, ${COMPANY.state}.` },
-      { property: "og:title", content: "Contact Us — Sevakart Portal" },
+      { property: "og:title", content: "Contact Us — Vighnaharta Solutions" },
       { property: "og:description", content: `Get in touch with ${COMPANY.legalName} — operator of ${COMPANY.brand}.` },
       { property: "og:url", content: "/contact" },
     ],
@@ -38,7 +38,7 @@ function ContactPage() {
     const email = String(fd.get("email") ?? "");
     const phone = String(fd.get("phone") ?? "");
     const message = String(fd.get("message") ?? "");
-    const subject = encodeURIComponent(`Sevakart Portal enquiry from ${name}`);
+    const subject = encodeURIComponent(`Vighnaharta Solutions enquiry from ${name}`);
     const body = encodeURIComponent(
       `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\n${message}`,
     );
@@ -87,7 +87,7 @@ function ContactPage() {
 
           <Card className="overflow-hidden">
             <iframe
-              title="Sevakart Portal office location"
+              title="Vighnaharta Solutions office location"
               src={mapsSrc}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

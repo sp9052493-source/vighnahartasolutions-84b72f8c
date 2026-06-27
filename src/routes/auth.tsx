@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign In — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Sign In — Vighnaharta Solutions" }] }),
   component: AuthPage,
 });
 
@@ -42,9 +42,9 @@ function AuthPage() {
       {/* Brand panel */}
       <div className="relative hidden flex-col justify-between bg-hero p-12 text-primary-foreground lg:flex">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Sevakart logo" width={76} height={76} className="h-[4.5rem] w-[4.5rem] object-contain" />
+          <img src={logo} alt="Vighnaharta Solutions logo" width={76} height={76} className="h-[4.5rem] w-[4.5rem] object-contain" />
           <div>
-            <div className="font-display text-2xl font-bold">Sevakart Portal</div>
+            <div className="font-display text-2xl font-bold">Vighnaharta Solutions</div>
             <div className="text-sm uppercase tracking-wider text-primary-foreground/60">
               Government Documents Services
             </div>
@@ -71,8 +71,8 @@ function AuthPage() {
             <ArrowLeft className="h-5 w-5" /> Back to home
           </Link>
           <div className="mb-6 flex items-center gap-2 lg:hidden">
-            <img src={logo} alt="Sevakart logo" width={52} height={52} className="h-12 w-12 object-contain" />
-            <span className="font-display text-2xl font-bold">Sevakart Portal</span>
+            <img src={logo} alt="Vighnaharta Solutions logo" width={52} height={52} className="h-12 w-12 object-contain" />
+            <span className="font-display text-2xl font-bold">Vighnaharta Solutions</span>
           </div>
 
           <h1 className="mt-2 text-2xl font-bold">Member Login</h1>

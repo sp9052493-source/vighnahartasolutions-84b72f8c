@@ -5,10 +5,10 @@ import { COMPANY } from "@/lib/company";
 export const Route = createFileRoute("/privacy-policy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — Sevakart Portal" },
+      { title: "Privacy Policy — Vighnaharta Solutions" },
       { name: "description", content: `Privacy policy for ${COMPANY.brand}, operated by ${COMPANY.legalName}. Learn how we collect, use, store and protect your data.` },
-      { property: "og:title", content: "Privacy Policy — Sevakart Portal" },
-      { property: "og:description", content: "How Sevakart Portal handles personal data, security and cookies." },
+      { property: "og:title", content: "Privacy Policy — Vighnaharta Solutions" },
+      { property: "og:description", content: "How Vighnaharta Solutions handles personal data, security and cookies." },
       { property: "og:url", content: "/privacy-policy" },
     ],
     links: [{ rel: "canonical", href: "/privacy-policy" }],

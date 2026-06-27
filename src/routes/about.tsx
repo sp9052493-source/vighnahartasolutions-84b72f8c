@@ -8,9 +8,9 @@ import { COMPANY } from "@/lib/company";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us — Sevakart Portal" },
+      { title: "About Us — Vighnaharta Solutions" },
       { name: "description", content: `${COMPANY.brand}, a unit of ${COMPANY.legalName}, is a B2B platform helping retailers deliver PAN, Aadhaar, DL, RC, Ration Card, bill payments and other citizen services to customers across India.` },
-      { property: "og:title", content: "About Us — Sevakart Portal" },
+      { property: "og:title", content: "About Us — Vighnaharta Solutions" },
       { property: "og:description", content: `${COMPANY.brand} — government documents and digital services for retailers.` },
       { property: "og:url", content: "/about" },
     ],

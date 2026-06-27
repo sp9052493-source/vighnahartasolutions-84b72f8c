@@ -47,7 +47,7 @@ import {
 } from "@/lib/aaple-sarkar.shared";
 
 export const Route = createFileRoute("/_authenticated/aaple-sarkar")({
-  head: () => ({ meta: [{ title: "Aaple Sarkar — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Aaple Sarkar — Vighnaharta Solutions" }] }),
   component: AapleSarkar,
 });
 

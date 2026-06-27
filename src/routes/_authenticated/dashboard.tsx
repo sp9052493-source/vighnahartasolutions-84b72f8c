@@ -19,7 +19,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Vighnaharta Solutions" }] }),
   component: Dashboard,
 });
 
@@ -63,7 +63,7 @@ function AdminDashboard() {
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Administrator Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Overview of the entire Sevakart network.</p>
+        <p className="text-sm text-muted-foreground">Overview of the entire Vighnaharta Solutions network.</p>
       </div>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Members" value={String(stats?.users ?? 0)} icon={Users} />

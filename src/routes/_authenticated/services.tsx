@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { DocumentDialog } from "@/components/portal/DocumentDialog";
 
 export const Route = createFileRoute("/_authenticated/services")({
-  head: () => ({ meta: [{ title: "Services — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Services — Vighnaharta Solutions" }] }),
   component: Services,
 });
 

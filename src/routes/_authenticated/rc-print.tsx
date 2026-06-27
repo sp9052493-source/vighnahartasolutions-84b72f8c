@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/rc-print")({
-  head: () => ({ meta: [{ title: "Vehicle RC Print — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Vehicle RC Print — Vighnaharta Solutions" }] }),
   component: RcPrint,
 });
 

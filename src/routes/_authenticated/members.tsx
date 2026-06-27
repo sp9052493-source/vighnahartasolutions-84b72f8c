@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/members")({
-  head: () => ({ meta: [{ title: "Members — Sevakart Portal" }] }),
+  head: () => ({ meta: [{ title: "Members — Vighnaharta Solutions" }] }),
   component: Members,
 });
 

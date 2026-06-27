@@ -5,9 +5,9 @@ import { COMPANY } from "@/lib/company";
 export const Route = createFileRoute("/refund-policy")({
   head: () => ({
     meta: [
-      { title: "Refund & Cancellation Policy — Sevakart Portal" },
+      { title: "Refund & Cancellation Policy — Vighnaharta Solutions" },
       { name: "description", content: `Refund and cancellation policy for ${COMPANY.brand}. Failed transactions are refunded within ${COMPANY.refundDays}.` },
-      { property: "og:title", content: "Refund & Cancellation Policy — Sevakart Portal" },
+      { property: "og:title", content: "Refund & Cancellation Policy — Vighnaharta Solutions" },
       { property: "og:description", content: `How refunds and cancellations work on ${COMPANY.brand}.` },
       { property: "og:url", content: "/refund-policy" },
     ],
@@ -31,7 +31,7 @@ function RefundPage() {
       <h2>1. Failed transactions</h2>
       <p>
         If a wallet recharge is debited from your bank or card account but does not reflect in
-        your Sevakart wallet, the amount is automatically refunded to the original payment
+        your Vighnaharta Solutions wallet, the amount is automatically refunded to the original payment
         instrument within <strong>{COMPANY.refundDays}</strong> from the date of the transaction.
         No service fee is charged for failed recharges.
       </p>

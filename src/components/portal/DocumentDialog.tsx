@@ -39,11 +39,11 @@ export function DocumentDialog({
       .meta{margin-top:18px;font-size:12px;color:#6b7280}
       .stamp{margin-top:28px;border:2px dashed #c4a24c;color:#9a7b28;display:inline-block;padding:8px 16px;border-radius:8px;font-weight:700;letter-spacing:1px}
       .foot{margin-top:40px;font-size:11px;color:#9aa1ad;border-top:1px solid #e2e5ec;padding-top:12px}</style></head>
-      <body><div class="head"><div class="badge">SK</div><div><h1>Sevakart Portal</h1><div class="sub">${request.service_name} — Document Extract</div></div></div>
+      <body><div class="head"><div class="badge">SK</div><div><h1>Vighnaharta Solutions</h1><div class="sub">${request.service_name} — Document Extract</div></div></div>
       <div class="meta">Reference No: <b>${reference}</b> &nbsp;|&nbsp; Generated: ${new Date(request.created_at).toLocaleString("en-IN")}</div>
       <table>${rows}</table>
       ${mode === "DEMO" ? '<div class="stamp">DEMO / SAMPLE — NOT AN OFFICIAL DOCUMENT</div>' : ""}
-      <div class="foot">This document was generated via Sevakart Portal. For official records, please verify with the issuing authority.</div>
+      <div class="foot">This document was generated via Vighnaharta Solutions. For official records, please verify with the issuing authority.</div>
       <script>window.onload=function(){window.print();}</script></body></html>`);
     win.document.close();
   }
