@@ -73,7 +73,7 @@ function ContactPage() {
               <li className="flex gap-3"><Building2 className="mt-0.5 h-4 w-4 text-primary" />
                 <span><strong>Business Name:</strong> {COMPANY.legalName}</span></li>
               <li className="flex gap-3"><User className="mt-0.5 h-4 w-4 text-primary" />
-                <span><strong>Owner:</strong> {COMPANY.ownerName}</span></li>
+                <span><strong>Brand Name:</strong> {COMPANY.brand}</span></li>
               <li className="flex gap-3"><Phone className="mt-0.5 h-4 w-4 text-primary" />
                 <span><strong>Mobile:</strong> <a className="hover:underline" href={`tel:${COMPANY.mobile}`}>{COMPANY.mobile}</a></span></li>
               <li className="flex gap-3"><Mail className="mt-0.5 h-4 w-4 text-primary" />
