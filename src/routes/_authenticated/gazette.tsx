@@ -375,20 +375,24 @@ function GazettePage() {
         <Card className="p-5 shadow-card">
           <SectionHeading n={2} title="Change Details" subtitle={`Specify the change for: ${selected.en}`} />
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="Current / Old Value" req hint="As per existing records">
-              <Input
-                value={form.oldValue}
-                onChange={(e) => set("oldValue", e.target.value)}
-                placeholder="e.g. Ramesh Kumar Patil"
-              />
-            </Field>
-            <Field label="New / Corrected Value" req hint="To be published in Gazette">
-              <Input
-                value={form.newValue}
-                onChange={(e) => set("newValue", e.target.value)}
-                placeholder="e.g. Ram Patil"
-              />
-            </Field>
+            {selected.needsOld !== false && (
+              <Field label="Current / Old Value" req hint="As per existing records">
+                <Input
+                  value={form.oldValue}
+                  onChange={(e) => set("oldValue", e.target.value)}
+                  placeholder="e.g. Ramesh Kumar Patil"
+                />
+              </Field>
+            )}
+            {selected.needsNew !== false && (
+              <Field label="New / Corrected Value" req hint="To be published in Gazette">
+                <Input
+                  value={form.newValue}
+                  onChange={(e) => set("newValue", e.target.value)}
+                  placeholder="e.g. Ram Patil"
+                />
+              </Field>
+            )}
             <div className="sm:col-span-2">
               <Field label="Reason for Change" req>
                 <Textarea
@@ -399,6 +403,25 @@ function GazettePage() {
                 />
               </Field>
             </div>
+            {visibleFields.map((f) => (
+              <div key={f.key} className={f.type === "textarea" ? "sm:col-span-2" : undefined}>
+                <Field label={f.en} req={f.required} hint={f.mr}>
+                  {f.type === "textarea" ? (
+                    <Textarea
+                      rows={3}
+                      value={extra[f.key] || ""}
+                      onChange={(e) => setExtra((p) => ({ ...p, [f.key]: e.target.value }))}
+                    />
+                  ) : (
+                    <Input
+                      type={f.type === "number" ? "number" : "text"}
+                      value={extra[f.key] || ""}
+                      onChange={(e) => setExtra((p) => ({ ...p, [f.key]: e.target.value }))}
+                    />
+                  )}
+                </Field>
+              </div>
+            ))}
           </div>
         </Card>
       )}
