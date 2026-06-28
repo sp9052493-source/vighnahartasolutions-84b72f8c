@@ -58,9 +58,10 @@ export const submitAapleSarkarApplication = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId, supabase } = context;
 
-    const svc = getSarkarService(data.serviceType);
+    const svc = await loadSarkarServiceFromDb(data.serviceType);
     if (!svc) throw new Error("Selected service is not available.");
     const price = Number(svc.price || 0);
+
 
     const { data: profile } = await supabase
       .from("profiles")
