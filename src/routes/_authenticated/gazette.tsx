@@ -212,6 +212,7 @@ function GazettePage() {
       toast.success("Gazette application submitted");
       setConfirmOpen(false);
       setForm({ ...EMPTY_FORM });
+      setExtra({});
       setDocMap({});
     },
     onError: (e: any) => {
@@ -222,8 +223,8 @@ function GazettePage() {
 
   function validate() {
     if (!form.changeType) return "Select the type of change";
-    if (!form.oldValue.trim()) return "Enter the current / old value";
-    if (!form.newValue.trim()) return "Enter the new / corrected value";
+    if (selected?.needsOld !== false && !form.oldValue.trim()) return "Enter the current / old value";
+    if (selected?.needsNew !== false && !form.newValue.trim()) return "Enter the new / corrected value";
     if (!form.reason.trim() || form.reason.trim().length < 8) return "Provide a clear reason (min 8 characters)";
     if (!form.applicantName.trim()) return "Enter applicant full name";
     if (!form.salutation) return "Select salutation";
@@ -265,6 +266,8 @@ function GazettePage() {
       form.caste ? `Caste: ${form.caste}` : null,
       form.village ? `Village: ${form.village}` : null,
       form.newspaperPref ? `Preferred Newspaper: ${form.newspaperPref}` : null,
+      ...visibleFields
+        .map((f) => (extra[f.key] ? `${f.en}: ${extra[f.key]}` : null)),
     ]
       .filter(Boolean)
       .join("\n");
