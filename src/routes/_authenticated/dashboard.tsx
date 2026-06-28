@@ -73,23 +73,33 @@ function AdminDashboard() {
   const { data: requests } = useQuery({ queryKey: ["admin-requests"], queryFn: () => reqFn() });
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Administrator Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Overview of the entire Vighnaharta Solutions network.</p>
+    <div className="mx-auto max-w-6xl space-y-7">
+      <div className="border-b border-border/70 pb-5">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/70">
+          Control Center
+        </div>
+        <h1 className="mt-2 font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-foreground lg:text-[2.25rem]">
+          Administrator Dashboard
+        </h1>
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
+          A real-time overview of the entire Vighnaharta Solutions network — members, distributors, and document activity.
+        </p>
       </div>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Members" value={String(stats?.users ?? 0)} icon={Users} />
-        <StatCard label="Distributors" value={String(stats?.distributors ?? 0)} icon={Users} />
-        <StatCard label="Total Requests" value={String(stats?.requests ?? 0)} icon={FileText} />
+        <StatCard label="Distributors" value={String(stats?.distributors ?? 0)} icon={Users} tone="accent" />
+        <StatCard label="Total Requests" value={String(stats?.requests ?? 0)} icon={FileText} tone="success" />
         <StatCard label="Wallet Float" value={formatINR(stats?.totalBalance ?? 0)} icon={IndianRupee} />
       </div>
 
       <Card className="overflow-hidden shadow-card">
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="font-semibold">Recent Document Requests</h2>
+        <div className="flex items-center justify-between border-b border-border px-6 py-5">
+          <div>
+            <h2 className="font-display text-lg font-bold tracking-tight">Recent Document Requests</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">Latest activity across the network.</p>
+          </div>
           <Link to="/members">
-            <Button variant="ghost" size="sm" className="gap-1">
+            <Button variant="ghost" size="sm" className="gap-1 text-xs font-semibold uppercase tracking-wider">
               Members <ArrowUpRight className="h-4 w-4" />
             </Button>
           </Link>
