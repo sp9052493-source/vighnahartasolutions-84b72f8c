@@ -60,41 +60,53 @@ function Services() {
   const activeServices = (services ?? []).filter((s) => s.active);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Document Services</h1>
-        <p className="text-sm text-muted-foreground">
-          Enter a number to fetch the record. The fee is deducted from your wallet — current balance{" "}
-          <span className="font-semibold text-primary">{formatINR(me?.balance ?? 0)}</span>.
-        </p>
+    <div className="mx-auto max-w-7xl space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/70">
+            Service Catalogue
+          </div>
+          <h1 className="mt-1.5 font-display text-2xl font-extrabold tracking-tight text-foreground lg:text-3xl">
+            Services
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Fee is debited from your wallet. Current balance{" "}
+            <span className="font-semibold text-primary">{formatINR(me?.balance ?? 0)}</span>.
+          </p>
+        </div>
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Dashboard
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {activeServices.map((s) => {
           const Icon = ICONS[s.code] ?? CreditCard;
           const tone = TONES[s.code] ?? "from-primary to-[oklch(0.26_0.08_262)]";
           return (
-            <Card key={s.id} className="flex flex-col p-5 shadow-card transition-shadow hover:shadow-elegant">
-              <div className="flex items-start justify-between">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${tone} text-primary-foreground shadow-sm`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-                <span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent-foreground">
-                  {formatINR(Number(s.price))}
-                </span>
-              </div>
-              <h3 className="mt-4 font-display text-lg font-semibold">{s.name}</h3>
-              <p className="mt-1 flex-1 text-sm text-muted-foreground">{s.description}</p>
-              <Button
-                className="mt-4"
-                onClick={() => {
-                  setActive(s);
-                  setValue("");
-                }}
+            <button
+              key={s.id}
+              onClick={() => {
+                setActive(s);
+                setValue("");
+              }}
+              className="group relative flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 text-center shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elegant"
+            >
+              <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+              <div
+                className={`flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${tone} text-primary-foreground shadow-md ring-4 ring-background`}
               >
-                Request now
-              </Button>
-            </Card>
+                <Icon className="h-7 w-7" />
+              </div>
+              <div className="space-y-1">
+                <div className="font-display text-[13px] font-bold leading-tight text-foreground">
+                  {s.name}
+                </div>
+                <div className="inline-block rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">
+                  {formatINR(Number(s.price))}
+                </div>
+              </div>
+            </button>
           );
         })}
       </div>
