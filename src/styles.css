@@ -195,6 +195,12 @@
   box-shadow: var(--shadow-card);
 }
 
-#lovable-badge {
+#lovable-badge,
+[id="lovable-badge"],
+.lovable-badge,
+*[id*="lovable-badge"] {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
