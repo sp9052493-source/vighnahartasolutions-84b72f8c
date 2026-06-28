@@ -29,7 +29,14 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
 });
 
-type Section = { to: string; label: string; icon: typeof LayoutGrid; exact?: boolean };
+type Section = {
+  to: string;
+  hash?: string;
+  label: string;
+  icon: typeof LayoutGrid;
+  exact?: boolean;
+  key?: string;
+};
 const SECTIONS: Section[] = [
   { to: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
   { to: "/admin/site", label: "Site & Brand", icon: Building2 },
@@ -38,7 +45,7 @@ const SECTIONS: Section[] = [
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
   { to: "/admin/sarkar-services", label: "Aaple Sarkar", icon: Landmark },
   { to: "/admin/gazette", label: "Gazette Editor", icon: Newspaper },
-  { to: "/admin/gazette", label: "Gazette Desk", icon: Inbox },
+  { to: "/admin/gazette", hash: "gazette-desk", label: "Gazette Desk", icon: Inbox, key: "gazette-desk" },
   { to: "/members", label: "Members & KYC", icon: Users },
 ];
 
