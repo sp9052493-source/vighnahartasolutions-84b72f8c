@@ -21,8 +21,10 @@ import {
   adminSaveGazette,
   adminUploadGazetteSample,
   adminDeleteGazetteSample,
+  adminListGazetteApplications,
 } from "@/lib/gazette-admin.functions";
-import { FileDown, Upload, X } from "lucide-react";
+import { FileDown, Upload, X, Clock, CreditCard, Inbox } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
