@@ -5,6 +5,7 @@ import {
   CreditCard,
   SlidersHorizontal,
   Landmark,
+  Newspaper,
   Users,
   ShieldCheck,
   LayoutGrid,
@@ -35,6 +36,7 @@ const SECTIONS: Section[] = [
   { to: "/admin/gateways", label: "Payment Gateways", icon: CreditCard },
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
   { to: "/admin/sarkar-services", label: "Aaple Sarkar", icon: Landmark },
+  { to: "/admin/gazette", label: "Gazette Editor", icon: Newspaper },
   { to: "/members", label: "Members & KYC", icon: Users },
 ];
 
@@ -109,6 +111,7 @@ const DESC = {
   "/admin/gateways": "Configure Paytm, Razorpay and Cashfree — toggle test/live and the primary processor.",
   "/manage-services": "Service price, retailer & distributor commission, API provider and live endpoint.",
   "/admin/sarkar-services": "Aaple Sarkar certificates — pricing, descriptions, extra fields and required documents.",
+  "/admin/gazette": "Gazette Certificate — change-type options, conditional fields, document rules and price.",
   "/members": "Create accounts, change email, reset password, upload photo & KYC documents.",
 } as const;
 
