@@ -28,6 +28,7 @@ import { Route as AuthenticatedRcPrintRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRationPrintRouteImport } from './routes/_authenticated/ration-print'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authenticated/manage-services'
+import { Route as AuthenticatedGazetteRouteImport } from './routes/_authenticated/gazette'
 import { Route as AuthenticatedDlPrintRouteImport } from './routes/_authenticated/dl-print'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -136,6 +137,11 @@ const AuthenticatedManageServicesRoute =
     path: '/manage-services',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGazetteRoute = AuthenticatedGazetteRouteImport.update({
+  id: '/gazette',
+  path: '/gazette',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDlPrintRoute = AuthenticatedDlPrintRouteImport.update({
   id: '/dl-print',
   path: '/dl-print',
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
+  '/gazette': typeof AuthenticatedGazetteRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
   '/ration-print': typeof AuthenticatedRationPrintRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
+  '/gazette': typeof AuthenticatedGazetteRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
   '/ration-print': typeof AuthenticatedRationPrintRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dl-print': typeof AuthenticatedDlPrintRoute
+  '/_authenticated/gazette': typeof AuthenticatedGazetteRoute
   '/_authenticated/manage-services': typeof AuthenticatedManageServicesRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
   '/_authenticated/ration-print': typeof AuthenticatedRationPrintRoute
@@ -310,6 +319,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/dl-print'
+    | '/gazette'
     | '/manage-services'
     | '/members'
     | '/ration-print'
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/dl-print'
+    | '/gazette'
     | '/manage-services'
     | '/members'
     | '/ration-print'
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/dl-print'
+    | '/_authenticated/gazette'
     | '/_authenticated/manage-services'
     | '/_authenticated/members'
     | '/_authenticated/ration-print'
@@ -538,6 +550,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedManageServicesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/gazette': {
+      id: '/_authenticated/gazette'
+      path: '/gazette'
+      fullPath: '/gazette'
+      preLoaderRoute: typeof AuthenticatedGazetteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dl-print': {
       id: '/_authenticated/dl-print'
       path: '/dl-print'
@@ -642,6 +661,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDlPrintRoute: typeof AuthenticatedDlPrintRoute
+  AuthenticatedGazetteRoute: typeof AuthenticatedGazetteRoute
   AuthenticatedManageServicesRoute: typeof AuthenticatedManageServicesRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
   AuthenticatedRationPrintRoute: typeof AuthenticatedRationPrintRoute
@@ -660,6 +680,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDlPrintRoute: AuthenticatedDlPrintRoute,
+  AuthenticatedGazetteRoute: AuthenticatedGazetteRoute,
   AuthenticatedManageServicesRoute: AuthenticatedManageServicesRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
   AuthenticatedRationPrintRoute: AuthenticatedRationPrintRoute,
