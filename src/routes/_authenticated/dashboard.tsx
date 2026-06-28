@@ -8,15 +8,19 @@ import {
   IndianRupee,
   ArrowUpRight,
   FileStack,
-  Clock,
-  IdCard,
-  Wheat,
+  TrendingUp,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
   CreditCard,
+  ListChecks,
+  CloudUpload,
 } from "lucide-react";
 import { useMe, useMyRequests, useMyOrders, formatINR } from "@/lib/queries";
 import { adminStats, adminListRequests } from "@/lib/admin.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Vighnaharta Solutions" }] }),
@@ -145,122 +149,189 @@ function AdminDashboard() {
 function MemberDashboard({ greeting, balance }: { greeting: string; balance: number }) {
   const { data: requests } = useMyRequests();
   const { data: orders } = useMyOrders();
-  const total = requests?.length ?? 0;
-  const today = (requests ?? []).filter(
+
+  const reqs = requests ?? [];
+  const ords = orders ?? [];
+
+  const total = reqs.length;
+  const today = reqs.filter(
     (r) => new Date(r.created_at).toDateString() === new Date().toDateString(),
   ).length;
-  const dlCount = (requests ?? []).filter((r) => r.service_name === "Driving License").length;
-  const rationCount = (requests ?? []).filter((r) => r.service_name === "Ration Card Print").length;
-  const rechargeCount = (orders ?? []).filter((o) => o.status === "success").length;
+  const completed = reqs.filter((r) => r.status === "completed").length;
+  const failed = reqs.filter((r) => r.status === "failed").length;
+  const refunds = ords.filter((o) => o.status === "refunded").length;
+  const todaySpent = reqs
+    .filter((r) => new Date(r.created_at).toDateString() === new Date().toDateString())
+    .reduce((s, r) => s + Number(r.cost), 0);
+  const successOrders = ords.filter((o) => o.status === "success").length;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-7">
-      <div className="relative overflow-hidden rounded-2xl bg-hero p-7 text-primary-foreground shadow-elegant lg:p-10">
-        {/* Accent flourishes */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[oklch(0.76_0.16_64_/_0.25)] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-[oklch(0.4_0.12_270_/_0.4)] blur-3xl" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,oklch(0.82_0.17_64_/_0.6),transparent)]" />
-
-        <div className="relative flex flex-wrap items-start justify-between gap-6">
-          <div className="min-w-0 animate-in fade-in slide-in-from-left-4 duration-500">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[10.5px] font-semibold uppercase leading-none tracking-[0.22em] text-primary-foreground/80 backdrop-blur">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[oklch(0.82_0.17_64)]" />
-              Welcome back
-            </div>
-            <h1 className="mt-4 font-display text-[2rem] font-extrabold leading-[1.05] tracking-[-0.02em] lg:text-[2.6rem]">
-              {greeting}
-            </h1>
-            <p className="mt-2 max-w-md text-[14px] font-medium leading-relaxed text-primary-foreground/70">
-              Your trusted gateway to government document services.
-            </p>
-          </div>
-          <Link to="/services">
-            <Button className="gap-2 bg-accent-gradient text-[13px] font-bold uppercase tracking-wider text-[oklch(0.25_0.06_60)] shadow-lg shadow-[oklch(0.76_0.16_64_/_0.3)] transition-transform hover:-translate-y-0.5 hover:opacity-95">
-              <FileStack className="h-4 w-4" /> New Request
-            </Button>
-          </Link>
+    <div className="mx-auto max-w-7xl space-y-6">
+      {/* Marquee / greeting strip */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-success/30 bg-success/10 px-4 py-3 text-sm font-medium text-success">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-2 w-2 animate-pulse rounded-full bg-success" />
+          नमस्कार, <span className="font-bold">{greeting}</span> — Welcome to Vighnaharta Solutions Portal.
         </div>
-
-        <div className="relative mt-8 flex flex-wrap items-end gap-x-10 gap-y-4 border-t border-white/10 pt-6">
-          <div>
-            <div className="text-[10.5px] font-semibold uppercase leading-none tracking-[0.22em] text-primary-foreground/60">
-              Available Balance
-            </div>
-            <div className="mt-2 font-display text-[2.5rem] font-extrabold leading-none tracking-[-0.02em] tabular-nums text-[oklch(0.92_0.12_70)] lg:text-[3.25rem]">
-              {formatINR(balance)}
-            </div>
-          </div>
-          <div className="hidden h-12 w-px bg-white/10 sm:block" />
-          <div className="flex items-center gap-2 text-[12px] font-medium tracking-wide text-primary-foreground/75">
-            <span className="inline-flex h-2 w-2 rounded-full bg-[oklch(0.62_0.14_155)] shadow-[0_0_12px_oklch(0.62_0.14_155)]" />
-            Account verified · Live
-          </div>
+        <div className="text-xs font-semibold uppercase tracking-wider text-success/80">
+          एका दिवसात GST रजिस्ट्रेशनची हमी
         </div>
       </div>
 
-      <div>
-        <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="font-display text-[15px] font-bold uppercase tracking-[0.16em] text-foreground/80">
-            Activity Snapshot
-          </h2>
-          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-            Updated live
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-          <StatCard label="Total Requests" value={String(total)} icon={FileText} tone="primary" />
-          <StatCard label="Today" value={String(today)} icon={Clock} tone="accent" />
-          <StatCard label="Wallet" value={formatINR(balance)} icon={Wallet} tone="success" />
-        </div>
+      {/* Stat grid — 4 cols */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+        <FastStat
+          label="Opening Balance"
+          value={formatINR(balance)}
+          icon={Wallet}
+          tone="blue"
+        />
+        <FastStat
+          label="Closing Balance"
+          value={formatINR(balance)}
+          icon={CloudUpload}
+          tone="rose"
+        />
+        <FastStat
+          label="Success Transaction"
+          value={String(completed)}
+          icon={CheckCircle2}
+          tone="green"
+        />
+        <FastStat
+          label="Failed Transaction"
+          value={String(failed)}
+          icon={XCircle}
+          tone="red"
+        />
+        <FastStat
+          label="Refund Transaction"
+          value={String(refunds)}
+          icon={RotateCcw}
+          tone="amber"
+        />
+        <FastStat
+          label="Credit Balance"
+          value={formatINR(0)}
+          icon={CreditCard}
+          tone="rose"
+        />
+        <FastStat
+          label="Today's Earning"
+          value={formatINR(todaySpent)}
+          icon={TrendingUp}
+          tone="green"
+        />
+        <FastStat
+          label="Total Txn Count"
+          value={String(total + successOrders)}
+          icon={ListChecks}
+          tone="slate"
+        />
       </div>
 
-      <div>
-        <h2 className="mb-3 font-display text-[15px] font-bold uppercase tracking-[0.16em] text-foreground/80">
-          Transaction Breakdown
-        </h2>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-          <StatCard label="DL Transactions" value={String(dlCount)} icon={IdCard} tone="primary" />
-          <StatCard label="Ration Transactions" value={String(rationCount)} icon={Wheat} tone="accent" />
-          <StatCard label="Recharge Transactions" value={String(rechargeCount)} icon={CreditCard} tone="success" />
-        </div>
-      </div>
-
-      <Card className="overflow-hidden shadow-card">
-        <div className="flex items-center justify-between border-b border-border px-6 py-5">
-          <div>
-            <h2 className="font-display text-lg font-bold tracking-tight">Recent Requests</h2>
-            <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted-foreground">
-              Your latest document and recharge activity.
-            </p>
-          </div>
+      {/* Transactions */}
+      <Card className="overflow-hidden border-border bg-card shadow-card">
+        <div className="flex items-center justify-between border-b border-border bg-success/10 px-5 py-3">
+          <h2 className="font-display text-base font-bold tracking-tight text-foreground">Transactions</h2>
           <Link to="/requests">
             <Button variant="ghost" size="sm" className="gap-1 text-xs font-semibold uppercase tracking-wider">
-              View all <ArrowUpRight className="h-4 w-4" />
+              View all <ArrowUpRight className="h-3.5 w-3.5" />
             </Button>
           </Link>
         </div>
         <div className="divide-y divide-border">
-          {(requests ?? []).slice(0, 6).map((r) => (
-            <div key={r.id} className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-muted/30">
-              <div>
-                <div className="text-[14.5px] font-semibold leading-tight text-foreground">{r.service_name}</div>
-                <div className="mt-1 font-mono text-[12px] tracking-tight text-muted-foreground">{r.input_value}</div>
+          {reqs.slice(0, 6).map((r) => (
+            <div key={r.id} className="flex items-center justify-between px-5 py-3.5 transition-colors hover:bg-muted/30">
+              <div className="min-w-0">
+                <div className="truncate text-[14px] font-semibold text-foreground">{r.service_name}</div>
+                <div className="mt-0.5 font-mono text-[12px] tracking-tight text-muted-foreground">{r.input_value}</div>
               </div>
               <div className="text-right">
-                <div className="text-[14.5px] font-bold tabular-nums text-foreground">{formatINR(Number(r.cost))}</div>
-                <div className="mt-1 text-[11.5px] font-medium uppercase tracking-wider text-muted-foreground">
+                <div className="text-[14px] font-bold tabular-nums text-foreground">{formatINR(Number(r.cost))}</div>
+                <div className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                   {new Date(r.created_at).toLocaleDateString("en-IN")}
                 </div>
               </div>
             </div>
           ))}
           {total === 0 && (
-            <div className="px-6 py-12 text-center text-[14px] leading-relaxed text-muted-foreground">
-              No requests yet. Start with a new request.
+            <div className="px-6 py-14 text-center">
+              <FileStack className="mx-auto h-8 w-8 text-muted-foreground/50" />
+              <p className="mt-3 text-[14px] text-muted-foreground">No transactions yet.</p>
+              <Link to="/services">
+                <Button size="sm" className="mt-4 gap-2">
+                  <FileStack className="h-4 w-4" /> Start a new request
+                </Button>
+              </Link>
             </div>
           )}
         </div>
       </Card>
+    </div>
+  );
+}
+
+type FastTone = "blue" | "rose" | "green" | "red" | "amber" | "slate";
+
+const FAST_TONES: Record<FastTone, { tile: string; ring: string }> = {
+  blue: {
+    tile: "bg-[oklch(0.65_0.16_255)] text-white",
+    ring: "ring-[oklch(0.65_0.16_255_/_0.18)]",
+  },
+  rose: {
+    tile: "bg-[oklch(0.7_0.16_18)] text-white",
+    ring: "ring-[oklch(0.7_0.16_18_/_0.18)]",
+  },
+  green: {
+    tile: "bg-[oklch(0.62_0.14_155)] text-white",
+    ring: "ring-[oklch(0.62_0.14_155_/_0.18)]",
+  },
+  red: {
+    tile: "bg-[oklch(0.62_0.2_25)] text-white",
+    ring: "ring-[oklch(0.62_0.2_25_/_0.18)]",
+  },
+  amber: {
+    tile: "bg-[oklch(0.78_0.16_70)] text-[oklch(0.25_0.06_60)]",
+    ring: "ring-[oklch(0.78_0.16_70_/_0.22)]",
+  },
+  slate: {
+    tile: "bg-[oklch(0.45_0.04_260)] text-white",
+    ring: "ring-[oklch(0.45_0.04_260_/_0.18)]",
+  },
+};
+
+function FastStat({
+  label,
+  value,
+  icon: Icon,
+  tone,
+}: {
+  label: string;
+  value: string;
+  icon: typeof Wallet;
+  tone: FastTone;
+}) {
+  const t = FAST_TONES[tone];
+  return (
+    <div className="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-4 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elegant">
+      <div
+        className={cn(
+          "flex h-14 w-14 shrink-0 items-center justify-center rounded-xl shadow-sm ring-4",
+          t.tile,
+          t.ring,
+        )}
+      >
+        <Icon className="h-6 w-6" />
+      </div>
+      <div className="min-w-0">
+        <div className="text-[12px] font-semibold leading-tight text-muted-foreground">
+          {label}
+        </div>
+        <div className="mt-1 font-display text-[1.35rem] font-extrabold leading-none tabular-nums text-foreground">
+          {value}
+        </div>
+      </div>
     </div>
   );
 }

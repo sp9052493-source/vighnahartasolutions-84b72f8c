@@ -9,7 +9,6 @@ import {
   SlidersHorizontal,
   Menu,
   LogOut,
-  ShieldCheck,
   FileStack,
   Car,
   CreditCard,
@@ -17,12 +16,15 @@ import {
   Wheat,
   Landmark,
   ShieldCheck as ShieldCheckIcon,
-
+  Search,
+  Plus,
+  Headphones,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/vighnaharta-logo.png.asset.json";
@@ -166,7 +168,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="h-1 bg-accent-gradient" />
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-card/90 px-4 backdrop-blur-md lg:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-card/95 px-4 backdrop-blur-md lg:px-6">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="lg:hidden">
@@ -178,25 +180,66 @@ export function PortalShell({ children }: { children: ReactNode }) {
               {sidebarBody}
             </SheetContent>
           </Sheet>
+
           <div className="flex items-center gap-2.5 lg:hidden">
             <div className="rounded-lg bg-white p-0.5 ring-1 ring-border">
-              <img src={logo.url} alt="Vighnaharta Solutions logo" width={64} height={64} loading="eager" decoding="async" className="h-10 w-10 object-contain" />
-            </div>
-            <div className="leading-tight">
-              <div className="font-display text-sm font-bold">Vighnaharta Solutions</div>
-              <div className="text-[9px] uppercase tracking-wider text-muted-foreground">Vighnaharta Group Ltd.</div>
+              <img src={logo.url} alt="Vighnaharta Solutions logo" width={64} height={64} loading="eager" decoding="async" className="h-9 w-9 object-contain" />
             </div>
           </div>
-          <div className="ml-auto flex items-center gap-4">
-            <div className="hidden items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1.5 sm:flex">
+
+          {/* Search */}
+          <div className="relative hidden max-w-sm flex-1 md:flex">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search services, requests…"
+              className="h-10 rounded-md border-border bg-muted/40 pl-9 pr-3 text-sm shadow-none focus-visible:bg-background"
+            />
+          </div>
+
+          {/* Quick actions */}
+          <Link
+            to="/recharge"
+            className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-foreground/80 transition-colors hover:bg-muted hover:text-foreground md:inline-flex"
+          >
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/15 text-accent-foreground">
+              <Plus className="h-3.5 w-3.5" />
+            </span>
+            Add Money
+          </Link>
+          <Link
+            to="/settings"
+            className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-foreground/80 transition-colors hover:bg-muted hover:text-foreground lg:inline-flex"
+          >
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <Headphones className="h-3.5 w-3.5" />
+            </span>
+            Contact us
+          </Link>
+
+          {/* Balance pill */}
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden h-10 items-center gap-2 rounded-md border border-border bg-background px-3 sm:flex">
               <Wallet className="h-3.5 w-3.5 text-primary" />
               <div className="text-right leading-tight">
-                <div className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Wallet</div>
-                <div className="text-xs font-bold text-primary">{formatINR(me?.balance ?? 0)}</div>
+                <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Balance</div>
+                <div className="text-sm font-bold tabular-nums text-primary">{formatINR(me?.balance ?? 0)}</div>
               </div>
             </div>
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[linear-gradient(135deg,oklch(0.34_0.09_261),oklch(0.26_0.08_262))] text-sm font-bold text-primary-foreground shadow-md ring-2 ring-[oklch(0.76_0.16_64_/_0.5)]">
-              {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
+
+            {/* User chip */}
+            <div className="flex h-10 items-center gap-2.5 rounded-md border border-border bg-card pl-1 pr-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[linear-gradient(135deg,oklch(0.34_0.09_261),oklch(0.26_0.08_262))] text-xs font-bold text-primary-foreground ring-1 ring-[oklch(0.76_0.16_64_/_0.5)]">
+                {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
+              </div>
+              <div className="hidden text-left leading-tight sm:block">
+                <div className="max-w-[140px] truncate text-[12px] font-semibold uppercase tracking-wide text-foreground">
+                  {me?.profile?.full_name || me?.email}
+                </div>
+                <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  {ROLE_LABEL[role]}
+                </div>
+              </div>
             </div>
           </div>
         </header>
