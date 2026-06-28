@@ -34,8 +34,10 @@ const SECTIONS: Section[] = [
   { to: "/admin/pages", label: "Page Content", icon: FileEdit },
   { to: "/admin/gateways", label: "Payment Gateways", icon: CreditCard },
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
+  { to: "/admin/sarkar-services", label: "Aaple Sarkar", icon: Landmark },
   { to: "/members", label: "Members & KYC", icon: Users },
 ];
+
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
