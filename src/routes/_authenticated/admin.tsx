@@ -6,6 +6,7 @@ import {
   SlidersHorizontal,
   Landmark,
   Newspaper,
+  Inbox,
   Users,
   ShieldCheck,
   LayoutGrid,
