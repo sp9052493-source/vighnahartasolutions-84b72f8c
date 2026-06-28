@@ -20,6 +20,7 @@ import { useMe, useMyRequests, useMyOrders, formatINR } from "@/lib/queries";
 import { adminStats, adminListRequests } from "@/lib/admin.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Vighnaharta Solutions" }] }),
