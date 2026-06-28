@@ -74,6 +74,8 @@ type State = {
 function AdminGazette() {
   const getFn = useServerFn(adminGetGazette);
   const saveFn = useServerFn(adminSaveGazette);
+  const uploadSampleFn = useServerFn(adminUploadGazetteSample);
+  const deleteSampleFn = useServerFn(adminDeleteGazetteSample);
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
