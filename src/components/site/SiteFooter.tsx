@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin } from "lucide-react";
-import logo from "@/assets/sevakart-logo.png";
+import logo from "@/assets/vighnaharta-logo.png.asset.json";
 import { COMPANY, fullAddress } from "@/lib/company";
 
 export function SiteFooter() {
@@ -9,7 +9,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
         <div>
           <div className="flex items-center gap-2.5">
-            <img src={logo} alt="Vighnaharta Solutions logo" width={36} height={36} className="h-9 w-9 object-contain" />
+            <img src={logo.url} alt="Vighnaharta Solutions logo" width={36} height={36} className="h-9 w-9 object-contain" />
             <div className="leading-tight">
               <div className="font-display text-base font-bold">{COMPANY.brand}</div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Powered by {COMPANY.legalName}</div>

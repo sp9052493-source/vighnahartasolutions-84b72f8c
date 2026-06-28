@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Lock, Loader2, ArrowLeft } from "lucide-react";
-import logo from "@/assets/sevakart-logo.png";
+import logo from "@/assets/vighnaharta-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,7 +42,7 @@ function AuthPage() {
       {/* Brand panel */}
       <div className="relative hidden flex-col justify-between bg-hero p-12 text-primary-foreground lg:flex">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Vighnaharta Solutions logo" width={76} height={76} className="h-[4.5rem] w-[4.5rem] object-contain" />
+          <img src={logo.url} alt="Vighnaharta Solutions logo" width={76} height={76} className="h-[4.5rem] w-[4.5rem] object-contain" />
           <div>
             <div className="font-display text-2xl font-bold">Vighnaharta Solutions</div>
             <div className="text-sm uppercase tracking-wider text-primary-foreground/60">
@@ -71,7 +71,7 @@ function AuthPage() {
             <ArrowLeft className="h-5 w-5" /> Back to home
           </Link>
           <div className="mb-6 flex items-center gap-2 lg:hidden">
-            <img src={logo} alt="Vighnaharta Solutions logo" width={52} height={52} className="h-12 w-12 object-contain" />
+            <img src={logo.url} alt="Vighnaharta Solutions logo" width={52} height={52} className="h-12 w-12 object-contain" />
             <span className="font-display text-2xl font-bold">Vighnaharta Solutions</span>
           </div>
 
