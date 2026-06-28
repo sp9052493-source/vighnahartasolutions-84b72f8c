@@ -181,11 +181,18 @@ export const adminStats = createServerFn({ method: "GET" })
     };
   });
 
+const CODE_RE = /^[A-Z0-9_]{2,20}$/;
+
 const serviceSchema = z.object({
   id: z.string().uuid(),
+  code: z.string().trim().toUpperCase().regex(CODE_RE, "Code must be 2–20 chars, A–Z / 0–9 / _"),
+  name: z.string().trim().min(2).max(80),
+  description: z.string().trim().max(280).optional().or(z.literal("")),
+  input_label: z.string().trim().min(2).max(40),
   price: z.number().min(0).max(100000),
   retailer_commission: z.number().min(0).max(100000),
   distributor_commission: z.number().min(0).max(100000),
+  sort_order: z.number().int().min(0).max(9999).optional(),
   active: z.boolean(),
   api_provider: z.string().trim().max(40).optional(),
   api_endpoint: z.string().trim().max(500).optional().or(z.literal("")),
@@ -202,9 +209,14 @@ export const adminUpdateService = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("services")
       .update({
+        code: data.code,
+        name: data.name,
+        description: data.description || null,
+        input_label: data.input_label,
         price: data.price,
         retailer_commission: data.retailer_commission,
         distributor_commission: data.distributor_commission,
+        sort_order: data.sort_order ?? 0,
         active: data.active,
         api_provider: data.api_provider ?? "demo",
         api_endpoint: data.api_endpoint || null,
@@ -212,9 +224,70 @@ export const adminUpdateService = createServerFn({ method: "POST" })
         api_notes: data.api_notes || null,
       })
       .eq("id", data.id);
-    if (error) throw new Error(error.message);
+    if (error) {
+      if (error.code === "23505") throw new Error(`Service code "${data.code}" already exists.`);
+      throw new Error(error.message);
+    }
     return { ok: true };
   });
+
+const createServiceSchema = serviceSchema.omit({ id: true });
+
+export const adminCreateService = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => createServiceSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("services")
+      .insert({
+        code: data.code,
+        name: data.name,
+        description: data.description || null,
+        input_label: data.input_label,
+        price: data.price,
+        retailer_commission: data.retailer_commission,
+        distributor_commission: data.distributor_commission,
+        sort_order: data.sort_order ?? 0,
+        active: data.active,
+        api_provider: data.api_provider ?? "demo",
+        api_endpoint: data.api_endpoint || null,
+        api_enabled: data.api_enabled ?? false,
+        api_notes: data.api_notes || null,
+      })
+      .select("id")
+      .single();
+    if (error) {
+      if (error.code === "23505") throw new Error(`Service code "${data.code}" already exists.`);
+      throw new Error(error.message);
+    }
+    return { id: row!.id };
+  });
+
+const deleteServiceSchema = z.object({ id: z.string().uuid() });
+
+export const adminDeleteService = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => deleteServiceSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Soft delete: deactivate if referenced by document_requests; hard delete otherwise
+    const { count } = await supabaseAdmin
+      .from("document_requests")
+      .select("*", { count: "exact", head: true })
+      .eq("service_id", data.id);
+    if ((count ?? 0) > 0) {
+      const { error } = await supabaseAdmin.from("services").update({ active: false }).eq("id", data.id);
+      if (error) throw new Error(error.message);
+      return { ok: true, softDeleted: true };
+    }
+    const { error } = await supabaseAdmin.from("services").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true, softDeleted: false };
+  });
+
 
 const updateUserSchema = z.object({
   userId: z.string().uuid(),
