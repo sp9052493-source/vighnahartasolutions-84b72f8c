@@ -64,16 +64,11 @@ function AdminLayout() {
 
       <nav className="flex flex-wrap gap-2 rounded-xl border border-border bg-card p-2 shadow-card">
         {SECTIONS.map((s) => {
-          const active = s.exact
-            ? pathname === s.to
-            : s.hash
-              ? false
-              : pathname.startsWith(s.to);
+          const active = s.exact ? pathname === s.to : pathname === s.to || pathname.startsWith(s.to + "/");
           return (
             <Link
-              key={s.key ?? s.to}
+              key={s.to}
               to={s.to}
-              hash={s.hash}
               className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 active
                   ? "bg-primary text-primary-foreground shadow-sm"
