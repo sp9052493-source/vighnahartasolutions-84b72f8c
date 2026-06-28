@@ -90,7 +90,7 @@ export const adminUploadUserAsset = createServerFn({ method: "POST" })
     if (upErr) throw new Error(upErr.message);
     const { data: signed } = await supabaseAdmin.storage.from("documents").createSignedUrl(path, 60 * 60 * 24 * 365);
     const url = signed?.signedUrl || path;
-    const { error: pErr } = await supabaseAdmin.from("profiles").update({ [data.field]: url }).eq("id", data.userId);
+    const { error: pErr } = await supabaseAdmin.from("profiles").update({ [data.field]: url } as any).eq("id", data.userId);
     if (pErr) throw new Error(pErr.message);
     return { url };
   });
