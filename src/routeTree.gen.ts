@@ -39,6 +39,7 @@ import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/pa
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
 import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
+import { Route as AuthenticatedAdminGazetteRouteImport } from './routes/_authenticated/admin.gazette'
 import { Route as AuthenticatedAdminGatewaysRouteImport } from './routes/_authenticated/admin.gateways'
 
 const TermsRoute = TermsRouteImport.update({
@@ -196,6 +197,12 @@ const AuthenticatedAdminPagesRoute = AuthenticatedAdminPagesRouteImport.update({
   path: '/pages',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminGazetteRoute =
+  AuthenticatedAdminGazetteRouteImport.update({
+    id: '/gazette',
+    path: '/gazette',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminGatewaysRoute =
   AuthenticatedAdminGatewaysRouteImport.update({
     id: '/gateways',
@@ -230,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
+  '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
@@ -262,6 +270,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
+  '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
@@ -296,6 +305,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
+  '/_authenticated/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/wallet'
     | '/admin/gateways'
+    | '/admin/gazette'
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/wallet'
     | '/admin/gateways'
+    | '/admin/gazette'
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
@@ -395,6 +407,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/wallet'
     | '/_authenticated/admin/gateways'
+    | '/_authenticated/admin/gazette'
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/sarkar-services'
     | '/_authenticated/admin/site'
@@ -627,6 +640,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPagesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/gazette': {
+      id: '/_authenticated/admin/gazette'
+      path: '/gazette'
+      fullPath: '/admin/gazette'
+      preLoaderRoute: typeof AuthenticatedAdminGazetteRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/gateways': {
       id: '/_authenticated/admin/gateways'
       path: '/gateways'
@@ -639,6 +659,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminGatewaysRoute: typeof AuthenticatedAdminGatewaysRoute
+  AuthenticatedAdminGazetteRoute: typeof AuthenticatedAdminGazetteRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
@@ -646,6 +667,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminGatewaysRoute: AuthenticatedAdminGatewaysRoute,
+  AuthenticatedAdminGazetteRoute: AuthenticatedAdminGazetteRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,

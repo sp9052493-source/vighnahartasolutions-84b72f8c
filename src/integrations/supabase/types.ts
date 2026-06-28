@@ -95,6 +95,7 @@ export type Database = {
       aaple_sarkar_services: {
         Row: {
           active: boolean
+          config: Json
           created_at: string
           desc_en: string
           desc_mr: string
@@ -111,6 +112,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          config?: Json
           created_at?: string
           desc_en?: string
           desc_mr?: string
@@ -127,6 +129,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          config?: Json
           created_at?: string
           desc_en?: string
           desc_mr?: string

@@ -61,27 +61,49 @@ export const Route = createFileRoute("/_authenticated/gazette")({
 
 type FileItem = { name: string; base64: string; contentType: string };
 
-const CHANGE_TYPES = [
-  { value: "name", en: "Change of Name", mr: "नावात बदल", needsOld: true, needsNew: true },
-  { value: "dob", en: "Change of Date of Birth", mr: "जन्मतारखेत बदल", needsOld: true, needsNew: true },
-  { value: "religion", en: "Change of Religion", mr: "धर्मात बदल", needsOld: true, needsNew: true },
-  { value: "father", en: "Change of Father's / Husband's Name", mr: "वडील / पतीच्या नावात बदल", needsOld: true, needsNew: true },
-  { value: "address", en: "Change of Address", mr: "पत्त्यात बदल", needsOld: true, needsNew: true },
-  { value: "minor", en: "Minor Correction (Spelling / Surname)", mr: "लहान दुरुस्ती (स्पेलिंग / आडनाव)", needsOld: true, needsNew: true },
-  { value: "other", en: "Other Personal Record Correction", mr: "इतर वैयक्तिक नोंद दुरुस्ती", needsOld: true, needsNew: true },
-] as const;
+type ChangeTypeCfg = {
+  value: string;
+  en: string;
+  mr: string;
+  needsOld: boolean;
+  needsNew: boolean;
+  active: boolean;
+};
+type ConditionalField = {
+  key: string;
+  en: string;
+  mr: string;
+  type: "text" | "number" | "textarea";
+  required: boolean;
+  appearsFor: string[];
+};
+type DocCfg = {
+  id: string;
+  en: string;
+  mr: string;
+  required: boolean;
+  appearsFor: string[];
+};
 
-type ChangeType = (typeof CHANGE_TYPES)[number]["value"];
+const FALLBACK_CHANGE_TYPES: ChangeTypeCfg[] = [
+  { value: "name", en: "Change of Name", mr: "नावात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "dob", en: "Change of Date of Birth", mr: "जन्मतारखेत बदल", needsOld: true, needsNew: true, active: true },
+  { value: "religion", en: "Change of Religion", mr: "धर्मात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "father", en: "Change of Father's / Husband's Name", mr: "वडील / पतीच्या नावात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "address", en: "Change of Address", mr: "पत्त्यात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "minor", en: "Minor Correction (Spelling / Surname)", mr: "लहान दुरुस्ती", needsOld: true, needsNew: true, active: true },
+  { value: "other", en: "Other Personal Record Correction", mr: "इतर वैयक्तिक नोंद दुरुस्ती", needsOld: true, needsNew: true, active: true },
+];
 
-const REQUIRED_DOCS: { id: string; label: string; mr: string; required: boolean }[] = [
-  { id: "aadhaar", label: "Aadhaar Card", mr: "आधार कार्ड", required: true },
-  { id: "photo", label: "Passport Size Photo (under 2 MB)", mr: "पासपोर्ट फोटो (२ MB)", required: true },
-  { id: "declaration", label: "Signed Declaration / Affidavit", mr: "स्वाक्षरीत प्रतिज्ञापत्र", required: true },
-  { id: "old_proof", label: "Proof of Old / Current Details", mr: "जुन्या तपशीलाचा पुरावा", required: true },
-  { id: "new_proof", label: "Proof of New / Corrected Details", mr: "नवीन तपशीलाचा पुरावा", required: true },
-  { id: "address_proof", label: "Address Proof", mr: "पत्त्याचा पुरावा", required: true },
-  { id: "legal_doc", label: "Legal Document (Court / School / Marriage Cert.)", mr: "कायदेशीर कागदपत्र", required: false },
-  { id: "other", label: "Other Supporting Document", mr: "इतर सहाय्यक कागदपत्र", required: false },
+const FALLBACK_DOCS: DocCfg[] = [
+  { id: "aadhaar", en: "Aadhaar Card", mr: "आधार कार्ड", required: true, appearsFor: [] },
+  { id: "photo", en: "Passport Size Photo (under 2 MB)", mr: "पासपोर्ट फोटो (२ MB)", required: true, appearsFor: [] },
+  { id: "declaration", en: "Signed Declaration / Affidavit", mr: "स्वाक्षरीत प्रतिज्ञापत्र", required: true, appearsFor: [] },
+  { id: "old_proof", en: "Proof of Old / Current Details", mr: "जुन्या तपशीलाचा पुरावा", required: true, appearsFor: [] },
+  { id: "new_proof", en: "Proof of New / Corrected Details", mr: "नवीन तपशीलाचा पुरावा", required: true, appearsFor: [] },
+  { id: "address_proof", en: "Address Proof", mr: "पत्त्याचा पुरावा", required: true, appearsFor: [] },
+  { id: "legal_doc", en: "Legal Document (Court / School / Marriage Cert.)", mr: "कायदेशीर कागदपत्र", required: false, appearsFor: [] },
+  { id: "other", en: "Other Supporting Document", mr: "इतर सहाय्यक कागदपत्र", required: false, appearsFor: [] },
 ];
 
 function readFile(file: File): Promise<FileItem> {
@@ -95,7 +117,7 @@ function readFile(file: File): Promise<FileItem> {
 }
 
 const EMPTY_FORM = {
-  changeType: "" as ChangeType | "",
+  changeType: "" as string,
   oldValue: "",
   newValue: "",
   reason: "",
@@ -133,6 +155,7 @@ function GazettePage() {
   });
 
   const [form, setForm] = useState({ ...EMPTY_FORM });
+  const [extra, setExtra] = useState<Record<string, string>>({});
   const [docMap, setDocMap] = useState<Record<string, FileItem | null>>({});
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [receipt, setReceipt] = useState<{ receiptNo: string; charged: number } | null>(null);
@@ -141,7 +164,24 @@ function GazettePage() {
     setForm((p) => ({ ...p, [k]: v }));
 
   const price = Number(service?.price ?? 799);
+
+  // Pull dynamic config (admin-editable), with safe fallbacks.
+  const cfgChangeTypes = (((service as any)?.config?.change_types ?? []) as ChangeTypeCfg[])
+    .filter((c) => c && c.value && c.active !== false);
+  const CHANGE_TYPES: ChangeTypeCfg[] = cfgChangeTypes.length ? cfgChangeTypes : FALLBACK_CHANGE_TYPES;
+  const cfgFields = ((service?.extraFields ?? []) as ConditionalField[]).filter((f) => f && f.key);
+  const cfgDocs = ((service?.requiredDocs ?? []) as DocCfg[]).filter((d) => d && d.id);
+  const ALL_DOCS: DocCfg[] = cfgDocs.length ? cfgDocs : FALLBACK_DOCS;
+
   const selected = CHANGE_TYPES.find((c) => c.value === form.changeType);
+
+  // Filter conditional fields & docs by the chosen change type.
+  const visibleFields = cfgFields.filter(
+    (f) => !f.appearsFor || f.appearsFor.length === 0 || (selected && f.appearsFor.includes(selected.value)),
+  );
+  const visibleDocs = ALL_DOCS.filter(
+    (d) => !d.appearsFor || d.appearsFor.length === 0 || (selected && d.appearsFor.includes(selected.value)),
+  );
 
   async function onFile(slot: string, file: File | null) {
     if (!file) return setDocMap((p) => ({ ...p, [slot]: null }));
@@ -154,8 +194,12 @@ function GazettePage() {
   }
 
   const missingDocs = useMemo(
-    () => REQUIRED_DOCS.filter((d) => d.required && !docMap[d.id]),
-    [docMap],
+    () => visibleDocs.filter((d) => d.required && !docMap[d.id]),
+    [visibleDocs, docMap],
+  );
+  const missingFields = useMemo(
+    () => visibleFields.filter((f) => f.required && !(extra[f.key] || "").trim()),
+    [visibleFields, extra],
   );
 
   const mut = useMutation({
@@ -168,6 +212,7 @@ function GazettePage() {
       toast.success("Gazette application submitted");
       setConfirmOpen(false);
       setForm({ ...EMPTY_FORM });
+      setExtra({});
       setDocMap({});
     },
     onError: (e: any) => {
@@ -178,8 +223,8 @@ function GazettePage() {
 
   function validate() {
     if (!form.changeType) return "Select the type of change";
-    if (!form.oldValue.trim()) return "Enter the current / old value";
-    if (!form.newValue.trim()) return "Enter the new / corrected value";
+    if (selected?.needsOld !== false && !form.oldValue.trim()) return "Enter the current / old value";
+    if (selected?.needsNew !== false && !form.newValue.trim()) return "Enter the new / corrected value";
     if (!form.reason.trim() || form.reason.trim().length < 8) return "Provide a clear reason (min 8 characters)";
     if (!form.applicantName.trim()) return "Enter applicant full name";
     if (!form.salutation) return "Select salutation";
@@ -190,8 +235,10 @@ function GazettePage() {
     if (!/^[0-9]{10}$/.test(form.mobile)) return "Enter a valid 10-digit mobile number";
     if (form.address.trim().length < 6) return "Enter a complete address";
     if (form.pincode && !/^[0-9]{6}$/.test(form.pincode)) return "Enter a valid 6-digit pincode";
+    if (missingFields.length)
+      return "Fill required fields: " + missingFields.map((f) => f.en).join(", ");
     if (missingDocs.length)
-      return "Upload required documents: " + missingDocs.map((d) => d.label).join(", ");
+      return "Upload required documents: " + missingDocs.map((d) => d.en).join(", ");
     if (balance < price) return `Insufficient balance. Need ${formatINR(price)}.`;
     return null;
   }
@@ -219,6 +266,8 @@ function GazettePage() {
       form.caste ? `Caste: ${form.caste}` : null,
       form.village ? `Village: ${form.village}` : null,
       form.newspaperPref ? `Preferred Newspaper: ${form.newspaperPref}` : null,
+      ...visibleFields
+        .map((f) => (extra[f.key] ? `${f.en}: ${extra[f.key]}` : null)),
     ]
       .filter(Boolean)
       .join("\n");
@@ -326,20 +375,24 @@ function GazettePage() {
         <Card className="p-5 shadow-card">
           <SectionHeading n={2} title="Change Details" subtitle={`Specify the change for: ${selected.en}`} />
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="Current / Old Value" req hint="As per existing records">
-              <Input
-                value={form.oldValue}
-                onChange={(e) => set("oldValue", e.target.value)}
-                placeholder="e.g. Ramesh Kumar Patil"
-              />
-            </Field>
-            <Field label="New / Corrected Value" req hint="To be published in Gazette">
-              <Input
-                value={form.newValue}
-                onChange={(e) => set("newValue", e.target.value)}
-                placeholder="e.g. Ram Patil"
-              />
-            </Field>
+            {selected.needsOld !== false && (
+              <Field label="Current / Old Value" req hint="As per existing records">
+                <Input
+                  value={form.oldValue}
+                  onChange={(e) => set("oldValue", e.target.value)}
+                  placeholder="e.g. Ramesh Kumar Patil"
+                />
+              </Field>
+            )}
+            {selected.needsNew !== false && (
+              <Field label="New / Corrected Value" req hint="To be published in Gazette">
+                <Input
+                  value={form.newValue}
+                  onChange={(e) => set("newValue", e.target.value)}
+                  placeholder="e.g. Ram Patil"
+                />
+              </Field>
+            )}
             <div className="sm:col-span-2">
               <Field label="Reason for Change" req>
                 <Textarea
@@ -350,6 +403,25 @@ function GazettePage() {
                 />
               </Field>
             </div>
+            {visibleFields.map((f) => (
+              <div key={f.key} className={f.type === "textarea" ? "sm:col-span-2" : undefined}>
+                <Field label={f.en} req={f.required} hint={f.mr}>
+                  {f.type === "textarea" ? (
+                    <Textarea
+                      rows={3}
+                      value={extra[f.key] || ""}
+                      onChange={(e) => setExtra((p) => ({ ...p, [f.key]: e.target.value }))}
+                    />
+                  ) : (
+                    <Input
+                      type={f.type === "number" ? "number" : "text"}
+                      value={extra[f.key] || ""}
+                      onChange={(e) => setExtra((p) => ({ ...p, [f.key]: e.target.value }))}
+                    />
+                  )}
+                </Field>
+              </div>
+            ))}
           </div>
         </Card>
       )}
@@ -509,7 +581,7 @@ function GazettePage() {
           subtitle="PDF or image, up to 5 MB each. Required documents are highlighted."
         />
         <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-          {REQUIRED_DOCS.map((d) => {
+          {visibleDocs.map((d) => {
             const file = docMap[d.id];
             return (
               <li
@@ -534,7 +606,7 @@ function GazettePage() {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-semibold">{d.label}</span>
+                      <span className="text-[13px] font-semibold">{d.en}</span>
                       <Badge
                         variant="outline"
                         className={cn(
