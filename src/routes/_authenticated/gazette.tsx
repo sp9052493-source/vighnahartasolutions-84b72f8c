@@ -61,27 +61,49 @@ export const Route = createFileRoute("/_authenticated/gazette")({
 
 type FileItem = { name: string; base64: string; contentType: string };
 
-const CHANGE_TYPES = [
-  { value: "name", en: "Change of Name", mr: "नावात बदल", needsOld: true, needsNew: true },
-  { value: "dob", en: "Change of Date of Birth", mr: "जन्मतारखेत बदल", needsOld: true, needsNew: true },
-  { value: "religion", en: "Change of Religion", mr: "धर्मात बदल", needsOld: true, needsNew: true },
-  { value: "father", en: "Change of Father's / Husband's Name", mr: "वडील / पतीच्या नावात बदल", needsOld: true, needsNew: true },
-  { value: "address", en: "Change of Address", mr: "पत्त्यात बदल", needsOld: true, needsNew: true },
-  { value: "minor", en: "Minor Correction (Spelling / Surname)", mr: "लहान दुरुस्ती (स्पेलिंग / आडनाव)", needsOld: true, needsNew: true },
-  { value: "other", en: "Other Personal Record Correction", mr: "इतर वैयक्तिक नोंद दुरुस्ती", needsOld: true, needsNew: true },
-] as const;
+type ChangeTypeCfg = {
+  value: string;
+  en: string;
+  mr: string;
+  needsOld: boolean;
+  needsNew: boolean;
+  active: boolean;
+};
+type ConditionalField = {
+  key: string;
+  en: string;
+  mr: string;
+  type: "text" | "number" | "textarea";
+  required: boolean;
+  appearsFor: string[];
+};
+type DocCfg = {
+  id: string;
+  en: string;
+  mr: string;
+  required: boolean;
+  appearsFor: string[];
+};
 
-type ChangeType = (typeof CHANGE_TYPES)[number]["value"];
+const FALLBACK_CHANGE_TYPES: ChangeTypeCfg[] = [
+  { value: "name", en: "Change of Name", mr: "नावात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "dob", en: "Change of Date of Birth", mr: "जन्मतारखेत बदल", needsOld: true, needsNew: true, active: true },
+  { value: "religion", en: "Change of Religion", mr: "धर्मात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "father", en: "Change of Father's / Husband's Name", mr: "वडील / पतीच्या नावात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "address", en: "Change of Address", mr: "पत्त्यात बदल", needsOld: true, needsNew: true, active: true },
+  { value: "minor", en: "Minor Correction (Spelling / Surname)", mr: "लहान दुरुस्ती", needsOld: true, needsNew: true, active: true },
+  { value: "other", en: "Other Personal Record Correction", mr: "इतर वैयक्तिक नोंद दुरुस्ती", needsOld: true, needsNew: true, active: true },
+];
 
-const REQUIRED_DOCS: { id: string; label: string; mr: string; required: boolean }[] = [
-  { id: "aadhaar", label: "Aadhaar Card", mr: "आधार कार्ड", required: true },
-  { id: "photo", label: "Passport Size Photo (under 2 MB)", mr: "पासपोर्ट फोटो (२ MB)", required: true },
-  { id: "declaration", label: "Signed Declaration / Affidavit", mr: "स्वाक्षरीत प्रतिज्ञापत्र", required: true },
-  { id: "old_proof", label: "Proof of Old / Current Details", mr: "जुन्या तपशीलाचा पुरावा", required: true },
-  { id: "new_proof", label: "Proof of New / Corrected Details", mr: "नवीन तपशीलाचा पुरावा", required: true },
-  { id: "address_proof", label: "Address Proof", mr: "पत्त्याचा पुरावा", required: true },
-  { id: "legal_doc", label: "Legal Document (Court / School / Marriage Cert.)", mr: "कायदेशीर कागदपत्र", required: false },
-  { id: "other", label: "Other Supporting Document", mr: "इतर सहाय्यक कागदपत्र", required: false },
+const FALLBACK_DOCS: DocCfg[] = [
+  { id: "aadhaar", en: "Aadhaar Card", mr: "आधार कार्ड", required: true, appearsFor: [] },
+  { id: "photo", en: "Passport Size Photo (under 2 MB)", mr: "पासपोर्ट फोटो (२ MB)", required: true, appearsFor: [] },
+  { id: "declaration", en: "Signed Declaration / Affidavit", mr: "स्वाक्षरीत प्रतिज्ञापत्र", required: true, appearsFor: [] },
+  { id: "old_proof", en: "Proof of Old / Current Details", mr: "जुन्या तपशीलाचा पुरावा", required: true, appearsFor: [] },
+  { id: "new_proof", en: "Proof of New / Corrected Details", mr: "नवीन तपशीलाचा पुरावा", required: true, appearsFor: [] },
+  { id: "address_proof", en: "Address Proof", mr: "पत्त्याचा पुरावा", required: true, appearsFor: [] },
+  { id: "legal_doc", en: "Legal Document (Court / School / Marriage Cert.)", mr: "कायदेशीर कागदपत्र", required: false, appearsFor: [] },
+  { id: "other", en: "Other Supporting Document", mr: "इतर सहाय्यक कागदपत्र", required: false, appearsFor: [] },
 ];
 
 function readFile(file: File): Promise<FileItem> {
