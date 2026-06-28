@@ -16,6 +16,8 @@ import {
   IdCard,
   Wheat,
   Landmark,
+  ShieldCheck as ShieldCheckIcon,
+
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
@@ -39,6 +41,7 @@ const NAV: NavItem[] = [
   { to: "/wallet", label: "Wallet", icon: Wallet, roles: ["admin", "distributor", "retailer"] },
   { to: "/recharge", label: "Wallet Recharge", icon: CreditCard, roles: ["distributor", "retailer"] },
   { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
+  { to: "/admin", label: "Admin Control", icon: ShieldCheckIcon, roles: ["admin"] },
   { to: "/manage-services", label: "Service Pricing", icon: SlidersHorizontal, roles: ["admin"] },
   { to: "/aaple-sarkar-requests", label: "Aaple Sarkar Desk", icon: Landmark, roles: ["admin"] },
   { to: "/settings", label: "Settings", icon: Settings, roles: ["admin", "distributor", "retailer"] },
