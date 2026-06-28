@@ -1,7 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getSarkarService } from "@/lib/aaple-sarkar.shared";
+
+async function loadSarkarServiceFromDb(serviceType: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("aaple_sarkar_services")
+    .select("type, name_en, name_mr, price, active")
+    .eq("type", serviceType)
+    .maybeSingle();
+  if (error || !data || !data.active) return undefined;
+  return { type: data.type, en: data.name_en, mr: data.name_mr, price: Number(data.price || 0) };
+}
+
+
 
 const TABLE = "aaple_sarkar_applications";
 
@@ -46,9 +58,10 @@ export const submitAapleSarkarApplication = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId, supabase } = context;
 
-    const svc = getSarkarService(data.serviceType);
+    const svc = await loadSarkarServiceFromDb(data.serviceType);
     if (!svc) throw new Error("Selected service is not available.");
     const price = Number(svc.price || 0);
+
 
     const { data: profile } = await supabase
       .from("profiles")

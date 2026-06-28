@@ -41,10 +41,10 @@ import {
   listMyAapleSarkar,
   getAapleSarkarDetail,
 } from "@/lib/aaple-sarkar.functions";
+import { listSarkarServices } from "@/lib/sarkar-services.functions";
 import { translateToMarathi } from "@/lib/translate.functions";
 import {
   AAPLE_SARKAR_LOGO,
-  SARKAR_SERVICES,
   STATUS_META,
   TX,
   t,
@@ -53,6 +53,7 @@ import {
   type StatusKey,
 } from "@/lib/aaple-sarkar.shared";
 import { useMe, formatINR } from "@/lib/queries";
+
 
 export const Route = createFileRoute("/_authenticated/aaple-sarkar")({
   head: () => ({ meta: [{ title: "Aaple Sarkar — Vighnaharta Solutions" }] }),
@@ -151,7 +152,15 @@ function ApplyForm({
   const queryClient = useQueryClient();
   const submitFn = useServerFn(submitAapleSarkarApplication);
   const translateFn = useServerFn(translateToMarathi);
+  const listFn = useServerFn(listSarkarServices);
   const formRef = useRef<HTMLDivElement>(null);
+
+  const { data: servicesList = [], isLoading: servicesLoading } = useQuery({
+    queryKey: ["sarkar-services-public"],
+    queryFn: () => listFn() as Promise<SarkarService[]>,
+    staleTime: 60_000,
+  });
+
 
   const [service, setService] = useState<SarkarService | null>(null);
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -332,7 +341,17 @@ function ApplyForm({
           </Badge>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {SARKAR_SERVICES.map((s) => {
+          {servicesLoading && (
+            <div className="col-span-full flex items-center justify-center py-10 text-sm text-muted-foreground">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading services…
+            </div>
+          )}
+          {!servicesLoading && servicesList.length === 0 && (
+            <div className="col-span-full rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+              No services available right now. Please contact the administrator.
+            </div>
+          )}
+          {servicesList.map((s) => {
             const active = service?.type === s.type;
             return (
               <button
@@ -374,6 +393,7 @@ function ApplyForm({
           })}
         </div>
       </Card>
+
 
       {!service && (
         <Card className="border-dashed p-8 text-center text-sm text-muted-foreground shadow-card">

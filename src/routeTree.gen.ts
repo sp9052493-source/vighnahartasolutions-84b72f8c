@@ -36,6 +36,7 @@ import { Route as AuthenticatedAapleSarkarRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAadhaarToPanRouteImport } from './routes/_authenticated/aadhaar-to-pan'
 import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/paytm-return'
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
+import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminGatewaysRouteImport } from './routes/_authenticated/admin.gateways'
 
@@ -178,6 +179,12 @@ const AuthenticatedAdminSiteRoute = AuthenticatedAdminSiteRouteImport.update({
   path: '/site',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminSarkarServicesRoute =
+  AuthenticatedAdminSarkarServicesRouteImport.update({
+    id: '/sarkar-services',
+    path: '/sarkar-services',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminPagesRoute = AuthenticatedAdminPagesRouteImport.update({
   id: '/pages',
   path: '/pages',
@@ -217,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
@@ -247,6 +255,7 @@ export interface FileRoutesByTo {
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
@@ -279,6 +288,7 @@ export interface FileRoutesById {
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
@@ -311,6 +321,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/admin/gateways'
     | '/admin/pages'
+    | '/admin/sarkar-services'
     | '/admin/site'
     | '/api/public/paytm-return'
   fileRoutesByTo: FileRoutesByTo
@@ -341,6 +352,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/admin/gateways'
     | '/admin/pages'
+    | '/admin/sarkar-services'
     | '/admin/site'
     | '/api/public/paytm-return'
   id:
@@ -372,6 +384,7 @@ export interface FileRouteTypes {
     | '/_authenticated/wallet'
     | '/_authenticated/admin/gateways'
     | '/_authenticated/admin/pages'
+    | '/_authenticated/admin/sarkar-services'
     | '/_authenticated/admin/site'
     | '/api/public/paytm-return'
   fileRoutesById: FileRoutesById
@@ -581,6 +594,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSiteRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/sarkar-services': {
+      id: '/_authenticated/admin/sarkar-services'
+      path: '/sarkar-services'
+      fullPath: '/admin/sarkar-services'
+      preLoaderRoute: typeof AuthenticatedAdminSarkarServicesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/pages': {
       id: '/_authenticated/admin/pages'
       path: '/pages'
@@ -601,12 +621,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminGatewaysRoute: typeof AuthenticatedAdminGatewaysRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
+  AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminGatewaysRoute: AuthenticatedAdminGatewaysRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
+  AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,
 }
 

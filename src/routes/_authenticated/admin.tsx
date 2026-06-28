@@ -4,10 +4,12 @@ import {
   FileEdit,
   CreditCard,
   SlidersHorizontal,
+  Landmark,
   Users,
   ShieldCheck,
   LayoutGrid,
 } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 
@@ -32,8 +34,10 @@ const SECTIONS: Section[] = [
   { to: "/admin/pages", label: "Page Content", icon: FileEdit },
   { to: "/admin/gateways", label: "Payment Gateways", icon: CreditCard },
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
+  { to: "/admin/sarkar-services", label: "Aaple Sarkar", icon: Landmark },
   { to: "/members", label: "Members & KYC", icon: Users },
 ];
+
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -104,5 +108,7 @@ const DESC = {
   "/admin/pages": "Edit About, Privacy, Terms, Refund and home hero copy live.",
   "/admin/gateways": "Configure Paytm, Razorpay and Cashfree — toggle test/live and the primary processor.",
   "/manage-services": "Service price, retailer & distributor commission, API provider and live endpoint.",
+  "/admin/sarkar-services": "Aaple Sarkar certificates — pricing, descriptions, extra fields and required documents.",
   "/members": "Create accounts, change email, reset password, upload photo & KYC documents.",
 } as const;
+
