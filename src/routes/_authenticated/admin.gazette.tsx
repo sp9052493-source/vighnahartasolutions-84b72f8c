@@ -16,7 +16,13 @@ import {
   IndianRupee,
   AlertCircle,
 } from "lucide-react";
-import { adminGetGazette, adminSaveGazette } from "@/lib/gazette-admin.functions";
+import {
+  adminGetGazette,
+  adminSaveGazette,
+  adminUploadGazetteSample,
+  adminDeleteGazetteSample,
+} from "@/lib/gazette-admin.functions";
+import { FileDown, Upload, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
