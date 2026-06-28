@@ -382,6 +382,33 @@ function GazettePage() {
         />
       </div>
 
+      {sample?.url && (
+        <a
+          href={sample.url}
+          target="_blank"
+          rel="noreferrer"
+          className="group flex items-center justify-between gap-3 rounded-xl border border-[oklch(0.68_0.18_55)]/30 bg-[oklch(0.68_0.18_55)]/5 p-4 transition-colors hover:border-[oklch(0.68_0.18_55)]/60 hover:bg-[oklch(0.68_0.18_55)]/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[linear-gradient(135deg,oklch(0.68_0.18_55),oklch(0.55_0.17_40))] text-white">
+              <FileDown className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-[oklch(0.55_0.17_40)]">
+                Sample / Demo Document
+              </div>
+              <div className="text-[13.5px] font-semibold leading-tight">
+                Download {sample.name || "sample form"}
+              </div>
+              <div className="text-[11.5px] text-muted-foreground">
+                Reference filled-format issued by Gazette office.
+              </div>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-[oklch(0.55_0.17_40)] transition-transform group-hover:translate-x-1" />
+        </a>
+      )}
+
       {/* 1 — Type of Change */}
       <Card className="p-5 shadow-card">
         <SectionHeading n={1} title="Type of Change" subtitle="Select what needs to be officially published." />
