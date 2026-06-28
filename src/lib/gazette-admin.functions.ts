@@ -161,6 +161,8 @@ export const adminSaveGazette = createServerFn({ method: "POST" })
         config: {
           ...existingCfg,
           change_types: data.change_types,
+          turnaround_text: data.turnaround_text,
+          payment_options: data.payment_options,
         } as any,
       })
       .eq("type", GAZETTE_TYPE);
