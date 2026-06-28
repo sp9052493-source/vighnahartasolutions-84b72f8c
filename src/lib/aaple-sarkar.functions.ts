@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getSarkarService } from "@/lib/aaple-sarkar.shared";
 
 const TABLE = "aaple_sarkar_applications";
 
@@ -45,6 +46,10 @@ export const submitAapleSarkarApplication = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId, supabase } = context;
 
+    const svc = getSarkarService(data.serviceType);
+    if (!svc) throw new Error("Selected service is not available.");
+    const price = Number(svc.price || 0);
+
     const { data: profile } = await supabase
       .from("profiles")
       .select("status")
@@ -56,6 +61,22 @@ export const submitAapleSarkarApplication = createServerFn({ method: "POST" })
 
     const { uploadDocumentPdf } = await import("@/lib/documents.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Debit wallet first (atomic, raises INSUFFICIENT_BALANCE)
+    if (price > 0) {
+      const { error: debitErr } = await supabaseAdmin.rpc("admin_adjust_wallet", {
+        p_user_id: userId,
+        p_amount: -price,
+        p_description: `Aaple Sarkar: ${svc.en}`,
+      });
+      if (debitErr) {
+        if (String(debitErr.message).includes("INSUFFICIENT_BALANCE")) {
+          throw new Error("Insufficient wallet balance. Please recharge and try again.");
+        }
+        console.error("[AAPLE-SARKAR] wallet debit failed:", debitErr.message);
+        throw new Error("Could not process payment from wallet.");
+      }
+    }
 
     const stored: { name: string; path: string }[] = [];
     for (const doc of data.documents) {
@@ -84,17 +105,26 @@ export const submitAapleSarkarApplication = createServerFn({ method: "POST" })
         purpose: data.purpose || null,
         notes: data.notes || null,
         documents: stored,
+        cost: price,
         status: "submitted",
       })
       .select()
       .single();
 
     if (error) {
+      // Best-effort refund if insert fails after debit
+      if (price > 0) {
+        await supabaseAdmin.rpc("admin_adjust_wallet", {
+          p_user_id: userId,
+          p_amount: price,
+          p_description: `Refund: Aaple Sarkar submission failed (${svc.en})`,
+        });
+      }
       console.error("[AAPLE-SARKAR] insert failed:", error.message);
       throw new Error("Could not submit your application. Please try again.");
     }
 
-    return { id: row.id, receiptNo, status: row.status };
+    return { id: row.id, receiptNo, status: row.status, charged: price };
   });
 
 export const listMyAapleSarkar = createServerFn({ method: "GET" })
