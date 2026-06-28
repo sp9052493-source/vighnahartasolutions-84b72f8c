@@ -90,13 +90,13 @@ function AdminHome() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {SECTIONS.filter((s) => !s.exact).map((s) => (
-        <Link key={s.key ?? s.to} to={s.to} hash={s.hash}>
+        <Link key={s.to} to={s.to}>
           <Card className="group h-full p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <s.icon className="h-5 w-5" />
             </div>
             <h3 className="mt-4 font-display text-lg font-bold">{s.label}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{DESC[(s.key ?? s.to) as keyof typeof DESC]}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{DESC[s.to as keyof typeof DESC]}</p>
             <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary group-hover:underline">
               Open →
             </div>
