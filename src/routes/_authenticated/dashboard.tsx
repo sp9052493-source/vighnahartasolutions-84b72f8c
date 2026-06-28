@@ -178,19 +178,13 @@ function MemberDashboard({ greeting, balance }: { greeting: string; balance: num
         </div>
       </div>
 
-      {/* Stat grid — 4 cols */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+      {/* Stat grid — balance is shown in the header; here we focus on activity */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
         <FastStat
-          label="Opening Balance"
-          value={formatINR(balance)}
-          icon={Wallet}
+          label="Today's Requests"
+          value={String(today)}
+          icon={FileStack}
           tone="blue"
-        />
-        <FastStat
-          label="Closing Balance"
-          value={formatINR(balance)}
-          icon={CloudUpload}
-          tone="rose"
         />
         <FastStat
           label="Success Transaction"
@@ -211,16 +205,10 @@ function MemberDashboard({ greeting, balance }: { greeting: string; balance: num
           tone="amber"
         />
         <FastStat
-          label="Credit Balance"
-          value={formatINR(0)}
-          icon={CreditCard}
-          tone="rose"
-        />
-        <FastStat
-          label="Today's Earning"
+          label="Today's Spend"
           value={formatINR(todaySpent)}
           icon={TrendingUp}
-          tone="green"
+          tone="rose"
         />
         <FastStat
           label="Total Txn Count"
@@ -229,6 +217,7 @@ function MemberDashboard({ greeting, balance }: { greeting: string; balance: num
           tone="slate"
         />
       </div>
+
 
       {/* Transactions */}
       <Card className="overflow-hidden border-border bg-card shadow-card">

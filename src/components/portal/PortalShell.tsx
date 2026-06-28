@@ -170,28 +170,8 @@ function Brand() {
   );
 }
 
-function WalletCard({ balance }: { balance: number }) {
-  return (
-    <div className="relative mx-3 mb-4 overflow-hidden rounded-xl border border-[oklch(0.76_0.16_64_/_0.25)] bg-[linear-gradient(135deg,oklch(0.30_0.08_262)_0%,oklch(0.22_0.07_262)_100%)] p-4 shadow-[inset_0_1px_0_oklch(1_0_0_/_0.08),0_10px_30px_-20px_oklch(0_0_0_/_0.8)]">
-      <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[oklch(0.76_0.16_64_/_0.2)] blur-2xl" />
-      <div className="relative flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-sidebar-foreground/55">Wallet Balance</span>
-        <span className="flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wider text-[oklch(0.82_0.17_64)]">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[oklch(0.82_0.17_64)]" /> LIVE
-        </span>
-      </div>
-      <div className="relative mt-1.5 font-display text-2xl font-extrabold tabular-nums text-[oklch(0.92_0.05_85)]">
-        {formatINR(balance)}
-      </div>
-      <Link
-        to="/recharge"
-        className="relative mt-2.5 flex items-center justify-center gap-1.5 rounded-md bg-[oklch(0.76_0.16_64)] py-1.5 text-[11px] font-bold uppercase tracking-wide text-[oklch(0.22_0.06_60)] transition-all hover:bg-[oklch(0.80_0.17_64)] hover:shadow-lg active:scale-[0.98]"
-      >
-        <Plus className="h-3 w-3" /> Add Money
-      </Link>
-    </div>
-  );
-}
+// Wallet balance is shown once in the top header (right side) to avoid duplication.
+
 
 function useClock() {
   const [now, setNow] = useState(() => new Date());
@@ -220,7 +200,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
   const sidebarBody = (
     <div className="flex h-full flex-col bg-[linear-gradient(180deg,oklch(0.25_0.08_262)_0%,oklch(0.19_0.07_262)_100%)]">
       <Brand />
-      <WalletCard balance={me?.balance ?? 0} />
+
       <div className="flex-1 overflow-y-auto">
         <NavGroups role={role} onNavigate={() => setOpen(false)} />
       </div>
@@ -296,16 +276,23 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 <div className="font-display text-[13px] font-bold tabular-nums text-foreground">{timeStr} IST</div>
               </div>
 
-              {/* Balance pill */}
-              <div className="hidden h-11 items-center gap-2.5 rounded-lg border border-[oklch(0.76_0.16_64_/_0.3)] bg-[linear-gradient(135deg,oklch(0.98_0.02_85),oklch(0.96_0.04_75))] px-3.5 sm:flex">
+              {/* Balance pill — single source of truth for wallet balance */}
+              <Link
+                to="/recharge"
+                className="group hidden h-11 items-center gap-2.5 rounded-lg border border-[oklch(0.76_0.16_64_/_0.35)] bg-[linear-gradient(135deg,oklch(0.98_0.02_85),oklch(0.95_0.05_75))] px-3 transition-all hover:shadow-md sm:flex"
+              >
                 <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[oklch(0.76_0.16_64)] text-[oklch(0.22_0.06_60)]">
                   <Wallet className="h-3.5 w-3.5" />
                 </div>
                 <div className="text-right leading-tight">
-                  <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[oklch(0.45_0.10_60)]">Balance</div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[oklch(0.45_0.10_60)]">Wallet Balance</div>
                   <div className="font-display text-[14px] font-extrabold tabular-nums text-[oklch(0.30_0.08_60)]">{formatINR(me?.balance ?? 0)}</div>
                 </div>
-              </div>
+                <span className="ml-1 flex h-7 w-7 items-center justify-center rounded-md bg-[oklch(0.30_0.08_262)] text-[oklch(0.92_0.05_85)] transition-transform group-hover:scale-105">
+                  <Plus className="h-3.5 w-3.5" />
+                </span>
+              </Link>
+
 
               {/* Notifications */}
               <Button variant="outline" size="icon" className="relative h-11 w-11 rounded-lg border-border bg-background">
