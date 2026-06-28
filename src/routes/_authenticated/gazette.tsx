@@ -154,8 +154,12 @@ function GazettePage() {
   const { data: me } = useMe();
   const balance = me?.balance ?? 0;
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { draft: draftIdFromUrl } = useSearch({ from: "/_authenticated/gazette" });
   const getSvcFn = useServerFn(getSarkarServiceByType);
   const submitFn = useServerFn(submitAapleSarkarApplication);
+  const getDraftFn = useServerFn(getDraft);
+  const deleteDraftFn = useServerFn(deleteDraft);
 
   const { data: service, isLoading: svcLoading } = useQuery({
     queryKey: ["sarkar-service", "gazette"],
@@ -168,6 +172,27 @@ function GazettePage() {
   const [docMap, setDocMap] = useState<Record<string, FileItem | null>>({});
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [receipt, setReceipt] = useState<{ receiptNo: string; charged: number } | null>(null);
+  const [draftId, setDraftId] = useState<string | undefined>(draftIdFromUrl);
+
+  // Hydrate from draft when arriving with ?draft=<id>
+  useEffect(() => {
+    if (!draftIdFromUrl) return;
+    setDraftId(draftIdFromUrl);
+    let cancelled = false;
+    getDraftFn({ data: { id: draftIdFromUrl } })
+      .then((row) => {
+        if (cancelled || !row) return;
+        const data = (row.form_data || {}) as { form?: any; extra?: Record<string, string> };
+        if (data.form) setForm((p) => ({ ...p, ...data.form }));
+        if (data.extra) setExtra(data.extra);
+        toast.success("Draft loaded — files must be re-attached");
+      })
+      .catch((e: any) => toast.error(e?.message || "Could not load draft"));
+    return () => {
+      cancelled = true;
+    };
+  }, [draftIdFromUrl, getDraftFn]);
+
 
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm((p) => ({ ...p, [k]: v }));
@@ -213,11 +238,20 @@ function GazettePage() {
 
   const mut = useMutation({
     mutationFn: (vars: any) => submitFn({ data: vars }),
-    onSuccess: (res: any) => {
+    onSuccess: async (res: any) => {
       setReceipt({ receiptNo: res.receiptNo, charged: Number(res.charged || 0) });
       queryClient.invalidateQueries({ queryKey: ["me"] });
       queryClient.invalidateQueries({ queryKey: ["my-aaple-sarkar"] });
       queryClient.invalidateQueries({ queryKey: ["my-transactions"] });
+      // Clean up the draft, if any
+      if (draftId) {
+        try {
+          await deleteDraftFn({ data: { id: draftId } });
+          queryClient.invalidateQueries({ queryKey: ["my-drafts"] });
+        } catch {}
+        setDraftId(undefined);
+        navigate({ to: "/gazette", search: {} });
+      }
       toast.success("Gazette application submitted");
       setConfirmOpen(false);
       setForm({ ...EMPTY_FORM });
