@@ -1,0 +1,1 @@
+ALTER TABLE public.aaple_sarkar_applications ADD COLUMN IF NOT EXISTS charged BOOLEAN NOT NULL DEFAULT FALSE;
