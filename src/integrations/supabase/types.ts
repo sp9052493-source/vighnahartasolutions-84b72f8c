@@ -142,6 +142,48 @@ export type Database = {
           },
         ]
       }
+      payment_gateways: {
+        Row: {
+          display_name: string
+          enabled: boolean
+          extra: Json
+          is_primary: boolean
+          key_id_public: string | null
+          merchant_id: string | null
+          mode: string
+          provider: string
+          secret_key_name: string | null
+          updated_at: string
+          webhook_url: string | null
+        }
+        Insert: {
+          display_name: string
+          enabled?: boolean
+          extra?: Json
+          is_primary?: boolean
+          key_id_public?: string | null
+          merchant_id?: string | null
+          mode?: string
+          provider: string
+          secret_key_name?: string | null
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Update: {
+          display_name?: string
+          enabled?: boolean
+          extra?: Json
+          is_primary?: boolean
+          key_id_public?: string | null
+          merchant_id?: string | null
+          mode?: string
+          provider?: string
+          secret_key_name?: string | null
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
       payment_orders: {
         Row: {
           amount: number
@@ -190,8 +232,12 @@ export type Database = {
           created_at: string
           full_name: string
           id: string
+          kyc_aadhaar_url: string | null
+          kyc_extra_url: string | null
+          kyc_pan_url: string | null
           parent_id: string | null
           phone: string | null
+          photo_url: string | null
           status: string
           updated_at: string
         }
@@ -200,8 +246,12 @@ export type Database = {
           created_at?: string
           full_name?: string
           id: string
+          kyc_aadhaar_url?: string | null
+          kyc_extra_url?: string | null
+          kyc_pan_url?: string | null
           parent_id?: string | null
           phone?: string | null
+          photo_url?: string | null
           status?: string
           updated_at?: string
         }
@@ -210,8 +260,12 @@ export type Database = {
           created_at?: string
           full_name?: string
           id?: string
+          kyc_aadhaar_url?: string | null
+          kyc_extra_url?: string | null
+          kyc_pan_url?: string | null
           parent_id?: string | null
           phone?: string | null
+          photo_url?: string | null
           status?: string
           updated_at?: string
         }
@@ -271,6 +325,99 @@ export type Database = {
           price?: number
           retailer_commission?: number
           sort_order?: number
+        }
+        Relationships: []
+      }
+      site_pages: {
+        Row: {
+          content_md: string
+          meta_description: string | null
+          slug: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content_md?: string
+          meta_description?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content_md?: string
+          meta_description?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          brand_tagline: string | null
+          business_hours: string | null
+          city: string | null
+          company_name: string
+          contact_email: string | null
+          country: string | null
+          favicon_url: string | null
+          gst_number: string | null
+          id: string
+          logo_url: string | null
+          phone: string | null
+          pincode: string | null
+          social: Json
+          state: string | null
+          support_email: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          brand_tagline?: string | null
+          business_hours?: string | null
+          city?: string | null
+          company_name?: string
+          contact_email?: string | null
+          country?: string | null
+          favicon_url?: string | null
+          gst_number?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          pincode?: string | null
+          social?: Json
+          state?: string | null
+          support_email?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          brand_tagline?: string | null
+          business_hours?: string | null
+          city?: string | null
+          company_name?: string
+          contact_email?: string | null
+          country?: string | null
+          favicon_url?: string | null
+          gst_number?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          pincode?: string | null
+          social?: Json
+          state?: string | null
+          support_email?: string | null
+          updated_at?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
