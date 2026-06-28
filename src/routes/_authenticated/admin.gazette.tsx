@@ -23,7 +23,11 @@ import {
   adminDeleteGazetteSample,
   adminListGazetteApplications,
 } from "@/lib/gazette-admin.functions";
-import { FileDown, Upload, X, Clock, CreditCard, Inbox } from "lucide-react";
+import {
+  adminGetAapleSarkarDetail,
+  adminUpdateAapleSarkar,
+} from "@/lib/aaple-sarkar.functions";
+import { FileDown, Upload, X, Clock, CreditCard, Inbox, ExternalLink } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,6 +37,15 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
