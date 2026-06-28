@@ -47,8 +47,12 @@ function StatCard({
         <Icon className="h-5 w-5" />
       </div>
       <div className="min-w-0">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
-        <div className="font-display text-2xl font-extrabold tracking-tight">{value}</div>
+        <div className="text-[11px] font-semibold uppercase leading-none tracking-[0.16em] text-muted-foreground">
+          {label}
+        </div>
+        <div className="mt-1.5 font-display text-[1.65rem] font-extrabold leading-[1.05] tracking-tight text-foreground tabular-nums">
+          {value}
+        </div>
       </div>
     </Card>
   );
