@@ -4,10 +4,12 @@ import {
   FileEdit,
   CreditCard,
   SlidersHorizontal,
+  Landmark,
   Users,
   ShieldCheck,
   LayoutGrid,
 } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 
