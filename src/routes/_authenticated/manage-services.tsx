@@ -353,8 +353,8 @@ function ServiceDialog({
     setForm((prev) => ({ ...prev, [k]: v }));
   }
 
-  const mut = useMutation({
-    mutationFn: () => {
+  const mut = useMutation<{ ok?: boolean; id?: string }, Error>({
+    mutationFn: async () => {
       const payload = toPayload(form);
       if (mode === "edit" && serviceId) {
         return updateFn({ data: { ...payload, id: serviceId } });
