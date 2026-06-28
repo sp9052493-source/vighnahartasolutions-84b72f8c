@@ -65,6 +65,9 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
   if (error || !data) throw new Error("Forbidden: admin access required");
 }
 
+// Services rendered on their own dedicated portal page (excluded from the Aaple Sarkar grid)
+const STANDALONE_TYPES = ["gazette"] as const;
+
 export const listSarkarServices = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -72,10 +75,25 @@ export const listSarkarServices = createServerFn({ method: "GET" })
       .from(TABLE)
       .select("*")
       .eq("active", true)
+      .not("type", "in", `(${STANDALONE_TYPES.map((t) => `"${t}"`).join(",")})`)
       .order("sort_order", { ascending: true })
       .order("name_en", { ascending: true });
     if (error) throw new Error(error.message);
     return (data || []).map(rowToService);
+  });
+
+export const getSarkarServiceByType = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ type: z.string().trim().min(1).max(40) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from(TABLE)
+      .select("*")
+      .eq("type", data.type)
+      .eq("active", true)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return row ? rowToService(row) : null;
   });
 
 export const adminListSarkarServices = createServerFn({ method: "GET" })
