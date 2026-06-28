@@ -71,11 +71,16 @@ function AdminLayout() {
 
       <nav className="flex flex-wrap gap-2 rounded-xl border border-border bg-card p-2 shadow-card">
         {SECTIONS.map((s) => {
-          const active = s.exact ? pathname === s.to : pathname.startsWith(s.to);
+          const active = s.exact
+            ? pathname === s.to
+            : s.hash
+              ? false
+              : pathname.startsWith(s.to);
           return (
             <Link
-              key={s.to}
+              key={s.key ?? s.to}
               to={s.to}
+              hash={s.hash}
               className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 active
                   ? "bg-primary text-primary-foreground shadow-sm"
@@ -97,7 +102,7 @@ function AdminHome() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {SECTIONS.filter((s) => !s.exact).map((s) => (
-        <Link key={s.to} to={s.to}>
+        <Link key={s.key ?? s.to} to={s.to} hash={s.hash}>
           <Card className="group h-full p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <s.icon className="h-5 w-5" />
