@@ -1,9 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, TrendingUp, FileText, Wallet, CalendarDays, CheckCircle2 } from "lucide-react";
+import { Loader2, TrendingUp, FileText, Wallet, CalendarDays, CheckCircle2, Mail, KeyRound, Upload, ImageIcon } from "lucide-react";
 import { adminMemberDetail, adminUpdateUser } from "@/lib/admin.functions";
+import {
+  adminChangeUserEmail,
+  adminResetUserPassword,
+  adminUploadUserAsset,
+} from "@/lib/admin-user.functions";
 import { formatINR } from "@/lib/queries";
 import {
   Sheet,
@@ -71,9 +76,10 @@ export function MemberDetailSheet({
           </div>
         ) : (
           <Tabs defaultValue="performance" className="mt-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="performance">Performance</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="performance">Stats</TabsTrigger>
               <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
             </TabsList>
 
@@ -88,6 +94,10 @@ export function MemberDetailSheet({
                 distributors={distributors}
                 onSaved={() => onOpenChange(false)}
               />
+            </TabsContent>
+
+            <TabsContent value="account" className="mt-4">
+              <AccountTab member={member!} profile={data.profile} />
             </TabsContent>
 
             <TabsContent value="activity" className="mt-4">
@@ -258,6 +268,120 @@ function DetailsTab({
         Save details
       </Button>
     </form>
+  );
+}
+
+function AccountTab({ member, profile }: { member: Member; profile: any }) {
+  const emailFn = useServerFn(adminChangeUserEmail);
+  const pwFn = useServerFn(adminResetUserPassword);
+  const uploadFn = useServerFn(adminUploadUserAsset);
+  const queryClient = useQueryClient();
+  const [email, setEmail] = useState(member.email);
+  const [pw, setPw] = useState("");
+
+  const emailMut = useMutation({
+    mutationFn: () => emailFn({ data: { userId: member.id, email: email.trim() } }),
+    onSuccess: () => {
+      toast.success("Email updated");
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Failed"),
+  });
+
+  const pwMut = useMutation({
+    mutationFn: () => pwFn({ data: { userId: member.id, password: pw } }),
+    onSuccess: () => {
+      toast.success("Password reset. Share with the user securely.");
+      setPw("");
+    },
+    onError: (e: any) => toast.error(e?.message || "Failed"),
+  });
+
+  async function uploadAsset(field: "photo_url" | "kyc_aadhaar_url" | "kyc_pan_url", file: File) {
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Max 5 MB");
+      return;
+    }
+    const base64 = await new Promise<string>((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(String(r.result).split(",")[1] || "");
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
+    try {
+      await uploadFn({ data: { userId: member.id, field, filename: file.name, contentType: file.type, base64 } });
+      toast.success("Uploaded");
+      queryClient.invalidateQueries({ queryKey: ["member-detail", member.id] });
+    } catch (e: any) {
+      toast.error(e?.message || "Upload failed");
+    }
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-lg border border-border p-4">
+        <h4 className="flex items-center gap-2 text-sm font-semibold"><Mail className="h-4 w-4" /> Change email</h4>
+        <div className="mt-3 flex gap-2">
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
+          <Button onClick={() => emailMut.mutate()} disabled={emailMut.isPending || !email.trim()}>
+            {emailMut.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Save
+          </Button>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-border p-4">
+        <h4 className="flex items-center gap-2 text-sm font-semibold"><KeyRound className="h-4 w-4" /> Reset password</h4>
+        <div className="mt-3 flex gap-2">
+          <Input value={pw} onChange={(e) => setPw(e.target.value)} placeholder="New password (min 6 chars)" type="text" />
+          <Button onClick={() => pwMut.mutate()} disabled={pwMut.isPending || pw.length < 6}>
+            {pwMut.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Reset
+          </Button>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-border p-4">
+        <h4 className="flex items-center gap-2 text-sm font-semibold"><ImageIcon className="h-4 w-4" /> Profile photo</h4>
+        <AssetRow label="Profile photo" url={profile?.photo_url} onPick={(f) => uploadAsset("photo_url", f)} accept="image/*" />
+      </div>
+
+      <div className="rounded-lg border border-border p-4">
+        <h4 className="flex items-center gap-2 text-sm font-semibold"><Upload className="h-4 w-4" /> KYC documents</h4>
+        <AssetRow label="Aadhaar" url={profile?.kyc_aadhaar_url} onPick={(f) => uploadAsset("kyc_aadhaar_url", f)} accept="image/*,application/pdf" />
+        <AssetRow label="PAN" url={profile?.kyc_pan_url} onPick={(f) => uploadAsset("kyc_pan_url", f)} accept="image/*,application/pdf" />
+      </div>
+    </div>
+  );
+}
+
+function AssetRow({ label, url, onPick, accept }: { label: string; url?: string; onPick: (f: File) => void; accept: string }) {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <div className="mt-3 flex items-center justify-between gap-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+      <div className="min-w-0">
+        <div className="font-medium">{label}</div>
+        {url ? (
+          <a href={url} target="_blank" rel="noreferrer" className="block truncate text-xs text-primary hover:underline">
+            View uploaded file
+          </a>
+        ) : (
+          <div className="text-xs text-muted-foreground">Not uploaded</div>
+        )}
+      </div>
+      <input
+        ref={ref}
+        type="file"
+        accept={accept}
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onPick(f);
+          e.target.value = "";
+        }}
+      />
+      <Button size="sm" variant="outline" onClick={() => ref.current?.click()}>
+        <Upload className="mr-1 h-3.5 w-3.5" /> {url ? "Replace" : "Upload"}
+      </Button>
+    </div>
   );
 }
 
