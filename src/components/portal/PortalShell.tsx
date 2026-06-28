@@ -10,6 +10,7 @@ import {
   Menu,
   LogOut,
   FileStack,
+  FileClock,
   Car,
   CreditCard,
   IdCard,
@@ -57,6 +58,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Accounts & Wallet",
     items: [
       { to: "/requests", label: "My Requests", icon: FileText, roles: ["distributor", "retailer"] },
+      { to: "/drafts", label: "Drafts", icon: FileClock, roles: ["distributor", "retailer"] },
       { to: "/wallet", label: "Wallet", icon: Wallet, roles: ["admin", "distributor", "retailer"] },
       { to: "/recharge", label: "Add Money", icon: CreditCard, roles: ["distributor", "retailer"] },
       { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
