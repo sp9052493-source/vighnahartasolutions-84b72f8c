@@ -20,6 +20,7 @@ export type Database = {
           admin_remarks: string | null
           applicant_name: string
           applicant_name_mr: string | null
+          charged: boolean
           cost: number
           created_at: string
           district: string | null
@@ -45,6 +46,7 @@ export type Database = {
           admin_remarks?: string | null
           applicant_name: string
           applicant_name_mr?: string | null
+          charged?: boolean
           cost?: number
           created_at?: string
           district?: string | null
@@ -70,6 +72,7 @@ export type Database = {
           admin_remarks?: string | null
           applicant_name?: string
           applicant_name_mr?: string | null
+          charged?: boolean
           cost?: number
           created_at?: string
           district?: string | null
