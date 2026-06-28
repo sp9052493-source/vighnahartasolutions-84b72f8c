@@ -1,9 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, TrendingUp, FileText, Wallet, CalendarDays, CheckCircle2 } from "lucide-react";
+import { Loader2, TrendingUp, FileText, Wallet, CalendarDays, CheckCircle2, Mail, KeyRound, Upload, ImageIcon } from "lucide-react";
 import { adminMemberDetail, adminUpdateUser } from "@/lib/admin.functions";
+import {
+  adminChangeUserEmail,
+  adminResetUserPassword,
+  adminUploadUserAsset,
+} from "@/lib/admin-user.functions";
 import { formatINR } from "@/lib/queries";
 import {
   Sheet,
@@ -71,9 +76,10 @@ export function MemberDetailSheet({
           </div>
         ) : (
           <Tabs defaultValue="performance" className="mt-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="performance">Performance</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="performance">Stats</TabsTrigger>
               <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
             </TabsList>
 
@@ -88,6 +94,10 @@ export function MemberDetailSheet({
                 distributors={distributors}
                 onSaved={() => onOpenChange(false)}
               />
+            </TabsContent>
+
+            <TabsContent value="account" className="mt-4">
+              <AccountTab member={member!} profile={data.profile} />
             </TabsContent>
 
             <TabsContent value="activity" className="mt-4">
