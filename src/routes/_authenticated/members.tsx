@@ -126,6 +126,13 @@ function AdminMembers() {
                   </td>
                 </tr>
               )}
+              {!isLoading && (users ?? []).length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-5 py-14 text-center text-sm text-muted-foreground">
+                    No retailer or distributor accounts yet. Click <b>New Account</b> to add the first one.
+                  </td>
+                </tr>
+              )}
               {(users ?? []).map((u) => (
                 <tr key={u.id}>
                   <td className="px-5 py-3">
