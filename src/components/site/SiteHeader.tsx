@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/sevakart-logo.png";
+import logo from "@/assets/vighnaharta-logo.png.asset.json";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -20,7 +20,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 lg:px-6">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src={logo} alt="Vighnaharta Solutions logo" width={40} height={40} className="h-10 w-10 object-contain" />
+          <img src={logo.url} alt="Vighnaharta Solutions logo" width={40} height={40} className="h-10 w-10 object-contain" />
           <div className="leading-tight">
             <div className="font-display text-base font-bold">Vighnaharta Solutions</div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Powered by Vighnaharta Group Limited</div>
