@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -18,7 +18,8 @@ import {
   ShieldCheck as ShieldCheckIcon,
   Search,
   Plus,
-  Headphones,
+  Bell,
+  ChevronRight,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
@@ -30,23 +31,47 @@ import { cn } from "@/lib/utils";
 import logo from "@/assets/vighnaharta-logo.png.asset.json";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles: AppRole[] };
+type NavGroup = { label: string; items: NavItem[] };
 
-const NAV: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "distributor", "retailer"] },
-  { to: "/services", label: "Services", icon: FileStack, roles: ["distributor", "retailer"] },
-  { to: "/rc-print", label: "Vehicle RC Print", icon: Car, roles: ["distributor", "retailer"] },
-  { to: "/dl-print", label: "Driving Licence Print", icon: IdCard, roles: ["distributor", "retailer"] },
-  { to: "/ration-print", label: "Ration Card Print", icon: Wheat, roles: ["distributor", "retailer"] },
-  { to: "/aadhaar-to-pan", label: "Aadhaar to PAN", icon: CreditCard, roles: ["distributor", "retailer"] },
-  { to: "/aaple-sarkar", label: "Aaple Sarkar", icon: Landmark, roles: ["distributor", "retailer"] },
-  { to: "/requests", label: "My Requests", icon: FileText, roles: ["distributor", "retailer"] },
-  { to: "/wallet", label: "Wallet", icon: Wallet, roles: ["admin", "distributor", "retailer"] },
-  { to: "/recharge", label: "Wallet Recharge", icon: CreditCard, roles: ["distributor", "retailer"] },
-  { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
-  { to: "/admin", label: "Admin Control", icon: ShieldCheckIcon, roles: ["admin"] },
-  { to: "/manage-services", label: "Service Pricing", icon: SlidersHorizontal, roles: ["admin"] },
-  { to: "/aaple-sarkar-requests", label: "Aaple Sarkar Desk", icon: Landmark, roles: ["admin"] },
-  { to: "/settings", label: "Settings", icon: Settings, roles: ["admin", "distributor", "retailer"] },
+const NAV_GROUPS: NavGroup[] = [
+  {
+    label: "Overview",
+    items: [
+      { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "distributor", "retailer"] },
+      { to: "/services", label: "All Services", icon: FileStack, roles: ["distributor", "retailer"] },
+    ],
+  },
+  {
+    label: "Document Services",
+    items: [
+      { to: "/rc-print", label: "Vehicle RC Print", icon: Car, roles: ["distributor", "retailer"] },
+      { to: "/dl-print", label: "Driving Licence", icon: IdCard, roles: ["distributor", "retailer"] },
+      { to: "/ration-print", label: "Ration Card", icon: Wheat, roles: ["distributor", "retailer"] },
+      { to: "/aadhaar-to-pan", label: "Aadhaar → PAN", icon: CreditCard, roles: ["distributor", "retailer"] },
+      { to: "/aaple-sarkar", label: "Aaple Sarkar", icon: Landmark, roles: ["distributor", "retailer"] },
+    ],
+  },
+  {
+    label: "Accounts & Wallet",
+    items: [
+      { to: "/requests", label: "My Requests", icon: FileText, roles: ["distributor", "retailer"] },
+      { to: "/wallet", label: "Wallet", icon: Wallet, roles: ["admin", "distributor", "retailer"] },
+      { to: "/recharge", label: "Add Money", icon: CreditCard, roles: ["distributor", "retailer"] },
+      { to: "/members", label: "Members", icon: Users, roles: ["admin", "distributor"] },
+    ],
+  },
+  {
+    label: "Administration",
+    items: [
+      { to: "/admin", label: "Admin Control", icon: ShieldCheckIcon, roles: ["admin"] },
+      { to: "/manage-services", label: "Service Pricing", icon: SlidersHorizontal, roles: ["admin"] },
+      { to: "/aaple-sarkar-requests", label: "Aaple Sarkar Desk", icon: Landmark, roles: ["admin"] },
+    ],
+  },
+  {
+    label: "Account",
+    items: [{ to: "/settings", label: "Settings", icon: Settings, roles: ["admin", "distributor", "retailer"] }],
+  },
 ];
 
 const ROLE_LABEL: Record<AppRole, string> = {
@@ -55,61 +80,126 @@ const ROLE_LABEL: Record<AppRole, string> = {
   retailer: "Retailer",
 };
 
-function NavLinks({ role, onNavigate }: { role: AppRole; onNavigate?: () => void }) {
+function NavGroups({ role, onNavigate }: { role: AppRole; onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <nav className="flex flex-col gap-1 px-3">
-      {NAV.filter((n) => n.roles.includes(role)).map((item) => {
-        const active = pathname === item.to;
+    <nav className="flex flex-col gap-5 px-3 pb-6">
+      {NAV_GROUPS.map((group) => {
+        const visible = group.items.filter((i) => i.roles.includes(role));
+        if (!visible.length) return null;
         return (
-          <Link
-            key={item.to}
-            to={item.to}
-            onClick={onNavigate}
-            className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-medium transition-colors",
-              active
-                ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
-                : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-            )}
-          >
-            <item.icon className="h-5 w-5 shrink-0" />
-            {item.label}
-          </Link>
+          <div key={group.label}>
+            <div className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-sidebar-foreground/40">
+              {group.label}
+            </div>
+            <div className="flex flex-col gap-0.5">
+              {visible.map((item) => {
+                const active = pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={onNavigate}
+                    className={cn(
+                      "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-all duration-200",
+                      active
+                        ? "bg-[oklch(0.33_0.08_262)] text-sidebar-foreground shadow-[inset_0_1px_0_oklch(1_0_0_/_0.06)]"
+                        : "text-sidebar-foreground/70 hover:bg-[oklch(0.31_0.08_262)] hover:text-sidebar-foreground hover:translate-x-[2px]",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-[oklch(0.76_0.16_64)] transition-all duration-300",
+                        active ? "opacity-100" : "opacity-0 group-hover:opacity-60",
+                      )}
+                    />
+                    <item.icon className={cn("h-[18px] w-[18px] shrink-0 transition-colors", active && "text-[oklch(0.82_0.17_64)]")} />
+                    <span className="flex-1 truncate">{item.label}</span>
+                    {active && <ChevronRight className="h-3.5 w-3.5 text-sidebar-foreground/60" />}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         );
       })}
     </nav>
   );
 }
 
+function TricolorRibbon() {
+  return (
+    <div className="flex h-1 w-full">
+      <div className="h-full flex-1 bg-[#FF9933]" />
+      <div className="h-full flex-1 bg-white" />
+      <div className="h-full flex-1 bg-[#138808]" />
+    </div>
+  );
+}
+
 function Brand() {
   return (
-    <div className="relative overflow-hidden border-b border-sidebar-border/60">
-      <div className="absolute inset-x-0 top-0 h-1 bg-accent-gradient" />
-      <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[oklch(0.76_0.16_64_/_0.18)] blur-3xl" />
-      <div className="relative flex flex-col items-center gap-3 px-5 pb-6 pt-7 text-center">
-        <div className="rounded-2xl bg-white p-2 shadow-[0_8px_24px_-12px_oklch(0_0_0_/_0.6)] ring-1 ring-white/10">
+    <div className="relative overflow-hidden">
+      <TricolorRibbon />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_-20%,oklch(0.76_0.16_64_/_0.18),transparent_60%)]" />
+      <div className="relative flex items-center gap-3 px-5 py-5">
+        <div className="rounded-xl bg-white p-1.5 shadow-[0_10px_30px_-15px_oklch(0_0_0_/_0.8)] ring-1 ring-white/20">
           <img
             src={logo.url}
-            alt="Vighnaharta Solutions logo"
-            width={140}
-            height={140}
+            alt="Vighnaharta Solutions"
+            width={120}
+            height={120}
             loading="eager"
             decoding="async"
-            className="h-20 w-20 object-contain"
+            className="h-12 w-12 object-contain"
           />
         </div>
-        <div className="leading-tight">
-          <div className="font-display text-[1.05rem] font-extrabold tracking-tight text-sidebar-foreground">
-            VIGHNAHARTA <span className="text-[oklch(0.82_0.17_64)]">SOLUTIONS</span>
+        <div className="min-w-0 leading-tight">
+          <div className="font-display text-[15px] font-extrabold tracking-tight text-sidebar-foreground">
+            VIGHNAHARTA
           </div>
-          <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-sidebar-foreground/55">
-            Powered by Vighnaharta Group Ltd.
+          <div className="font-display text-[15px] font-extrabold leading-tight tracking-tight text-[oklch(0.82_0.17_64)]">
+            SOLUTIONS
+          </div>
+          <div className="mt-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/45">
+            B2B Government Services
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function WalletCard({ balance }: { balance: number }) {
+  return (
+    <div className="relative mx-3 mb-4 overflow-hidden rounded-xl border border-[oklch(0.76_0.16_64_/_0.25)] bg-[linear-gradient(135deg,oklch(0.30_0.08_262)_0%,oklch(0.22_0.07_262)_100%)] p-4 shadow-[inset_0_1px_0_oklch(1_0_0_/_0.08),0_10px_30px_-20px_oklch(0_0_0_/_0.8)]">
+      <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[oklch(0.76_0.16_64_/_0.2)] blur-2xl" />
+      <div className="relative flex items-center justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-sidebar-foreground/55">Wallet Balance</span>
+        <span className="flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wider text-[oklch(0.82_0.17_64)]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[oklch(0.82_0.17_64)]" /> LIVE
+        </span>
+      </div>
+      <div className="relative mt-1.5 font-display text-2xl font-extrabold tabular-nums text-[oklch(0.92_0.05_85)]">
+        {formatINR(balance)}
+      </div>
+      <Link
+        to="/recharge"
+        className="relative mt-2.5 flex items-center justify-center gap-1.5 rounded-md bg-[oklch(0.76_0.16_64)] py-1.5 text-[11px] font-bold uppercase tracking-wide text-[oklch(0.22_0.06_60)] transition-all hover:bg-[oklch(0.80_0.17_64)] hover:shadow-lg active:scale-[0.98]"
+      >
+        <Plus className="h-3 w-3" /> Add Money
+      </Link>
+    </div>
+  );
+}
+
+function useClock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(t);
+  }, []);
+  return now;
 }
 
 export function PortalShell({ children }: { children: ReactNode }) {
@@ -118,6 +208,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const role = me?.role ?? "retailer";
+  const now = useClock();
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -127,32 +218,26 @@ export function PortalShell({ children }: { children: ReactNode }) {
   }
 
   const sidebarBody = (
-    <div className="flex h-full flex-col bg-[linear-gradient(180deg,oklch(0.27_0.08_262)_0%,oklch(0.22_0.07_262)_100%)]">
+    <div className="flex h-full flex-col bg-[linear-gradient(180deg,oklch(0.25_0.08_262)_0%,oklch(0.19_0.07_262)_100%)]">
       <Brand />
-      <div className="mx-3 mt-4 mb-4 rounded-xl border border-sidebar-border/50 bg-[linear-gradient(135deg,oklch(0.33_0.08_262)_0%,oklch(0.28_0.08_262)_100%)] px-4 py-3 shadow-[inset_0_1px_0_oklch(1_0_0_/_0.06)]">
-        <div className="flex items-center justify-between">
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/55">Wallet Balance</div>
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[oklch(0.76_0.16_64)]" />
-        </div>
-        <div className="font-display text-2xl font-extrabold text-[oklch(0.82_0.17_64)]">{formatINR(me?.balance ?? 0)}</div>
+      <WalletCard balance={me?.balance ?? 0} />
+      <div className="flex-1 overflow-y-auto">
+        <NavGroups role={role} onNavigate={() => setOpen(false)} />
       </div>
-      <div className="flex-1 overflow-y-auto pb-4">
-        <NavLinks role={role} onNavigate={() => setOpen(false)} />
-      </div>
-      <div className="border-t border-sidebar-border/60 p-3">
-        <div className="mb-2 flex items-center gap-2 px-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[oklch(0.76_0.16_64)] text-sm font-bold text-[oklch(0.25_0.06_60)]">
+      <div className="border-t border-sidebar-border/40 bg-[oklch(0.18_0.07_262)] p-3">
+        <div className="mb-2 flex items-center gap-3 rounded-lg bg-[oklch(0.23_0.07_262)] px-3 py-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[linear-gradient(135deg,oklch(0.82_0.17_64),oklch(0.70_0.16_50))] text-sm font-bold text-[oklch(0.22_0.06_60)] shadow-[0_4px_12px_-4px_oklch(0.76_0.16_64_/_0.6)]">
             {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
           </div>
-          <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-sidebar-foreground">{me?.profile?.full_name || me?.email}</div>
-            <div className="text-[11px] uppercase tracking-wide text-sidebar-foreground/55">{ROLE_LABEL[role]}</div>
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[13px] font-semibold text-sidebar-foreground">{me?.profile?.full_name || me?.email}</div>
+            <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-[oklch(0.82_0.17_64)]">{ROLE_LABEL[role]}</div>
           </div>
         </div>
         <Button
           variant="ghost"
           onClick={signOut}
-          className="w-full justify-start gap-3 text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          className="w-full justify-start gap-3 text-sidebar-foreground/70 hover:bg-[oklch(0.30_0.08_262)] hover:text-sidebar-foreground"
         >
           <LogOut className="h-4 w-4" /> Sign out
         </Button>
@@ -160,90 +245,94 @@ export function PortalShell({ children }: { children: ReactNode }) {
     </div>
   );
 
+  const dateStr = now.toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
+  const timeStr = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+
   return (
-    <div className="flex min-h-screen w-full bg-background">
-      <aside className="hidden w-72 shrink-0 bg-sidebar lg:block">
-        <div className="sticky top-0 h-screen">{sidebarBody}</div>
+    <div className="flex min-h-screen w-full bg-[oklch(0.97_0.005_250)]">
+      <aside className="hidden w-[280px] shrink-0 lg:block">
+        <div className="sticky top-0 h-screen overflow-hidden border-r border-[oklch(0.20_0.07_262_/_0.4)]">{sidebarBody}</div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="h-1 bg-accent-gradient" />
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-card/95 px-4 backdrop-blur-md lg:px-6">
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-80 border-0 bg-sidebar p-0">
-              <SheetTitle className="sr-only">Navigation</SheetTitle>
-              {sidebarBody}
-            </SheetContent>
-          </Sheet>
+        <TricolorRibbon />
+        <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md">
+          <div className="flex h-[68px] items-center gap-3 px-4 lg:px-7">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] border-0 bg-sidebar p-0">
+                <SheetTitle className="sr-only">Navigation</SheetTitle>
+                {sidebarBody}
+              </SheetContent>
+            </Sheet>
 
-          <div className="flex items-center gap-2.5 lg:hidden">
-            <div className="rounded-lg bg-white p-0.5 ring-1 ring-border">
-              <img src={logo.url} alt="Vighnaharta Solutions logo" width={64} height={64} loading="eager" decoding="async" className="h-9 w-9 object-contain" />
-            </div>
-          </div>
-
-          {/* Search */}
-          <div className="relative hidden max-w-sm flex-1 md:flex">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search services, requests…"
-              className="h-10 rounded-md border-border bg-muted/40 pl-9 pr-3 text-sm shadow-none focus-visible:bg-background"
-            />
-          </div>
-
-          {/* Quick actions */}
-          <Link
-            to="/recharge"
-            className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-foreground/80 transition-colors hover:bg-muted hover:text-foreground md:inline-flex"
-          >
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/15 text-accent-foreground">
-              <Plus className="h-3.5 w-3.5" />
-            </span>
-            Add Money
-          </Link>
-          <Link
-            to="/settings"
-            className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-foreground/80 transition-colors hover:bg-muted hover:text-foreground lg:inline-flex"
-          >
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <Headphones className="h-3.5 w-3.5" />
-            </span>
-            Contact us
-          </Link>
-
-          {/* Balance pill */}
-          <div className="ml-auto flex items-center gap-3">
-            <div className="hidden h-10 items-center gap-2 rounded-md border border-border bg-background px-3 sm:flex">
-              <Wallet className="h-3.5 w-3.5 text-primary" />
-              <div className="text-right leading-tight">
-                <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Balance</div>
-                <div className="text-sm font-bold tabular-nums text-primary">{formatINR(me?.balance ?? 0)}</div>
+            <div className="flex items-center gap-2.5 lg:hidden">
+              <div className="rounded-lg bg-white p-0.5 ring-1 ring-border">
+                <img src={logo.url} alt="Vighnaharta Solutions" width={48} height={48} className="h-8 w-8 object-contain" />
               </div>
             </div>
 
-            {/* User chip */}
-            <div className="flex h-10 items-center gap-2.5 rounded-md border border-border bg-card pl-1 pr-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[linear-gradient(135deg,oklch(0.34_0.09_261),oklch(0.26_0.08_262))] text-xs font-bold text-primary-foreground ring-1 ring-[oklch(0.76_0.16_64_/_0.5)]">
-                {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
+            {/* Command-bar search */}
+            <div className="relative hidden max-w-md flex-1 md:flex">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search services, requests, members…"
+                className="h-11 rounded-lg border-border bg-[oklch(0.96_0.006_250)] pl-10 pr-16 text-[13.5px] shadow-none transition-colors focus-visible:border-primary focus-visible:bg-background"
+              />
+              <kbd className="pointer-events-none absolute right-3 top-1/2 hidden h-5 -translate-y-1/2 select-none items-center gap-1 rounded border border-border bg-background px-1.5 text-[10px] font-medium text-muted-foreground md:inline-flex">
+                ⌘K
+              </kbd>
+            </div>
+
+            <div className="ml-auto flex items-center gap-2">
+              {/* Date / time chip */}
+              <div className="hidden h-11 flex-col justify-center rounded-lg border border-border bg-[oklch(0.97_0.005_250)] px-3.5 text-right leading-tight xl:flex">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{dateStr}</div>
+                <div className="font-display text-[13px] font-bold tabular-nums text-foreground">{timeStr} IST</div>
               </div>
-              <div className="hidden text-left leading-tight sm:block">
-                <div className="max-w-[140px] truncate text-[12px] font-semibold uppercase tracking-wide text-foreground">
-                  {me?.profile?.full_name || me?.email}
+
+              {/* Balance pill */}
+              <div className="hidden h-11 items-center gap-2.5 rounded-lg border border-[oklch(0.76_0.16_64_/_0.3)] bg-[linear-gradient(135deg,oklch(0.98_0.02_85),oklch(0.96_0.04_75))] px-3.5 sm:flex">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[oklch(0.76_0.16_64)] text-[oklch(0.22_0.06_60)]">
+                  <Wallet className="h-3.5 w-3.5" />
                 </div>
-                <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                  {ROLE_LABEL[role]}
+                <div className="text-right leading-tight">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[oklch(0.45_0.10_60)]">Balance</div>
+                  <div className="font-display text-[14px] font-extrabold tabular-nums text-[oklch(0.30_0.08_60)]">{formatINR(me?.balance ?? 0)}</div>
+                </div>
+              </div>
+
+              {/* Notifications */}
+              <Button variant="outline" size="icon" className="relative h-11 w-11 rounded-lg border-border bg-background">
+                <Bell className="h-[18px] w-[18px]" />
+                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[oklch(0.76_0.16_64)] ring-2 ring-card" />
+              </Button>
+
+              {/* User chip */}
+              <div className="flex h-11 items-center gap-2.5 rounded-lg border border-border bg-card pl-1 pr-3.5 transition-all hover:border-primary/40 hover:shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[linear-gradient(135deg,oklch(0.34_0.09_261),oklch(0.22_0.07_262))] text-xs font-bold text-primary-foreground ring-1 ring-[oklch(0.76_0.16_64_/_0.5)]">
+                  {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
+                </div>
+                <div className="hidden text-left leading-tight sm:block">
+                  <div className="max-w-[150px] truncate text-[12.5px] font-bold uppercase tracking-wide text-foreground">
+                    {me?.profile?.full_name || me?.email?.split("@")[0]}
+                  </div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[oklch(0.50_0.10_60)]">
+                    {ROLE_LABEL[role]}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </header>
-        <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8 animate-in fade-in duration-500">{children}</main>
+        <main key={useRouterState({ select: (s) => s.location.pathname })} className="flex-1 px-4 py-6 lg:px-8 lg:py-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          {children}
+        </main>
       </div>
     </div>
   );
