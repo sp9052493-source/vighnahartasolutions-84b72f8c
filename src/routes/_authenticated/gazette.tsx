@@ -45,6 +45,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useMe, formatINR } from "@/lib/queries";
 import { getSarkarServiceByType } from "@/lib/sarkar-services.functions";
+import { getGazetteSampleUrl } from "@/lib/gazette-admin.functions";
+import { FileDown } from "lucide-react";
 import { submitAapleSarkarApplication } from "@/lib/aaple-sarkar.functions";
 import { getDraft, deleteDraft } from "@/lib/drafts.functions";
 import { SaveDraftButton, ServiceDraftsList } from "@/components/portal/DraftControls";
