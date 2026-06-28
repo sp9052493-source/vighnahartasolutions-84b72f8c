@@ -4,6 +4,8 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const TABLE = "aaple_sarkar_services";
 const GAZETTE_TYPE = "gazette";
+const SAMPLE_BUCKET = "documents";
+const SAMPLE_PREFIX = "gazette-samples";
 
 const changeTypeSchema = z.object({
   value: z
@@ -64,6 +66,15 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
   if (error || !data) throw new Error("Forbidden: admin access required");
 }
 
+async function buildSampleUrl(supabaseAdmin: any, path: string | null) {
+  if (!path) return null;
+  const { data, error } = await supabaseAdmin.storage
+    .from(SAMPLE_BUCKET)
+    .createSignedUrl(path, 60 * 60); // 1 hour
+  if (error) return null;
+  return data?.signedUrl || null;
+}
+
 export const adminGetGazette = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -78,6 +89,9 @@ export const adminGetGazette = createServerFn({ method: "GET" })
     if (!data) throw new Error("Gazette service is not configured yet.");
 
     const cfg = (data as any).config && typeof (data as any).config === "object" ? (data as any).config : {};
+    const samplePath: string | null = cfg.sample_pdf_path || null;
+    const sampleUrl = await buildSampleUrl(supabaseAdmin, samplePath);
+
     return {
       id: data.id,
       price: Number(data.price ?? 0),
@@ -85,6 +99,9 @@ export const adminGetGazette = createServerFn({ method: "GET" })
       change_types: Array.isArray(cfg.change_types) ? cfg.change_types : [],
       conditional_fields: Array.isArray(data.extra_fields) ? data.extra_fields : [],
       required_docs: Array.isArray(data.required_docs) ? data.required_docs : [],
+      sample_pdf_path: samplePath,
+      sample_pdf_name: cfg.sample_pdf_name || null,
+      sample_pdf_url: sampleUrl,
     };
   });
 
@@ -93,7 +110,6 @@ export const adminSaveGazette = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => saveSchema.parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    // Validate appearsFor references against known change-type values
     const allowed = new Set(data.change_types.map((c) => c.value));
     for (const f of data.conditional_fields) {
       for (const v of f.appearsFor) {
@@ -105,7 +121,6 @@ export const adminSaveGazette = createServerFn({ method: "POST" })
         if (!allowed.has(v)) throw new Error(`Document "${d2.id}" references unknown change type "${v}"`);
       }
     }
-    // Ensure unique keys/ids
     const keys = new Set<string>();
     for (const f of data.conditional_fields) {
       if (keys.has(f.key)) throw new Error(`Duplicate field key: ${f.key}`);
@@ -123,6 +138,15 @@ export const adminSaveGazette = createServerFn({ method: "POST" })
     }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // preserve sample pdf metadata in config
+    const { data: existing } = await supabaseAdmin
+      .from(TABLE)
+      .select("config")
+      .eq("type", GAZETTE_TYPE)
+      .maybeSingle();
+    const existingCfg =
+      existing?.config && typeof existing.config === "object" ? (existing.config as any) : {};
+
     const { error } = await supabaseAdmin
       .from(TABLE)
       .update({
@@ -130,9 +154,126 @@ export const adminSaveGazette = createServerFn({ method: "POST" })
         active: data.active,
         extra_fields: data.conditional_fields as any,
         required_docs: data.required_docs as any,
-        config: { change_types: data.change_types } as any,
+        config: {
+          ...existingCfg,
+          change_types: data.change_types,
+        } as any,
       })
       .eq("type", GAZETTE_TYPE);
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+// ---------------- Sample PDF management ----------------
+
+const uploadSampleSchema = z.object({
+  filename: z.string().trim().min(1).max(160),
+  contentType: z.string().trim().min(1).max(120),
+  base64: z.string().min(1), // data URL or pure base64
+});
+
+export const adminUploadGazetteSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => uploadSampleSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+
+    if (!/^application\/pdf$|^image\//.test(data.contentType)) {
+      throw new Error("Only PDF or image files are allowed.");
+    }
+
+    // Decode base64 (strip data: prefix if present)
+    const cleaned = data.base64.replace(/^data:[^;]+;base64,/, "");
+    const buffer = Buffer.from(cleaned, "base64");
+    if (buffer.byteLength > 8 * 1024 * 1024) {
+      throw new Error("Sample file must be under 8 MB.");
+    }
+
+    const safeName = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
+    const ext = safeName.includes(".") ? safeName.split(".").pop() : "pdf";
+    const path = `${SAMPLE_PREFIX}/sample-${Date.now()}.${ext}`;
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // remove old sample if any
+    const { data: existing } = await supabaseAdmin
+      .from(TABLE)
+      .select("config")
+      .eq("type", GAZETTE_TYPE)
+      .maybeSingle();
+    const existingCfg =
+      existing?.config && typeof existing.config === "object" ? (existing.config as any) : {};
+    if (existingCfg.sample_pdf_path) {
+      await supabaseAdmin.storage.from(SAMPLE_BUCKET).remove([existingCfg.sample_pdf_path]);
+    }
+
+    const { error: upErr } = await supabaseAdmin.storage
+      .from(SAMPLE_BUCKET)
+      .upload(path, buffer, { contentType: data.contentType, upsert: true });
+    if (upErr) throw new Error(upErr.message);
+
+    const { error: dbErr } = await supabaseAdmin
+      .from(TABLE)
+      .update({
+        config: {
+          ...existingCfg,
+          sample_pdf_path: path,
+          sample_pdf_name: safeName,
+          sample_pdf_type: data.contentType,
+        } as any,
+      })
+      .eq("type", GAZETTE_TYPE);
+    if (dbErr) throw new Error(dbErr.message);
+
+    const url = await buildSampleUrl(supabaseAdmin, path);
+    return { ok: true, path, name: safeName, url };
+  });
+
+export const adminDeleteGazetteSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: existing } = await supabaseAdmin
+      .from(TABLE)
+      .select("config")
+      .eq("type", GAZETTE_TYPE)
+      .maybeSingle();
+    const existingCfg =
+      existing?.config && typeof existing.config === "object" ? (existing.config as any) : {};
+    if (existingCfg.sample_pdf_path) {
+      await supabaseAdmin.storage.from(SAMPLE_BUCKET).remove([existingCfg.sample_pdf_path]);
+    }
+    const nextCfg = { ...existingCfg };
+    delete nextCfg.sample_pdf_path;
+    delete nextCfg.sample_pdf_name;
+    delete nextCfg.sample_pdf_type;
+    const { error } = await supabaseAdmin
+      .from(TABLE)
+      .update({ config: nextCfg as any })
+      .eq("type", GAZETTE_TYPE);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// Public (authenticated user) — fresh signed URL for the sample document.
+export const getGazetteSampleUrl = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from(TABLE)
+      .select("config")
+      .eq("type", GAZETTE_TYPE)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    const cfg = data?.config && typeof data.config === "object" ? (data.config as any) : {};
+    const path: string | null = cfg.sample_pdf_path || null;
+    if (!path) return { url: null, name: null, type: null };
+    const url = await buildSampleUrl(supabaseAdmin, path);
+    return {
+      url,
+      name: cfg.sample_pdf_name || "sample.pdf",
+      type: cfg.sample_pdf_type || "application/pdf",
+    };
   });

@@ -16,7 +16,13 @@ import {
   IndianRupee,
   AlertCircle,
 } from "lucide-react";
-import { adminGetGazette, adminSaveGazette } from "@/lib/gazette-admin.functions";
+import {
+  adminGetGazette,
+  adminSaveGazette,
+  adminUploadGazetteSample,
+  adminDeleteGazetteSample,
+} from "@/lib/gazette-admin.functions";
+import { FileDown, Upload, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,6 +74,8 @@ type State = {
 function AdminGazette() {
   const getFn = useServerFn(adminGetGazette);
   const saveFn = useServerFn(adminSaveGazette);
+  const uploadSampleFn = useServerFn(adminUploadGazetteSample);
+  const deleteSampleFn = useServerFn(adminDeleteGazetteSample);
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
@@ -149,6 +157,38 @@ function AdminGazette() {
     onError: (e: any) => toast.error(e?.message || "Save failed"),
   });
 
+  // Sample PDF upload/delete mutations
+  const uploadMut = useMutation({
+    mutationFn: async (file: File) => {
+      if (file.size > 8 * 1024 * 1024) throw new Error("File must be under 8 MB");
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result));
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+      return uploadSampleFn({
+        data: { filename: file.name, contentType: file.type || "application/pdf", base64 },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Sample document uploaded");
+      queryClient.invalidateQueries({ queryKey: ["admin-gazette"] });
+      queryClient.invalidateQueries({ queryKey: ["gazette-sample"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Upload failed"),
+  });
+
+  const deleteSampleMut = useMutation({
+    mutationFn: () => deleteSampleFn(),
+    onSuccess: () => {
+      toast.success("Sample document removed");
+      queryClient.invalidateQueries({ queryKey: ["admin-gazette"] });
+      queryClient.invalidateQueries({ queryKey: ["gazette-sample"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Remove failed"),
+  });
+
   const changeTypeOptions = useMemo(
     () => (state?.change_types || []).filter((c) => c.value).map((c) => ({ value: c.value, en: c.en })),
     [state?.change_types],
@@ -219,6 +259,82 @@ function AdminGazette() {
           </div>
         </div>
       </Card>
+
+      {/* Sample / Demo PDF */}
+      <Card className="space-y-4 p-5 shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
+            <FileDown className="h-4 w-4" /> Sample / Demo Document
+          </h2>
+          <div className="flex items-center gap-2">
+            {data?.sample_pdf_url && (
+              <a
+                href={data.sample_pdf_url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-semibold hover:border-primary/40 hover:bg-muted/50"
+              >
+                <FileDown className="h-3.5 w-3.5" /> Preview
+              </a>
+            )}
+            {data?.sample_pdf_path && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:bg-destructive/10 gap-1.5"
+                disabled={deleteSampleMut.isPending}
+                onClick={() => deleteSampleMut.mutate()}
+              >
+                {deleteSampleMut.isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <X className="h-3.5 w-3.5" />
+                )}
+                Remove
+              </Button>
+            )}
+            <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10">
+              {uploadMut.isPending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Upload className="h-3.5 w-3.5" />
+              )}
+              {data?.sample_pdf_path ? "Replace" : "Upload"} Sample
+              <input
+                type="file"
+                accept="application/pdf,image/*"
+                className="hidden"
+                disabled={uploadMut.isPending}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadMut.mutate(f);
+                  e.currentTarget.value = "";
+                }}
+              />
+            </label>
+          </div>
+        </div>
+        <p className="text-[12px] text-muted-foreground">
+          Upload a filled sample / blank format PDF (max 8 MB). Retailers see a “Download Sample
+          Form” button on the Gazette page so they know exactly what to fill.
+        </p>
+        {data?.sample_pdf_name ? (
+          <div className="flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/5 p-2.5 text-[12.5px] text-emerald-700 dark:text-emerald-300">
+            <FileText className="h-4 w-4" />
+            <span className="truncate font-medium">{data.sample_pdf_name}</span>
+            <Badge variant="outline" className="ml-auto border-emerald-500/30 text-[10px]">
+              Live for retailers
+            </Badge>
+          </div>
+        ) : (
+          <div className="rounded-md border border-dashed border-border p-3 text-center text-[12px] text-muted-foreground">
+            No sample uploaded yet.
+          </div>
+        )}
+      </Card>
+
+
 
       {/* Change types */}
       <Card className="space-y-4 p-5 shadow-card">
