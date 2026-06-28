@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { z } from "zod";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -44,8 +46,15 @@ import { cn } from "@/lib/utils";
 import { useMe, formatINR } from "@/lib/queries";
 import { getSarkarServiceByType } from "@/lib/sarkar-services.functions";
 import { submitAapleSarkarApplication } from "@/lib/aaple-sarkar.functions";
+import { getDraft, deleteDraft } from "@/lib/drafts.functions";
+import { SaveDraftButton, ServiceDraftsList } from "@/components/portal/DraftControls";
+
+const gazetteSearchSchema = z.object({
+  draft: fallback(z.string().uuid().optional(), undefined),
+});
 
 export const Route = createFileRoute("/_authenticated/gazette")({
+  validateSearch: zodValidator(gazetteSearchSchema),
   head: () => ({
     meta: [
       { title: "Gazette Certificate — Vighnaharta Solutions" },
@@ -145,8 +154,12 @@ function GazettePage() {
   const { data: me } = useMe();
   const balance = me?.balance ?? 0;
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { draft: draftIdFromUrl } = useSearch({ from: "/_authenticated/gazette" });
   const getSvcFn = useServerFn(getSarkarServiceByType);
   const submitFn = useServerFn(submitAapleSarkarApplication);
+  const getDraftFn = useServerFn(getDraft);
+  const deleteDraftFn = useServerFn(deleteDraft);
 
   const { data: service, isLoading: svcLoading } = useQuery({
     queryKey: ["sarkar-service", "gazette"],
@@ -159,6 +172,27 @@ function GazettePage() {
   const [docMap, setDocMap] = useState<Record<string, FileItem | null>>({});
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [receipt, setReceipt] = useState<{ receiptNo: string; charged: number } | null>(null);
+  const [draftId, setDraftId] = useState<string | undefined>(draftIdFromUrl);
+
+  // Hydrate from draft when arriving with ?draft=<id>
+  useEffect(() => {
+    if (!draftIdFromUrl) return;
+    setDraftId(draftIdFromUrl);
+    let cancelled = false;
+    getDraftFn({ data: { id: draftIdFromUrl } })
+      .then((row) => {
+        if (cancelled || !row) return;
+        const data = (row.form_data || {}) as { form?: any; extra?: Record<string, string> };
+        if (data.form) setForm((p) => ({ ...p, ...data.form }));
+        if (data.extra) setExtra(data.extra);
+        toast.success("Draft loaded — files must be re-attached");
+      })
+      .catch((e: any) => toast.error(e?.message || "Could not load draft"));
+    return () => {
+      cancelled = true;
+    };
+  }, [draftIdFromUrl, getDraftFn]);
+
 
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm((p) => ({ ...p, [k]: v }));
@@ -204,11 +238,20 @@ function GazettePage() {
 
   const mut = useMutation({
     mutationFn: (vars: any) => submitFn({ data: vars }),
-    onSuccess: (res: any) => {
+    onSuccess: async (res: any) => {
       setReceipt({ receiptNo: res.receiptNo, charged: Number(res.charged || 0) });
       queryClient.invalidateQueries({ queryKey: ["me"] });
       queryClient.invalidateQueries({ queryKey: ["my-aaple-sarkar"] });
       queryClient.invalidateQueries({ queryKey: ["my-transactions"] });
+      // Clean up the draft, if any
+      if (draftId) {
+        try {
+          await deleteDraftFn({ data: { id: draftId } });
+          queryClient.invalidateQueries({ queryKey: ["my-drafts"] });
+        } catch {}
+        setDraftId(undefined);
+        navigate({ to: "/gazette", search: {} });
+      }
       toast.success("Gazette application submitted");
       setConfirmOpen(false);
       setForm({ ...EMPTY_FORM });
@@ -649,6 +692,9 @@ function GazettePage() {
         </ul>
       </Card>
 
+      {/* Drafts for this service */}
+      <ServiceDraftsList serviceKey="gazette" resumeHref={(id) => `/gazette?draft=${id}`} />
+
       {/* Payment + submit */}
       <Card className="flex flex-col gap-4 p-5 shadow-card sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
@@ -664,16 +710,30 @@ function GazettePage() {
             </div>
           </div>
         </div>
-        <Button
-          onClick={open}
-          disabled={mut.isPending || svcLoading}
-          size="lg"
-          className="gap-2 bg-[linear-gradient(135deg,oklch(0.68_0.18_55),oklch(0.55_0.17_40))] hover:opacity-95"
-        >
-          {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <IndianRupee className="h-4 w-4" />}
-          Pay &amp; Submit Application
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+          <SaveDraftButton
+            serviceKey="gazette"
+            serviceLabel="Gazette Certificate"
+            draftId={draftId}
+            size="default"
+            buildPayload={() => ({
+              customer_name: form.applicantName || form.mobile || null,
+              summary: selected ? `${selected.en}${form.newValue ? ` → ${form.newValue}` : ""}` : "Gazette draft",
+              form_data: { form, extra },
+            })}
+            onSaved={(row) => setDraftId(row.id)}
+          />
+          <Button
+            onClick={open}
+            disabled={mut.isPending || svcLoading}
+            size="lg"
+            className="gap-2 bg-[linear-gradient(135deg,oklch(0.68_0.18_55),oklch(0.55_0.17_40))] hover:opacity-95"
+          >
+            {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <IndianRupee className="h-4 w-4" />}
+            Pay &amp; Submit Application
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </Card>
 
       {/* Confirm dialog */}

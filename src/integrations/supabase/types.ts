@@ -325,6 +325,42 @@ export type Database = {
         }
         Relationships: []
       }
+      service_drafts: {
+        Row: {
+          created_at: string
+          customer_name: string | null
+          form_data: Json
+          id: string
+          service_key: string
+          service_label: string
+          summary: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_name?: string | null
+          form_data?: Json
+          id?: string
+          service_key: string
+          service_label: string
+          summary?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_name?: string | null
+          form_data?: Json
+          id?: string
+          service_key?: string
+          service_label?: string
+          summary?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           active: boolean
