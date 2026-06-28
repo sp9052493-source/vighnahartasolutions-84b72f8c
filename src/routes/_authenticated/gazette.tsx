@@ -162,11 +162,18 @@ function GazettePage() {
   const submitFn = useServerFn(submitAapleSarkarApplication);
   const getDraftFn = useServerFn(getDraft);
   const deleteDraftFn = useServerFn(deleteDraft);
+  const getSampleFn = useServerFn(getGazetteSampleUrl);
 
   const { data: service, isLoading: svcLoading } = useQuery({
     queryKey: ["sarkar-service", "gazette"],
     queryFn: () => getSvcFn({ data: { type: "gazette" } }),
     staleTime: 60_000,
+  });
+
+  const { data: sample } = useQuery({
+    queryKey: ["gazette-sample"],
+    queryFn: () => getSampleFn(),
+    staleTime: 5 * 60_000,
   });
 
   const [form, setForm] = useState({ ...EMPTY_FORM });
