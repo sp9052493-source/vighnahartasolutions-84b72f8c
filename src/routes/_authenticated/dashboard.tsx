@@ -27,19 +27,28 @@ function StatCard({
   label,
   value,
   icon: Icon,
+  tone = "primary",
 }: {
   label: string;
   value: string;
   icon: typeof Wallet;
+  tone?: "primary" | "accent" | "success";
 }) {
+  const toneClass =
+    tone === "accent"
+      ? "bg-[oklch(0.76_0.16_64_/_0.12)] text-[oklch(0.55_0.16_60)]"
+      : tone === "success"
+        ? "bg-[oklch(0.62_0.14_155_/_0.12)] text-[oklch(0.45_0.14_155)]"
+        : "bg-primary/10 text-primary";
   return (
-    <Card className="flex items-center gap-4 p-5 shadow-card">
-      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+    <Card className="group relative flex items-center gap-4 overflow-hidden p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elegant">
+      <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-accent-gradient transition-transform duration-300 group-hover:scale-x-100" />
+      <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${toneClass}`}>
         <Icon className="h-5 w-5" />
       </div>
-      <div>
-        <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-        <div className="font-display text-2xl font-bold">{value}</div>
+      <div className="min-w-0">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
+        <div className="font-display text-2xl font-extrabold tracking-tight">{value}</div>
       </div>
     </Card>
   );
