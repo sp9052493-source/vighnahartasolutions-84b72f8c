@@ -906,6 +906,7 @@ function GazetteDesk() {
   const [purposeFilter, setPurposeFilter] = useState<string>("all");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const STATUS_TONE: Record<string, string> = {
     submitted: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
