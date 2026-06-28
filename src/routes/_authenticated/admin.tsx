@@ -108,5 +108,7 @@ const DESC = {
   "/admin/pages": "Edit About, Privacy, Terms, Refund and home hero copy live.",
   "/admin/gateways": "Configure Paytm, Razorpay and Cashfree — toggle test/live and the primary processor.",
   "/manage-services": "Service price, retailer & distributor commission, API provider and live endpoint.",
+  "/admin/sarkar-services": "Aaple Sarkar certificates — pricing, descriptions, extra fields and required documents.",
   "/members": "Create accounts, change email, reset password, upload photo & KYC documents.",
 } as const;
+
