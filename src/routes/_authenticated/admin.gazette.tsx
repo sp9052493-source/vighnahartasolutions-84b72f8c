@@ -888,12 +888,72 @@ function GazetteDesk() {
     staleTime: 30_000,
   });
 
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [purposeFilter, setPurposeFilter] = useState<string>("all");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
   const STATUS_TONE: Record<string, string> = {
     submitted: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
     under_review: "border-blue-500/40 bg-blue-500/10 text-blue-700 dark:text-blue-300",
     approved: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
     completed: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
     rejected: "border-destructive/40 bg-destructive/10 text-destructive",
+  };
+
+  const statusOptions = useMemo(() => {
+    const s = new Set<string>();
+    (apps || []).forEach((a: any) => a.status && s.add(a.status));
+    return Array.from(s).sort();
+  }, [apps]);
+
+  const purposeOptions = useMemo(() => {
+    const s = new Set<string>();
+    (apps || []).forEach((a: any) => a.purpose && s.add(a.purpose));
+    return Array.from(s).sort();
+  }, [apps]);
+
+  const filtered = useMemo(() => {
+    if (!apps) return [];
+    const q = search.trim().toLowerCase();
+    const from = fromDate ? new Date(fromDate + "T00:00:00").getTime() : null;
+    const to = toDate ? new Date(toDate + "T23:59:59").getTime() : null;
+    return apps.filter((a: any) => {
+      if (statusFilter !== "all" && a.status !== statusFilter) return false;
+      if (purposeFilter !== "all" && a.purpose !== purposeFilter) return false;
+      if (from || to) {
+        const t = new Date(a.created_at).getTime();
+        if (from && t < from) return false;
+        if (to && t > to) return false;
+      }
+      if (q) {
+        const hay = [
+          a.receipt_no,
+          a.applicant_name,
+          a.mobile,
+          a.retailer_name,
+          a.retailer_business,
+          a.purpose,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [apps, search, statusFilter, purposeFilter, fromDate, toDate]);
+
+  const hasFilters =
+    search || statusFilter !== "all" || purposeFilter !== "all" || fromDate || toDate;
+
+  const resetFilters = () => {
+    setSearch("");
+    setStatusFilter("all");
+    setPurposeFilter("all");
+    setFromDate("");
+    setToDate("");
   };
 
   return (
@@ -914,6 +974,92 @@ function GazetteDesk() {
         remarks and upload the issued document on the workflow page.
       </p>
 
+      {/* Filters */}
+      <div className="grid gap-3 rounded-lg border border-border bg-muted/20 p-3 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="lg:col-span-2">
+          <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+            Search
+          </Label>
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Receipt, applicant, mobile, retailer…"
+            className="mt-1 h-9"
+          />
+        </div>
+        <div>
+          <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+            Status
+          </Label>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="mt-1 h-9">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              {statusOptions.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s.replace(/_/g, " ")}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+            Change Type
+          </Label>
+          <Select value={purposeFilter} onValueChange={setPurposeFilter}>
+            <SelectTrigger className="mt-1 h-9">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All types</SelectItem>
+              {purposeOptions.map((p) => (
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+            From
+          </Label>
+          <Input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="mt-1 h-9"
+          />
+        </div>
+        <div>
+          <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+            To
+          </Label>
+          <Input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="mt-1 h-9"
+          />
+        </div>
+        <div className="flex items-end justify-between gap-2 sm:col-span-2 lg:col-span-6">
+          <div className="text-[11.5px] text-muted-foreground">
+            Showing{" "}
+            <span className="font-semibold text-foreground">{filtered.length}</span> of{" "}
+            <span className="font-semibold text-foreground">{apps?.length || 0}</span>{" "}
+            applications
+          </div>
+          {hasFilters && (
+            <Button variant="ghost" size="sm" onClick={resetFilters} className="h-8 text-xs">
+              <X className="mr-1 h-3.5 w-3.5" /> Clear filters
+            </Button>
+          )}
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" /> Loading applications…
@@ -921,6 +1067,10 @@ function GazetteDesk() {
       ) : !apps || apps.length === 0 ? (
         <div className="rounded-md border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
           No Gazette applications yet. Submissions from retailers will appear here in real time.
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-md border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          No applications match the current filters.
         </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border">
@@ -937,7 +1087,7 @@ function GazetteDesk() {
               </tr>
             </thead>
             <tbody>
-              {apps.map((a: any) => (
+              {filtered.map((a: any) => (
                 <tr key={a.id} className="border-t border-border hover:bg-muted/30">
                   <td className="px-3 py-2 font-mono text-[11.5px]">{a.receipt_no}</td>
                   <td className="px-3 py-2">
