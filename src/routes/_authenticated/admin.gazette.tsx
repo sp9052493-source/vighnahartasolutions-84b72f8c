@@ -879,3 +879,104 @@ function AppearsForPicker({
     </div>
   );
 }
+
+function GazetteDesk() {
+  const listFn = useServerFn(adminListGazetteApplications);
+  const { data: apps, isLoading } = useQuery({
+    queryKey: ["admin-gazette-desk"],
+    queryFn: () => listFn(),
+    staleTime: 30_000,
+  });
+
+  const STATUS_TONE: Record<string, string> = {
+    submitted: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+    under_review: "border-blue-500/40 bg-blue-500/10 text-blue-700 dark:text-blue-300",
+    approved: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    completed: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    rejected: "border-destructive/40 bg-destructive/10 text-destructive",
+  };
+
+  return (
+    <Card className="space-y-4 p-5 shadow-card">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
+          <Inbox className="h-4 w-4" /> Gazette Desk · Submitted Applications
+        </h2>
+        <Link
+          to="/aaple-sarkar-requests"
+          className="text-xs font-semibold text-primary hover:underline"
+        >
+          Open full workflow →
+        </Link>
+      </div>
+      <p className="text-[12px] text-muted-foreground">
+        Latest Gazette applications submitted by retailers. Click any row to manage status,
+        remarks and upload the issued document on the workflow page.
+      </p>
+
+      {isLoading ? (
+        <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading applications…
+        </div>
+      ) : !apps || apps.length === 0 ? (
+        <div className="rounded-md border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          No Gazette applications yet. Submissions from retailers will appear here in real time.
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-[12.5px]">
+            <thead className="bg-muted/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+              <tr>
+                <th className="px-3 py-2 text-left">Receipt</th>
+                <th className="px-3 py-2 text-left">Applicant</th>
+                <th className="px-3 py-2 text-left">Retailer</th>
+                <th className="px-3 py-2 text-left">Purpose</th>
+                <th className="px-3 py-2 text-right">Fee</th>
+                <th className="px-3 py-2 text-left">Status</th>
+                <th className="px-3 py-2 text-left">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {apps.map((a: any) => (
+                <tr key={a.id} className="border-t border-border hover:bg-muted/30">
+                  <td className="px-3 py-2 font-mono text-[11.5px]">{a.receipt_no}</td>
+                  <td className="px-3 py-2">
+                    <div className="font-semibold">{a.applicant_name}</div>
+                    <div className="text-[11px] text-muted-foreground">{a.mobile}</div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <div>{a.retailer_name}</div>
+                    {a.retailer_business && (
+                      <div className="text-[11px] text-muted-foreground">{a.retailer_business}</div>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 max-w-[220px] truncate" title={a.purpose}>
+                    {a.purpose || "—"}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums">
+                    ₹{Number(a.charged || 0).toFixed(0)}
+                  </td>
+                  <td className="px-3 py-2">
+                    <Badge
+                      variant="outline"
+                      className={cn("text-[10.5px]", STATUS_TONE[a.status] || "")}
+                    >
+                      {String(a.status || "").replace(/_/g, " ")}
+                    </Badge>
+                  </td>
+                  <td className="px-3 py-2 text-[11.5px] text-muted-foreground">
+                    {new Date(a.created_at).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Card>
+  );
+}
