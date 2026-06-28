@@ -68,10 +68,14 @@ type Doc = { id: string; en: string; mr: string; required: boolean; appearsFor: 
 type State = {
   price: string;
   active: boolean;
+  turnaround_text: string;
+  payment_options: string[];
   change_types: ChangeType[];
   conditional_fields: CondField[];
   required_docs: Doc[];
 };
+
+const DEFAULT_PAYMENT_OPTIONS = ["Wallet", "UPI", "Card", "Net Banking", "Cash at Counter"];
 
 function AdminGazette() {
   const getFn = useServerFn(adminGetGazette);
