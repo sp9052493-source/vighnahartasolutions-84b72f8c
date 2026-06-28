@@ -692,6 +692,9 @@ function GazettePage() {
         </ul>
       </Card>
 
+      {/* Drafts for this service */}
+      <ServiceDraftsList serviceKey="gazette" resumeHref={(id) => `/gazette?draft=${id}`} />
+
       {/* Payment + submit */}
       <Card className="flex flex-col gap-4 p-5 shadow-card sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
@@ -707,16 +710,30 @@ function GazettePage() {
             </div>
           </div>
         </div>
-        <Button
-          onClick={open}
-          disabled={mut.isPending || svcLoading}
-          size="lg"
-          className="gap-2 bg-[linear-gradient(135deg,oklch(0.68_0.18_55),oklch(0.55_0.17_40))] hover:opacity-95"
-        >
-          {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <IndianRupee className="h-4 w-4" />}
-          Pay &amp; Submit Application
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap">
+          <SaveDraftButton
+            serviceKey="gazette"
+            serviceLabel="Gazette Certificate"
+            draftId={draftId}
+            size="default"
+            buildPayload={() => ({
+              customer_name: form.applicantName || form.mobile || null,
+              summary: selected ? `${selected.en}${form.newValue ? ` → ${form.newValue}` : ""}` : "Gazette draft",
+              form_data: { form, extra },
+            })}
+            onSaved={(row) => setDraftId(row.id)}
+          />
+          <Button
+            onClick={open}
+            disabled={mut.isPending || svcLoading}
+            size="lg"
+            className="gap-2 bg-[linear-gradient(135deg,oklch(0.68_0.18_55),oklch(0.55_0.17_40))] hover:opacity-95"
+          >
+            {mut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <IndianRupee className="h-4 w-4" />}
+            Pay &amp; Submit Application
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </Card>
 
       {/* Confirm dialog */}
