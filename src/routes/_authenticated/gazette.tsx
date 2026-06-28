@@ -234,8 +234,10 @@ function GazettePage() {
     if (!/^[0-9]{10}$/.test(form.mobile)) return "Enter a valid 10-digit mobile number";
     if (form.address.trim().length < 6) return "Enter a complete address";
     if (form.pincode && !/^[0-9]{6}$/.test(form.pincode)) return "Enter a valid 6-digit pincode";
+    if (missingFields.length)
+      return "Fill required fields: " + missingFields.map((f) => f.en).join(", ");
     if (missingDocs.length)
-      return "Upload required documents: " + missingDocs.map((d) => d.label).join(", ");
+      return "Upload required documents: " + missingDocs.map((d) => d.en).join(", ");
     if (balance < price) return `Insufficient balance. Need ${formatINR(price)}.`;
     return null;
   }
@@ -553,7 +555,7 @@ function GazettePage() {
           subtitle="PDF or image, up to 5 MB each. Required documents are highlighted."
         />
         <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-          {REQUIRED_DOCS.map((d) => {
+          {visibleDocs.map((d) => {
             const file = docMap[d.id];
             return (
               <li
@@ -578,7 +580,7 @@ function GazettePage() {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-semibold">{d.label}</span>
+                      <span className="text-[13px] font-semibold">{d.en}</span>
                       <Badge
                         variant="outline"
                         className={cn(
