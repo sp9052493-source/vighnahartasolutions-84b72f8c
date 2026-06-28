@@ -126,6 +126,7 @@ const DESC = {
   "/manage-services": "Service price, retailer & distributor commission, API provider and live endpoint.",
   "/admin/sarkar-services": "Aaple Sarkar certificates — pricing, descriptions, extra fields and required documents.",
   "/admin/gazette": "Gazette Certificate — change-type options, conditional fields, document rules and price.",
+  "gazette-desk": "Live queue of Gazette applications submitted by retailers — update status, add remarks and upload the issued certificate.",
   "/members": "Create accounts, change email, reset password, upload photo & KYC documents.",
 } as const;
 
