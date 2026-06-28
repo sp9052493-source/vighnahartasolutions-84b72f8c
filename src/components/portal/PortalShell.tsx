@@ -15,6 +15,7 @@ import {
   IdCard,
   Wheat,
   Landmark,
+  Newspaper,
   ShieldCheck as ShieldCheckIcon,
   Search,
   Plus,
@@ -49,6 +50,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/ration-print", label: "Ration Card", icon: Wheat, roles: ["distributor", "retailer"] },
       { to: "/aadhaar-to-pan", label: "Aadhaar → PAN", icon: CreditCard, roles: ["distributor", "retailer"] },
       { to: "/aaple-sarkar", label: "Aaple Sarkar", icon: Landmark, roles: ["distributor", "retailer"] },
+      { to: "/gazette", label: "Gazette Certificate", icon: Newspaper, roles: ["distributor", "retailer"] },
     ],
   },
   {
