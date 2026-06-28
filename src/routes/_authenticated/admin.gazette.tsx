@@ -96,6 +96,8 @@ function AdminGazette() {
     setState({
       price: String(data.price ?? 0),
       active: !!data.active,
+      turnaround_text: String((data as any).turnaround_text || ""),
+      payment_options: Array.isArray((data as any).payment_options) ? (data as any).payment_options : [],
       change_types: (data.change_types || []).map((c: any) => ({
         value: String(c.value || ""),
         en: String(c.en || ""),
