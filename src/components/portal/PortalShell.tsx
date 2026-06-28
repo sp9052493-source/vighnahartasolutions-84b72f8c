@@ -79,11 +79,29 @@ function NavLinks({ role, onNavigate }: { role: AppRole; onNavigate?: () => void
 
 function Brand() {
   return (
-    <div className="flex items-center gap-3 px-5 py-5">
-      <img src={logo.url} alt="Vighnaharta Solutions logo" width={112} height={112} loading="eager" decoding="async" className="h-24 w-24 shrink-0 object-contain" />
-      <div className="leading-tight">
-        <div className="font-display text-2xl font-bold text-sidebar-foreground">Vighnaharta Solutions</div>
-        <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60">Powered by Vighnaharta Group Limited</div>
+    <div className="relative overflow-hidden border-b border-sidebar-border/60">
+      <div className="absolute inset-x-0 top-0 h-1 bg-accent-gradient" />
+      <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[oklch(0.76_0.16_64_/_0.18)] blur-3xl" />
+      <div className="relative flex flex-col items-center gap-3 px-5 pb-6 pt-7 text-center">
+        <div className="rounded-2xl bg-white p-2 shadow-[0_8px_24px_-12px_oklch(0_0_0_/_0.6)] ring-1 ring-white/10">
+          <img
+            src={logo.url}
+            alt="Vighnaharta Solutions logo"
+            width={140}
+            height={140}
+            loading="eager"
+            decoding="async"
+            className="h-20 w-20 object-contain"
+          />
+        </div>
+        <div className="leading-tight">
+          <div className="font-display text-[1.05rem] font-extrabold tracking-tight text-sidebar-foreground">
+            VIGHNAHARTA <span className="text-[oklch(0.82_0.17_64)]">SOLUTIONS</span>
+          </div>
+          <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-sidebar-foreground/55">
+            Powered by Vighnaharta Group Ltd.
+          </div>
+        </div>
       </div>
     </div>
   );
