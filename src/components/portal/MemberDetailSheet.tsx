@@ -9,6 +9,11 @@ import {
   adminResetUserPassword,
   adminUploadUserAsset,
 } from "@/lib/admin-user.functions";
+import {
+  adminListUserPricing,
+  adminUpsertUserPricing,
+  adminClearUserPricing,
+} from "@/lib/user-pricing.functions";
 import { formatINR } from "@/lib/queries";
 import {
   Sheet,
@@ -76,9 +81,10 @@ export function MemberDetailSheet({
           </div>
         ) : (
           <Tabs defaultValue="performance" className="mt-4">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="performance">Stats</TabsTrigger>
               <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="pricing">Pricing</TabsTrigger>
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
             </TabsList>
@@ -94,6 +100,10 @@ export function MemberDetailSheet({
                 distributors={distributors}
                 onSaved={() => onOpenChange(false)}
               />
+            </TabsContent>
+
+            <TabsContent value="pricing" className="mt-4">
+              <PricingTab userId={member!.id} />
             </TabsContent>
 
             <TabsContent value="account" className="mt-4">
@@ -431,6 +441,170 @@ function ActivityTab({ data }: { data: any }) {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+function PricingTab({ userId }: { userId: string }) {
+  const listFn = useServerFn(adminListUserPricing);
+  const upsertFn = useServerFn(adminUpsertUserPricing);
+  const clearFn = useServerFn(adminClearUserPricing);
+  const qc = useQueryClient();
+  const { data: rows, isLoading } = useQuery({
+    queryKey: ["user-pricing", userId],
+    queryFn: () => listFn({ data: { userId } }),
+  });
+  const [edits, setEdits] = useState<Record<string, { price: string; commission: string }>>({});
+
+  const setVal = (id: string, key: "price" | "commission", v: string) =>
+    setEdits((p) => ({ ...p, [id]: { ...(p[id] || { price: "", commission: "" }), [key]: v } }));
+
+  const save = useMutation({
+    mutationFn: async (vars: { serviceId: string; price: number; commission: number }) =>
+      upsertFn({
+        data: {
+          userId,
+          serviceId: vars.serviceId,
+          price: vars.price,
+          distributorCommission: vars.commission,
+        },
+      }),
+    onSuccess: () => {
+      toast.success("Custom price saved");
+      qc.invalidateQueries({ queryKey: ["user-pricing", userId] });
+      setEdits({});
+    },
+    onError: (e: any) => toast.error(e?.message || "Failed"),
+  });
+
+  const reset = useMutation({
+    mutationFn: (serviceId: string) => clearFn({ data: { userId, serviceId } }),
+    onSuccess: () => {
+      toast.success("Reset to default");
+      qc.invalidateQueries({ queryKey: ["user-pricing", userId] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Failed"),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex h-32 items-center justify-center">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const grouped = new Map<string, any[]>();
+  for (const r of rows || []) {
+    const k = r.category || "Other";
+    if (!grouped.has(k)) grouped.set(k, []);
+    grouped.get(k)!.push(r);
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-md border border-primary/20 bg-primary/5 p-3 text-xs leading-relaxed">
+        <div className="font-semibold text-primary">Confidential pricing</div>
+        <div className="text-muted-foreground">
+          Set what this member pays per service. Only admins can see these prices — the member sees
+          only the final charge on their wallet. Leave blank to use the default service price.
+        </div>
+      </div>
+
+      {Array.from(grouped.entries()).map(([cat, items]) => (
+        <div key={cat} className="space-y-2">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {cat}
+          </div>
+          <div className="space-y-2">
+            {items.map((r) => {
+              const e = edits[r.service_id];
+              const currentPrice =
+                e?.price ?? (r.override_price != null ? String(r.override_price) : "");
+              const currentComm =
+                e?.commission ??
+                (r.override_commission != null ? String(r.override_commission) : "");
+              const dirty = e !== undefined;
+              return (
+                <div
+                  key={r.service_id}
+                  className="rounded-lg border border-border bg-card p-3 text-sm"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="truncate font-medium">{r.name}</div>
+                      {r.name_mr && (
+                        <div className="truncate text-xs text-muted-foreground">{r.name_mr}</div>
+                      )}
+                      <div className="mt-0.5 text-xs text-muted-foreground">
+                        Default {formatINR(r.default_price)} · Commission{" "}
+                        {formatINR(r.default_commission)}
+                      </div>
+                    </div>
+                    {r.override_price != null && (
+                      <Badge
+                        variant="outline"
+                        className="border-primary/30 bg-primary/10 text-primary"
+                      >
+                        Custom
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <div>
+                      <Label className="text-xs">Custom price (₹)</Label>
+                      <Input
+                        type="number"
+                        inputMode="decimal"
+                        value={currentPrice}
+                        onChange={(ev) => setVal(r.service_id, "price", ev.target.value)}
+                        placeholder={String(r.default_price)}
+                        className="h-9"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Distributor commission (₹)</Label>
+                      <Input
+                        type="number"
+                        inputMode="decimal"
+                        value={currentComm}
+                        onChange={(ev) => setVal(r.service_id, "commission", ev.target.value)}
+                        placeholder={String(r.default_commission)}
+                        className="h-9"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex justify-end gap-2">
+                    {r.override_price != null && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => reset.mutate(r.service_id)}
+                        disabled={reset.isPending}
+                      >
+                        Reset to default
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      disabled={!dirty || save.isPending || currentPrice === ""}
+                      onClick={() =>
+                        save.mutate({
+                          serviceId: r.service_id,
+                          price: Number(currentPrice),
+                          commission: Number(currentComm || 0),
+                        })
+                      }
+                    >
+                      {save.isPending && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
