@@ -445,15 +445,9 @@ function ActivityTab({ data }: { data: any }) {
   );
 }
 function PricingTab({ userId }: { userId: string }) {
-  const listFn = useServerFn(
-    require("@/lib/user-pricing.functions").adminListUserPricing,
-  );
-  const upsertFn = useServerFn(
-    require("@/lib/user-pricing.functions").adminUpsertUserPricing,
-  );
-  const clearFn = useServerFn(
-    require("@/lib/user-pricing.functions").adminClearUserPricing,
-  );
+  const listFn = useServerFn(adminListUserPricing);
+  const upsertFn = useServerFn(adminUpsertUserPricing);
+  const clearFn = useServerFn(adminClearUserPricing);
   const qc = useQueryClient();
   const { data: rows, isLoading } = useQuery({
     queryKey: ["user-pricing", userId],
