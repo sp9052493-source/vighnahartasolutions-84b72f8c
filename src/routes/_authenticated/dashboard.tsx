@@ -47,8 +47,12 @@ function StatCard({
         <Icon className="h-5 w-5" />
       </div>
       <div className="min-w-0">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
-        <div className="font-display text-2xl font-extrabold tracking-tight">{value}</div>
+        <div className="text-[11px] font-semibold uppercase leading-none tracking-[0.16em] text-muted-foreground">
+          {label}
+        </div>
+        <div className="mt-1.5 font-display text-[1.65rem] font-extrabold leading-[1.05] tracking-tight text-foreground tabular-nums">
+          {value}
+        </div>
       </div>
     </Card>
   );
@@ -69,53 +73,63 @@ function AdminDashboard() {
   const { data: requests } = useQuery({ queryKey: ["admin-requests"], queryFn: () => reqFn() });
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Administrator Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Overview of the entire Vighnaharta Solutions network.</p>
+    <div className="mx-auto max-w-6xl space-y-7">
+      <div className="border-b border-border/70 pb-5">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/70">
+          Control Center
+        </div>
+        <h1 className="mt-2 font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-foreground lg:text-[2.25rem]">
+          Administrator Dashboard
+        </h1>
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
+          A real-time overview of the entire Vighnaharta Solutions network — members, distributors, and document activity.
+        </p>
       </div>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Members" value={String(stats?.users ?? 0)} icon={Users} />
-        <StatCard label="Distributors" value={String(stats?.distributors ?? 0)} icon={Users} />
-        <StatCard label="Total Requests" value={String(stats?.requests ?? 0)} icon={FileText} />
+        <StatCard label="Distributors" value={String(stats?.distributors ?? 0)} icon={Users} tone="accent" />
+        <StatCard label="Total Requests" value={String(stats?.requests ?? 0)} icon={FileText} tone="success" />
         <StatCard label="Wallet Float" value={formatINR(stats?.totalBalance ?? 0)} icon={IndianRupee} />
       </div>
 
       <Card className="overflow-hidden shadow-card">
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="font-semibold">Recent Document Requests</h2>
+        <div className="flex items-center justify-between border-b border-border px-6 py-5">
+          <div>
+            <h2 className="font-display text-lg font-bold tracking-tight">Recent Document Requests</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">Latest activity across the network.</p>
+          </div>
           <Link to="/members">
-            <Button variant="ghost" size="sm" className="gap-1">
+            <Button variant="ghost" size="sm" className="gap-1 text-xs font-semibold uppercase tracking-wider">
               Members <ArrowUpRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
+          <table className="w-full text-[14px] leading-relaxed">
+            <thead className="bg-muted/50 text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               <tr>
-                <th className="px-5 py-3">Member</th>
-                <th className="px-5 py-3">Service</th>
-                <th className="px-5 py-3">Number</th>
-                <th className="px-5 py-3">Cost</th>
-                <th className="px-5 py-3">Date</th>
+                <th className="px-6 py-3.5">Member</th>
+                <th className="px-6 py-3.5">Service</th>
+                <th className="px-6 py-3.5">Number</th>
+                <th className="px-6 py-3.5">Cost</th>
+                <th className="px-6 py-3.5">Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {(requests ?? []).slice(0, 12).map((r) => (
-                <tr key={r.id}>
-                  <td className="px-5 py-3 font-medium">{r.user_name}</td>
-                  <td className="px-5 py-3">{r.service_name}</td>
-                  <td className="px-5 py-3 font-mono text-xs">{r.input_value}</td>
-                  <td className="px-5 py-3">{formatINR(Number(r.cost))}</td>
-                  <td className="px-5 py-3 text-muted-foreground">
+                <tr key={r.id} className="transition-colors hover:bg-muted/30">
+                  <td className="px-6 py-3.5 font-semibold text-foreground">{r.user_name}</td>
+                  <td className="px-6 py-3.5 text-foreground/80">{r.service_name}</td>
+                  <td className="px-6 py-3.5 font-mono text-[12px] tracking-tight text-muted-foreground">{r.input_value}</td>
+                  <td className="px-6 py-3.5 font-semibold tabular-nums text-foreground">{formatINR(Number(r.cost))}</td>
+                  <td className="px-6 py-3.5 text-[13px] text-muted-foreground">
                     {new Date(r.created_at).toLocaleDateString("en-IN")}
                   </td>
                 </tr>
               ))}
               {(requests ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-6 py-12 text-center text-sm text-muted-foreground">
                     No requests yet.
                   </td>
                 </tr>
@@ -140,8 +154,8 @@ function MemberDashboard({ greeting, balance }: { greeting: string; balance: num
   const rechargeCount = (orders ?? []).filter((o) => o.status === "success").length;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div className="relative overflow-hidden rounded-2xl bg-hero p-7 text-primary-foreground shadow-elegant lg:p-9">
+    <div className="mx-auto max-w-6xl space-y-7">
+      <div className="relative overflow-hidden rounded-2xl bg-hero p-7 text-primary-foreground shadow-elegant lg:p-10">
         {/* Accent flourishes */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[oklch(0.76_0.16_64_/_0.25)] blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-[oklch(0.4_0.12_270_/_0.4)] blur-3xl" />
@@ -149,79 +163,99 @@ function MemberDashboard({ greeting, balance }: { greeting: string; balance: num
 
         <div className="relative flex flex-wrap items-start justify-between gap-6">
           <div className="min-w-0 animate-in fade-in slide-in-from-left-4 duration-500">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary-foreground/75 backdrop-blur">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[10.5px] font-semibold uppercase leading-none tracking-[0.22em] text-primary-foreground/80 backdrop-blur">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[oklch(0.82_0.17_64)]" />
               Welcome back
             </div>
-            <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight lg:text-4xl">
+            <h1 className="mt-4 font-display text-[2rem] font-extrabold leading-[1.05] tracking-[-0.02em] lg:text-[2.6rem]">
               {greeting}
             </h1>
-            <p className="mt-1 text-sm text-primary-foreground/65">
+            <p className="mt-2 max-w-md text-[14px] font-medium leading-relaxed text-primary-foreground/70">
               Your trusted gateway to government document services.
             </p>
           </div>
           <Link to="/services">
-            <Button className="gap-2 bg-accent-gradient text-[oklch(0.25_0.06_60)] shadow-lg shadow-[oklch(0.76_0.16_64_/_0.3)] transition-transform hover:-translate-y-0.5 hover:opacity-95">
+            <Button className="gap-2 bg-accent-gradient text-[13px] font-bold uppercase tracking-wider text-[oklch(0.25_0.06_60)] shadow-lg shadow-[oklch(0.76_0.16_64_/_0.3)] transition-transform hover:-translate-y-0.5 hover:opacity-95">
               <FileStack className="h-4 w-4" /> New Request
             </Button>
           </Link>
         </div>
 
-        <div className="relative mt-7 flex flex-wrap items-end gap-x-10 gap-y-4 border-t border-white/10 pt-5">
+        <div className="relative mt-8 flex flex-wrap items-end gap-x-10 gap-y-4 border-t border-white/10 pt-6">
           <div>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/55">
+            <div className="text-[10.5px] font-semibold uppercase leading-none tracking-[0.22em] text-primary-foreground/60">
               Available Balance
             </div>
-            <div className="font-display text-4xl font-extrabold tracking-tight text-[oklch(0.92_0.12_70)] lg:text-5xl">
+            <div className="mt-2 font-display text-[2.5rem] font-extrabold leading-none tracking-[-0.02em] tabular-nums text-[oklch(0.92_0.12_70)] lg:text-[3.25rem]">
               {formatINR(balance)}
             </div>
           </div>
           <div className="hidden h-12 w-px bg-white/10 sm:block" />
-          <div className="flex items-center gap-2 text-xs text-primary-foreground/70">
+          <div className="flex items-center gap-2 text-[12px] font-medium tracking-wide text-primary-foreground/75">
             <span className="inline-flex h-2 w-2 rounded-full bg-[oklch(0.62_0.14_155)] shadow-[0_0_12px_oklch(0.62_0.14_155)]" />
             Account verified · Live
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatCard label="Total Requests" value={String(total)} icon={FileText} tone="primary" />
-        <StatCard label="Today" value={String(today)} icon={Clock} tone="accent" />
-        <StatCard label="Wallet" value={formatINR(balance)} icon={Wallet} tone="success" />
+      <div>
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="font-display text-[15px] font-bold uppercase tracking-[0.16em] text-foreground/80">
+            Activity Snapshot
+          </h2>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+            Updated live
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <StatCard label="Total Requests" value={String(total)} icon={FileText} tone="primary" />
+          <StatCard label="Today" value={String(today)} icon={Clock} tone="accent" />
+          <StatCard label="Wallet" value={formatINR(balance)} icon={Wallet} tone="success" />
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatCard label="DL Transactions" value={String(dlCount)} icon={IdCard} tone="primary" />
-        <StatCard label="Ration Transactions" value={String(rationCount)} icon={Wheat} tone="accent" />
-        <StatCard label="Recharge Transactions" value={String(rechargeCount)} icon={CreditCard} tone="success" />
+      <div>
+        <h2 className="mb-3 font-display text-[15px] font-bold uppercase tracking-[0.16em] text-foreground/80">
+          Transaction Breakdown
+        </h2>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          <StatCard label="DL Transactions" value={String(dlCount)} icon={IdCard} tone="primary" />
+          <StatCard label="Ration Transactions" value={String(rationCount)} icon={Wheat} tone="accent" />
+          <StatCard label="Recharge Transactions" value={String(rechargeCount)} icon={CreditCard} tone="success" />
+        </div>
       </div>
 
       <Card className="overflow-hidden shadow-card">
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="font-semibold">Recent Requests</h2>
+        <div className="flex items-center justify-between border-b border-border px-6 py-5">
+          <div>
+            <h2 className="font-display text-lg font-bold tracking-tight">Recent Requests</h2>
+            <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted-foreground">
+              Your latest document and recharge activity.
+            </p>
+          </div>
           <Link to="/requests">
-            <Button variant="ghost" size="sm" className="gap-1">
+            <Button variant="ghost" size="sm" className="gap-1 text-xs font-semibold uppercase tracking-wider">
               View all <ArrowUpRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>
         <div className="divide-y divide-border">
           {(requests ?? []).slice(0, 6).map((r) => (
-            <div key={r.id} className="flex items-center justify-between px-5 py-3 text-sm">
+            <div key={r.id} className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-muted/30">
               <div>
-                <div className="font-medium">{r.service_name}</div>
-                <div className="font-mono text-xs text-muted-foreground">{r.input_value}</div>
+                <div className="text-[14.5px] font-semibold leading-tight text-foreground">{r.service_name}</div>
+                <div className="mt-1 font-mono text-[12px] tracking-tight text-muted-foreground">{r.input_value}</div>
               </div>
               <div className="text-right">
-                <div className="font-medium">{formatINR(Number(r.cost))}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-[14.5px] font-bold tabular-nums text-foreground">{formatINR(Number(r.cost))}</div>
+                <div className="mt-1 text-[11.5px] font-medium uppercase tracking-wider text-muted-foreground">
                   {new Date(r.created_at).toLocaleDateString("en-IN")}
                 </div>
               </div>
             </div>
           ))}
           {total === 0 && (
-            <div className="px-5 py-10 text-center text-muted-foreground">
+            <div className="px-6 py-12 text-center text-[14px] leading-relaxed text-muted-foreground">
               No requests yet. Start with a new request.
             </div>
           )}
