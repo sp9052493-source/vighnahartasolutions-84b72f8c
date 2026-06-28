@@ -8,10 +8,13 @@ import {
   IndianRupee,
   ArrowUpRight,
   FileStack,
-  Clock,
-  IdCard,
-  Wheat,
+  TrendingUp,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
   CreditCard,
+  ListChecks,
+  CloudUpload,
 } from "lucide-react";
 import { useMe, useMyRequests, useMyOrders, formatINR } from "@/lib/queries";
 import { adminStats, adminListRequests } from "@/lib/admin.functions";
