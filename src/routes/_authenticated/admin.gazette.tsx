@@ -157,6 +157,38 @@ function AdminGazette() {
     onError: (e: any) => toast.error(e?.message || "Save failed"),
   });
 
+  // Sample PDF upload/delete mutations
+  const uploadMut = useMutation({
+    mutationFn: async (file: File) => {
+      if (file.size > 8 * 1024 * 1024) throw new Error("File must be under 8 MB");
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result));
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+      return uploadSampleFn({
+        data: { filename: file.name, contentType: file.type || "application/pdf", base64 },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Sample document uploaded");
+      queryClient.invalidateQueries({ queryKey: ["admin-gazette"] });
+      queryClient.invalidateQueries({ queryKey: ["gazette-sample"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Upload failed"),
+  });
+
+  const deleteSampleMut = useMutation({
+    mutationFn: () => deleteSampleFn(),
+    onSuccess: () => {
+      toast.success("Sample document removed");
+      queryClient.invalidateQueries({ queryKey: ["admin-gazette"] });
+      queryClient.invalidateQueries({ queryKey: ["gazette-sample"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Remove failed"),
+  });
+
   const changeTypeOptions = useMemo(
     () => (state?.change_types || []).filter((c) => c.value).map((c) => ({ value: c.value, en: c.en })),
     [state?.change_types],
