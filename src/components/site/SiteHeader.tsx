@@ -18,7 +18,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 lg:px-6">
+      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 lg:px-6">
         <Link to="/" className="flex items-center gap-2.5">
           <img src={logo.url} alt="Vighnaharta Solutions logo" width={80} height={80} loading="eager" decoding="async" className="h-16 w-16 object-contain" />
           <div className="leading-tight">
