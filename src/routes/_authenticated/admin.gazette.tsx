@@ -23,7 +23,11 @@ import {
   adminDeleteGazetteSample,
   adminListGazetteApplications,
 } from "@/lib/gazette-admin.functions";
-import { FileDown, Upload, X, Clock, CreditCard, Inbox } from "lucide-react";
+import {
+  adminGetAapleSarkarDetail,
+  adminUpdateAapleSarkar,
+} from "@/lib/aaple-sarkar.functions";
+import { FileDown, Upload, X, Clock, CreditCard, Inbox, ExternalLink } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,6 +37,15 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -893,6 +906,7 @@ function GazetteDesk() {
   const [purposeFilter, setPurposeFilter] = useState<string>("all");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const STATUS_TONE: Record<string, string> = {
     submitted: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
@@ -1079,11 +1093,12 @@ function GazetteDesk() {
               <tr>
                 <th className="px-3 py-2 text-left">Receipt</th>
                 <th className="px-3 py-2 text-left">Applicant</th>
-                <th className="px-3 py-2 text-left">Retailer</th>
+                <th className="px-3 py-2 text-left">Retailer / Distributor</th>
                 <th className="px-3 py-2 text-left">Purpose</th>
                 <th className="px-3 py-2 text-right">Fee</th>
                 <th className="px-3 py-2 text-left">Status</th>
                 <th className="px-3 py-2 text-left">Date</th>
+                <th className="px-3 py-2 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -1121,12 +1136,294 @@ function GazetteDesk() {
                       year: "numeric",
                     })}
                   </td>
+                  <td className="px-3 py-2 text-right">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-[11px]"
+                      onClick={() => setOpenId(a.id)}
+                    >
+                      Manage
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <GazetteManageDialog
+        id={openId}
+        onClose={() => setOpenId(null)}
+        statusTone={STATUS_TONE}
+      />
     </Card>
+  );
+}
+
+function GazetteManageDialog({
+  id,
+  onClose,
+  statusTone,
+}: {
+  id: string | null;
+  onClose: () => void;
+  statusTone: Record<string, string>;
+}) {
+  const open = !!id;
+  const queryClient = useQueryClient();
+  const getDetail = useServerFn(adminGetAapleSarkarDetail);
+  const updateFn = useServerFn(adminUpdateAapleSarkar);
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["admin-gazette-detail", id],
+    queryFn: () => getDetail({ data: { id: id! } }),
+    enabled: open,
+    staleTime: 0,
+  });
+
+  const [status, setStatus] = useState<string>("submitted");
+  const [remarks, setRemarks] = useState("");
+  const [resultDoc, setResultDoc] = useState<{ name: string; base64: string; contentType: string } | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (data?.application) {
+      setStatus(data.application.status || "submitted");
+      setRemarks(data.application.admin_remarks || "");
+      setResultDoc(null);
+    }
+  }, [data]);
+
+  const handleFile = async (file: File | null) => {
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error("File must be under 8 MB");
+      return;
+    }
+    const buf = await file.arrayBuffer();
+    let bin = "";
+    const bytes = new Uint8Array(buf);
+    for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
+    const base64 = btoa(bin);
+    setResultDoc({ name: file.name, base64, contentType: file.type || "application/pdf" });
+  };
+
+  const handleSave = async () => {
+    if (!id) return;
+    setSaving(true);
+    try {
+      await updateFn({
+        data: {
+          id,
+          status: status as any,
+          adminRemarks: remarks,
+          ...(resultDoc ? { resultDoc } : {}),
+        },
+      });
+      toast.success("Application updated");
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["admin-gazette-desk"] }),
+        refetch(),
+      ]);
+      onClose();
+    } catch (e: any) {
+      toast.error(e?.message || "Update failed");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const app = data?.application;
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Inbox className="h-4 w-4" /> Manage Gazette Application
+          </DialogTitle>
+          <DialogDescription>
+            Update live status, add remarks and upload the issued certificate.
+          </DialogDescription>
+        </DialogHeader>
+
+        {isLoading || !app ? (
+          <div className="flex items-center gap-2 py-12 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Summary */}
+            <div className="grid gap-3 rounded-lg border border-border bg-muted/20 p-3 sm:grid-cols-2">
+              <div>
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Receipt
+                </div>
+                <div className="font-mono text-sm">{app.receipt_no}</div>
+              </div>
+              <div>
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Current Status
+                </div>
+                <Badge variant="outline" className={cn("text-[10.5px]", statusTone[app.status] || "")}>
+                  {String(app.status || "").replace(/_/g, " ")}
+                </Badge>
+              </div>
+              <div>
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Applicant
+                </div>
+                <div className="text-sm font-semibold">{app.applicant_name}</div>
+                <div className="text-[11.5px] text-muted-foreground">
+                  {app.mobile}
+                  {app.email ? ` · ${app.email}` : ""}
+                </div>
+              </div>
+              <div>
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Submitted By
+                </div>
+                <div className="text-sm">{data?.profile?.full_name || "—"}</div>
+                <div className="text-[11.5px] text-muted-foreground">
+                  {data?.profile?.business_name || ""}
+                  {data?.profile?.phone ? ` · ${data.profile.phone}` : ""}
+                </div>
+              </div>
+              <div className="sm:col-span-2">
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Purpose / Change Type
+                </div>
+                <div className="text-sm">{app.purpose || "—"}</div>
+              </div>
+              <div className="sm:col-span-2">
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Address
+                </div>
+                <div className="text-[12.5px]">{app.address}</div>
+              </div>
+              <div>
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Fee Charged
+                </div>
+                <div className="text-sm font-semibold tabular-nums">
+                  ₹{Number(app.cost || 0).toFixed(0)}
+                </div>
+              </div>
+              <div>
+                <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Date
+                </div>
+                <div className="text-sm">
+                  {new Date(app.created_at).toLocaleString("en-IN")}
+                </div>
+              </div>
+            </div>
+
+            {/* Uploaded documents */}
+            {data?.signedDocs && data.signedDocs.length > 0 && (
+              <div>
+                <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Applicant Documents
+                </Label>
+                <div className="mt-1 flex flex-wrap gap-2">
+                  {data.signedDocs.map((d: any, i: number) => (
+                    <a
+                      key={i}
+                      href={d.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-[11.5px] hover:bg-muted/40"
+                    >
+                      <FileText className="h-3.5 w-3.5" /> {d.name}
+                      <ExternalLink className="h-3 w-3 opacity-60" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {data?.resultUrl && (
+              <div>
+                <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Previously Issued Document
+                </Label>
+                <a
+                  href={data.resultUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 inline-flex items-center gap-1 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-2 py-1 text-[11.5px] text-emerald-700 hover:bg-emerald-500/20 dark:text-emerald-300"
+                >
+                  <FileDown className="h-3.5 w-3.5" /> Download issued certificate
+                </a>
+              </div>
+            )}
+
+            <Separator />
+
+            {/* Update controls */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Update Status
+                </Label>
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger className="mt-1 h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="submitted">Submitted</SelectItem>
+                    <SelectItem value="under_review">Under Review</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  Upload Completed Certificate
+                </Label>
+                <Input
+                  type="file"
+                  accept="application/pdf,image/*"
+                  className="mt-1 h-9 text-xs"
+                  onChange={(e) => handleFile(e.target.files?.[0] || null)}
+                />
+                {resultDoc && (
+                  <div className="mt-1 text-[11px] text-emerald-700 dark:text-emerald-300">
+                    Ready to upload: {resultDoc.name}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                Admin Remarks
+              </Label>
+              <Textarea
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                placeholder="Internal notes shared with the retailer…"
+                rows={3}
+                className="mt-1"
+              />
+            </div>
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={saving}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave} disabled={saving || isLoading || !app}>
+            {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+            Save Update
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
