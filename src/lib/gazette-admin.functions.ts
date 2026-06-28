@@ -283,3 +283,29 @@ export const getGazetteSampleUrl = createServerFn({ method: "GET" })
       type: cfg.sample_pdf_type || "application/pdf",
     };
   });
+
+// ---------------- Gazette Desk: recent applications ----------------
+
+export const adminListGazetteApplications = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: apps, error } = await supabaseAdmin
+      .from("aaple_sarkar_applications")
+      .select("id, receipt_no, applicant_name, mobile, purpose, status, charged, created_at, user_id, admin_remarks")
+      .eq("service_type", "gazette")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(error.message);
+    const ids = Array.from(new Set((apps || []).map((a: any) => a.user_id)));
+    const { data: profiles } = ids.length
+      ? await supabaseAdmin.from("profiles").select("id, full_name, business_name").in("id", ids)
+      : { data: [] as any[] };
+    const pMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+    return (apps || []).map((a: any) => ({
+      ...a,
+      retailer_name: pMap.get(a.user_id)?.full_name || "—",
+      retailer_business: pMap.get(a.user_id)?.business_name || "",
+    }));
+  });
