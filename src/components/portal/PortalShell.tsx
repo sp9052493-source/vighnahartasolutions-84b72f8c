@@ -276,16 +276,23 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 <div className="font-display text-[13px] font-bold tabular-nums text-foreground">{timeStr} IST</div>
               </div>
 
-              {/* Balance pill */}
-              <div className="hidden h-11 items-center gap-2.5 rounded-lg border border-[oklch(0.76_0.16_64_/_0.3)] bg-[linear-gradient(135deg,oklch(0.98_0.02_85),oklch(0.96_0.04_75))] px-3.5 sm:flex">
+              {/* Balance pill — single source of truth for wallet balance */}
+              <Link
+                to="/recharge"
+                className="group hidden h-11 items-center gap-2.5 rounded-lg border border-[oklch(0.76_0.16_64_/_0.35)] bg-[linear-gradient(135deg,oklch(0.98_0.02_85),oklch(0.95_0.05_75))] px-3 transition-all hover:shadow-md sm:flex"
+              >
                 <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[oklch(0.76_0.16_64)] text-[oklch(0.22_0.06_60)]">
                   <Wallet className="h-3.5 w-3.5" />
                 </div>
                 <div className="text-right leading-tight">
-                  <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[oklch(0.45_0.10_60)]">Balance</div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[oklch(0.45_0.10_60)]">Wallet Balance</div>
                   <div className="font-display text-[14px] font-extrabold tabular-nums text-[oklch(0.30_0.08_60)]">{formatINR(me?.balance ?? 0)}</div>
                 </div>
-              </div>
+                <span className="ml-1 flex h-7 w-7 items-center justify-center rounded-md bg-[oklch(0.30_0.08_262)] text-[oklch(0.92_0.05_85)] transition-transform group-hover:scale-105">
+                  <Plus className="h-3.5 w-3.5" />
+                </span>
+              </Link>
+
 
               {/* Notifications */}
               <Button variant="outline" size="icon" className="relative h-11 w-11 rounded-lg border-border bg-background">
