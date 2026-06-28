@@ -152,7 +152,15 @@ function ApplyForm({
   const queryClient = useQueryClient();
   const submitFn = useServerFn(submitAapleSarkarApplication);
   const translateFn = useServerFn(translateToMarathi);
+  const listFn = useServerFn(listSarkarServices);
   const formRef = useRef<HTMLDivElement>(null);
+
+  const { data: servicesList = [], isLoading: servicesLoading } = useQuery({
+    queryKey: ["sarkar-services-public"],
+    queryFn: () => listFn() as Promise<SarkarService[]>,
+    staleTime: 60_000,
+  });
+
 
   const [service, setService] = useState<SarkarService | null>(null);
   const [files, setFiles] = useState<FileItem[]>([]);
