@@ -245,19 +245,37 @@ function AdminGazette() {
       </div>
 
       {/* Service */}
-      <Card className="space-y-4 p-5 shadow-card">
+      <Card className="space-y-5 p-5 shadow-card">
         <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
-          <IndianRupee className="h-4 w-4" /> Service Settings
+          <IndianRupee className="h-4 w-4" /> Pricing, Payment & Turnaround
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-1.5">
-            <Label className="text-xs">Price (₹) *</Label>
+            <Label className="text-xs flex items-center gap-1.5">
+              <IndianRupee className="h-3 w-3" /> Service Fee (₹) *
+            </Label>
             <Input
               type="number"
               min={0}
               value={state.price}
               onChange={(e) => updateState({ price: e.target.value })}
             />
+            <p className="text-[11px] text-muted-foreground">
+              Debited from retailer wallet on submission.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs flex items-center gap-1.5">
+              <Clock className="h-3 w-3" /> Turnaround Time
+            </Label>
+            <Input
+              placeholder="e.g. 15 – 45 days"
+              value={state.turnaround_text}
+              onChange={(e) => updateState({ turnaround_text: e.target.value })}
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Shown on the public Gazette page.
+            </p>
           </div>
           <div className="flex items-end gap-2">
             <Switch
@@ -268,7 +286,65 @@ function AdminGazette() {
             <Label htmlFor="g-active">Service is live for retailers</Label>
           </div>
         </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <Label className="text-xs flex items-center gap-1.5">
+            <CreditCard className="h-3 w-3" /> Accepted Payment Options
+          </Label>
+          <p className="text-[11.5px] text-muted-foreground">
+            Click to enable. These display on the Gazette page so retailers know how customers
+            can pay.
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {Array.from(new Set([...DEFAULT_PAYMENT_OPTIONS, ...state.payment_options])).map((opt) => {
+              const on = state.payment_options.includes(opt);
+              return (
+                <Badge
+                  key={opt}
+                  variant="outline"
+                  onClick={() =>
+                    updateState({
+                      payment_options: on
+                        ? state.payment_options.filter((p) => p !== opt)
+                        : [...state.payment_options, opt],
+                    })
+                  }
+                  className={cn(
+                    "cursor-pointer text-[11px]",
+                    on
+                      ? "border-primary/40 bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:border-primary/30",
+                  )}
+                >
+                  {opt}
+                </Badge>
+              );
+            })}
+          </div>
+          <div className="flex items-center gap-2 pt-1">
+            <Input
+              placeholder="Add custom option (e.g. Bharat QR) and press Enter"
+              className="h-8 text-[12.5px]"
+              onKeyDown={(e) => {
+                if (e.key !== "Enter") return;
+                e.preventDefault();
+                const v = (e.target as HTMLInputElement).value.trim();
+                if (!v) return;
+                if (!state.payment_options.includes(v)) {
+                  updateState({ payment_options: [...state.payment_options, v] });
+                }
+                (e.target as HTMLInputElement).value = "";
+              }}
+            />
+          </div>
+        </div>
       </Card>
+
+      {/* Gazette Desk — submitted applications */}
+      <GazetteDesk />
+
 
       {/* Sample / Demo PDF */}
       <Card className="space-y-4 p-5 shadow-card">
