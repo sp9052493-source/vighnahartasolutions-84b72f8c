@@ -108,7 +108,7 @@ function AdminHome() {
               <s.icon className="h-5 w-5" />
             </div>
             <h3 className="mt-4 font-display text-lg font-bold">{s.label}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{DESC[s.to as keyof typeof DESC]}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{DESC[(s.key ?? s.to) as keyof typeof DESC]}</p>
             <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary group-hover:underline">
               Open →
             </div>
