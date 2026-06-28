@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { z } from "zod";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -44,8 +46,15 @@ import { cn } from "@/lib/utils";
 import { useMe, formatINR } from "@/lib/queries";
 import { getSarkarServiceByType } from "@/lib/sarkar-services.functions";
 import { submitAapleSarkarApplication } from "@/lib/aaple-sarkar.functions";
+import { getDraft, deleteDraft } from "@/lib/drafts.functions";
+import { SaveDraftButton, ServiceDraftsList } from "@/components/portal/DraftControls";
+
+const gazetteSearchSchema = z.object({
+  draft: fallback(z.string().uuid().optional(), undefined),
+});
 
 export const Route = createFileRoute("/_authenticated/gazette")({
+  validateSearch: zodValidator(gazetteSearchSchema),
   head: () => ({
     meta: [
       { title: "Gazette Certificate — Vighnaharta Solutions" },
