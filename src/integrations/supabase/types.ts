@@ -92,6 +92,57 @@ export type Database = {
         }
         Relationships: []
       }
+      aaple_sarkar_services: {
+        Row: {
+          active: boolean
+          created_at: string
+          desc_en: string
+          desc_mr: string
+          extra_fields: Json
+          id: string
+          name_en: string
+          name_mr: string
+          price: number
+          required_docs: Json
+          sort_order: number
+          tone: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          desc_en?: string
+          desc_mr?: string
+          extra_fields?: Json
+          id?: string
+          name_en: string
+          name_mr: string
+          price?: number
+          required_docs?: Json
+          sort_order?: number
+          tone?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          desc_en?: string
+          desc_mr?: string
+          extra_fields?: Json
+          id?: string
+          name_en?: string
+          name_mr?: string
+          price?: number
+          required_docs?: Json
+          sort_order?: number
+          tone?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       document_requests: {
         Row: {
           cost: number
