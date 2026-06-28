@@ -194,3 +194,7 @@
 @utility shadow-card {
   box-shadow: var(--shadow-card);
 }
+
+#lovable-badge {
+  display: none !important;
+}
