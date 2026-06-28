@@ -76,9 +76,10 @@ export function MemberDetailSheet({
           </div>
         ) : (
           <Tabs defaultValue="performance" className="mt-4">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="performance">Stats</TabsTrigger>
               <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="pricing">Pricing</TabsTrigger>
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
             </TabsList>
@@ -94,6 +95,10 @@ export function MemberDetailSheet({
                 distributors={distributors}
                 onSaved={() => onOpenChange(false)}
               />
+            </TabsContent>
+
+            <TabsContent value="pricing" className="mt-4">
+              <PricingTab userId={member!.id} />
             </TabsContent>
 
             <TabsContent value="account" className="mt-4">
