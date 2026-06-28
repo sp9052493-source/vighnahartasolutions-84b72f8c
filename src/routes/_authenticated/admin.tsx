@@ -25,14 +25,15 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
 });
 
-const SECTIONS = [
+type Section = { to: string; label: string; icon: typeof LayoutGrid; exact?: boolean };
+const SECTIONS: Section[] = [
   { to: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
   { to: "/admin/site", label: "Site & Brand", icon: Building2 },
   { to: "/admin/pages", label: "Page Content", icon: FileEdit },
   { to: "/admin/gateways", label: "Payment Gateways", icon: CreditCard },
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
   { to: "/members", label: "Members & KYC", icon: Users },
-] as const;
+];
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

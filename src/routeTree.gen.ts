@@ -30,10 +30,14 @@ import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authenticated/manage-services'
 import { Route as AuthenticatedDlPrintRouteImport } from './routes/_authenticated/dl-print'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAapleSarkarRequestsRouteImport } from './routes/_authenticated/aaple-sarkar-requests'
 import { Route as AuthenticatedAapleSarkarRouteImport } from './routes/_authenticated/aaple-sarkar'
 import { Route as AuthenticatedAadhaarToPanRouteImport } from './routes/_authenticated/aadhaar-to-pan'
 import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/paytm-return'
+import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
+import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
+import { Route as AuthenticatedAdminGatewaysRouteImport } from './routes/_authenticated/admin.gateways'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -141,6 +145,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAapleSarkarRequestsRoute =
   AuthenticatedAapleSarkarRequestsRouteImport.update({
     id: '/aaple-sarkar-requests',
@@ -164,6 +173,22 @@ const ApiPublicPaytmReturnRoute = ApiPublicPaytmReturnRouteImport.update({
   path: '/api/public/paytm-return',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminSiteRoute = AuthenticatedAdminSiteRouteImport.update({
+  id: '/site',
+  path: '/site',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminPagesRoute = AuthenticatedAdminPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminGatewaysRoute =
+  AuthenticatedAdminGatewaysRouteImport.update({
+    id: '/gateways',
+    path: '/gateways',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -178,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/aaple-sarkar': typeof AuthenticatedAapleSarkarRoute
   '/aaple-sarkar-requests': typeof AuthenticatedAapleSarkarRequestsRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
@@ -189,6 +215,9 @@ export interface FileRoutesByFullPath {
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
+  '/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRoutesByTo {
@@ -204,6 +233,7 @@ export interface FileRoutesByTo {
   '/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/aaple-sarkar': typeof AuthenticatedAapleSarkarRoute
   '/aaple-sarkar-requests': typeof AuthenticatedAapleSarkarRequestsRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
@@ -215,6 +245,9 @@ export interface FileRoutesByTo {
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
+  '/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRoutesById {
@@ -232,6 +265,7 @@ export interface FileRoutesById {
   '/_authenticated/aadhaar-to-pan': typeof AuthenticatedAadhaarToPanRoute
   '/_authenticated/aaple-sarkar': typeof AuthenticatedAapleSarkarRoute
   '/_authenticated/aaple-sarkar-requests': typeof AuthenticatedAapleSarkarRequestsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dl-print': typeof AuthenticatedDlPrintRoute
   '/_authenticated/manage-services': typeof AuthenticatedManageServicesRoute
@@ -243,6 +277,9 @@ export interface FileRoutesById {
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
+  '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
+  '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRouteTypes {
@@ -260,6 +297,7 @@ export interface FileRouteTypes {
     | '/aadhaar-to-pan'
     | '/aaple-sarkar'
     | '/aaple-sarkar-requests'
+    | '/admin'
     | '/dashboard'
     | '/dl-print'
     | '/manage-services'
@@ -271,6 +309,9 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/wallet'
+    | '/admin/gateways'
+    | '/admin/pages'
+    | '/admin/site'
     | '/api/public/paytm-return'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -286,6 +327,7 @@ export interface FileRouteTypes {
     | '/aadhaar-to-pan'
     | '/aaple-sarkar'
     | '/aaple-sarkar-requests'
+    | '/admin'
     | '/dashboard'
     | '/dl-print'
     | '/manage-services'
@@ -297,6 +339,9 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/wallet'
+    | '/admin/gateways'
+    | '/admin/pages'
+    | '/admin/site'
     | '/api/public/paytm-return'
   id:
     | '__root__'
@@ -313,6 +358,7 @@ export interface FileRouteTypes {
     | '/_authenticated/aadhaar-to-pan'
     | '/_authenticated/aaple-sarkar'
     | '/_authenticated/aaple-sarkar-requests'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/dl-print'
     | '/_authenticated/manage-services'
@@ -324,6 +370,9 @@ export interface FileRouteTypes {
     | '/_authenticated/services'
     | '/_authenticated/settings'
     | '/_authenticated/wallet'
+    | '/_authenticated/admin/gateways'
+    | '/_authenticated/admin/pages'
+    | '/_authenticated/admin/site'
     | '/api/public/paytm-return'
   fileRoutesById: FileRoutesById
 }
@@ -490,6 +539,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/aaple-sarkar-requests': {
       id: '/_authenticated/aaple-sarkar-requests'
       path: '/aaple-sarkar-requests'
@@ -518,13 +574,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaytmReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/site': {
+      id: '/_authenticated/admin/site'
+      path: '/site'
+      fullPath: '/admin/site'
+      preLoaderRoute: typeof AuthenticatedAdminSiteRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/pages': {
+      id: '/_authenticated/admin/pages'
+      path: '/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AuthenticatedAdminPagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/gateways': {
+      id: '/_authenticated/admin/gateways'
+      path: '/gateways'
+      fullPath: '/admin/gateways'
+      preLoaderRoute: typeof AuthenticatedAdminGatewaysRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminGatewaysRoute: typeof AuthenticatedAdminGatewaysRoute
+  AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
+  AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminGatewaysRoute: AuthenticatedAdminGatewaysRoute,
+  AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
+  AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAadhaarToPanRoute: typeof AuthenticatedAadhaarToPanRoute
   AuthenticatedAapleSarkarRoute: typeof AuthenticatedAapleSarkarRoute
   AuthenticatedAapleSarkarRequestsRoute: typeof AuthenticatedAapleSarkarRequestsRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDlPrintRoute: typeof AuthenticatedDlPrintRoute
   AuthenticatedManageServicesRoute: typeof AuthenticatedManageServicesRoute
@@ -542,6 +635,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAadhaarToPanRoute: AuthenticatedAadhaarToPanRoute,
   AuthenticatedAapleSarkarRoute: AuthenticatedAapleSarkarRoute,
   AuthenticatedAapleSarkarRequestsRoute: AuthenticatedAapleSarkarRequestsRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDlPrintRoute: AuthenticatedDlPrintRoute,
   AuthenticatedManageServicesRoute: AuthenticatedManageServicesRoute,

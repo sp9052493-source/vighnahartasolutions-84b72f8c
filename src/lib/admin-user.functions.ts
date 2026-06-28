@@ -62,7 +62,7 @@ export const adminUpdateUserExtras = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { userId, ...patch } = data;
-    const { error } = await supabaseAdmin.from("profiles").update(patch).eq("id", userId);
+    const { error } = await supabaseAdmin.from("profiles").update(patch as any).eq("id", userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
