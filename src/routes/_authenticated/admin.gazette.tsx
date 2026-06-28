@@ -355,10 +355,8 @@ function AdminGazette() {
         </div>
       </Card>
 
-      {/* Gazette Desk — submitted applications */}
-      <div id="gazette-desk" className="scroll-mt-24">
-        <GazetteDesk />
-      </div>
+
+
 
 
       {/* Sample / Demo PDF */}
