@@ -9,7 +9,6 @@ import {
   SlidersHorizontal,
   Menu,
   LogOut,
-  ShieldCheck,
   FileStack,
   Car,
   CreditCard,
@@ -17,12 +16,15 @@ import {
   Wheat,
   Landmark,
   ShieldCheck as ShieldCheckIcon,
-
+  Search,
+  Plus,
+  Headphones,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/vighnaharta-logo.png.asset.json";
