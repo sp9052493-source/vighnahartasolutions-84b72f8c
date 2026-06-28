@@ -131,6 +131,8 @@ function AdminGazette() {
         data: {
           price: Number(state.price) || 0,
           active: state.active,
+          turnaround_text: state.turnaround_text.trim(),
+          payment_options: state.payment_options.map((p) => p.trim()).filter(Boolean),
           change_types: state.change_types.map((c) => ({
             value: c.value.trim().toLowerCase(),
             en: c.en.trim(),
