@@ -21,8 +21,10 @@ import {
   adminSaveGazette,
   adminUploadGazetteSample,
   adminDeleteGazetteSample,
+  adminListGazetteApplications,
 } from "@/lib/gazette-admin.functions";
-import { FileDown, Upload, X } from "lucide-react";
+import { FileDown, Upload, X, Clock, CreditCard, Inbox } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,10 +68,14 @@ type Doc = { id: string; en: string; mr: string; required: boolean; appearsFor: 
 type State = {
   price: string;
   active: boolean;
+  turnaround_text: string;
+  payment_options: string[];
   change_types: ChangeType[];
   conditional_fields: CondField[];
   required_docs: Doc[];
 };
+
+const DEFAULT_PAYMENT_OPTIONS = ["Wallet", "UPI", "Card", "Net Banking", "Cash at Counter"];
 
 function AdminGazette() {
   const getFn = useServerFn(adminGetGazette);
@@ -90,6 +96,8 @@ function AdminGazette() {
     setState({
       price: String(data.price ?? 0),
       active: !!data.active,
+      turnaround_text: String((data as any).turnaround_text || ""),
+      payment_options: Array.isArray((data as any).payment_options) ? (data as any).payment_options : [],
       change_types: (data.change_types || []).map((c: any) => ({
         value: String(c.value || ""),
         en: String(c.en || ""),
@@ -123,6 +131,8 @@ function AdminGazette() {
         data: {
           price: Number(state.price) || 0,
           active: state.active,
+          turnaround_text: state.turnaround_text.trim(),
+          payment_options: state.payment_options.map((p) => p.trim()).filter(Boolean),
           change_types: state.change_types.map((c) => ({
             value: c.value.trim().toLowerCase(),
             en: c.en.trim(),
@@ -235,19 +245,37 @@ function AdminGazette() {
       </div>
 
       {/* Service */}
-      <Card className="space-y-4 p-5 shadow-card">
+      <Card className="space-y-5 p-5 shadow-card">
         <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
-          <IndianRupee className="h-4 w-4" /> Service Settings
+          <IndianRupee className="h-4 w-4" /> Pricing, Payment & Turnaround
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-1.5">
-            <Label className="text-xs">Price (₹) *</Label>
+            <Label className="text-xs flex items-center gap-1.5">
+              <IndianRupee className="h-3 w-3" /> Service Fee (₹) *
+            </Label>
             <Input
               type="number"
               min={0}
               value={state.price}
               onChange={(e) => updateState({ price: e.target.value })}
             />
+            <p className="text-[11px] text-muted-foreground">
+              Debited from retailer wallet on submission.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs flex items-center gap-1.5">
+              <Clock className="h-3 w-3" /> Turnaround Time
+            </Label>
+            <Input
+              placeholder="e.g. 15 – 45 days"
+              value={state.turnaround_text}
+              onChange={(e) => updateState({ turnaround_text: e.target.value })}
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Shown on the public Gazette page.
+            </p>
           </div>
           <div className="flex items-end gap-2">
             <Switch
@@ -258,7 +286,65 @@ function AdminGazette() {
             <Label htmlFor="g-active">Service is live for retailers</Label>
           </div>
         </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <Label className="text-xs flex items-center gap-1.5">
+            <CreditCard className="h-3 w-3" /> Accepted Payment Options
+          </Label>
+          <p className="text-[11.5px] text-muted-foreground">
+            Click to enable. These display on the Gazette page so retailers know how customers
+            can pay.
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {Array.from(new Set([...DEFAULT_PAYMENT_OPTIONS, ...state.payment_options])).map((opt) => {
+              const on = state.payment_options.includes(opt);
+              return (
+                <Badge
+                  key={opt}
+                  variant="outline"
+                  onClick={() =>
+                    updateState({
+                      payment_options: on
+                        ? state.payment_options.filter((p) => p !== opt)
+                        : [...state.payment_options, opt],
+                    })
+                  }
+                  className={cn(
+                    "cursor-pointer text-[11px]",
+                    on
+                      ? "border-primary/40 bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:border-primary/30",
+                  )}
+                >
+                  {opt}
+                </Badge>
+              );
+            })}
+          </div>
+          <div className="flex items-center gap-2 pt-1">
+            <Input
+              placeholder="Add custom option (e.g. Bharat QR) and press Enter"
+              className="h-8 text-[12.5px]"
+              onKeyDown={(e) => {
+                if (e.key !== "Enter") return;
+                e.preventDefault();
+                const v = (e.target as HTMLInputElement).value.trim();
+                if (!v) return;
+                if (!state.payment_options.includes(v)) {
+                  updateState({ payment_options: [...state.payment_options, v] });
+                }
+                (e.target as HTMLInputElement).value = "";
+              }}
+            />
+          </div>
+        </div>
       </Card>
+
+      {/* Gazette Desk — submitted applications */}
+      <GazetteDesk />
+
 
       {/* Sample / Demo PDF */}
       <Card className="space-y-4 p-5 shadow-card">
@@ -791,5 +877,106 @@ function AppearsForPicker({
         );
       })}
     </div>
+  );
+}
+
+function GazetteDesk() {
+  const listFn = useServerFn(adminListGazetteApplications);
+  const { data: apps, isLoading } = useQuery({
+    queryKey: ["admin-gazette-desk"],
+    queryFn: () => listFn(),
+    staleTime: 30_000,
+  });
+
+  const STATUS_TONE: Record<string, string> = {
+    submitted: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+    under_review: "border-blue-500/40 bg-blue-500/10 text-blue-700 dark:text-blue-300",
+    approved: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    completed: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    rejected: "border-destructive/40 bg-destructive/10 text-destructive",
+  };
+
+  return (
+    <Card className="space-y-4 p-5 shadow-card">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
+          <Inbox className="h-4 w-4" /> Gazette Desk · Submitted Applications
+        </h2>
+        <Link
+          to="/aaple-sarkar-requests"
+          className="text-xs font-semibold text-primary hover:underline"
+        >
+          Open full workflow →
+        </Link>
+      </div>
+      <p className="text-[12px] text-muted-foreground">
+        Latest Gazette applications submitted by retailers. Click any row to manage status,
+        remarks and upload the issued document on the workflow page.
+      </p>
+
+      {isLoading ? (
+        <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading applications…
+        </div>
+      ) : !apps || apps.length === 0 ? (
+        <div className="rounded-md border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          No Gazette applications yet. Submissions from retailers will appear here in real time.
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-[12.5px]">
+            <thead className="bg-muted/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+              <tr>
+                <th className="px-3 py-2 text-left">Receipt</th>
+                <th className="px-3 py-2 text-left">Applicant</th>
+                <th className="px-3 py-2 text-left">Retailer</th>
+                <th className="px-3 py-2 text-left">Purpose</th>
+                <th className="px-3 py-2 text-right">Fee</th>
+                <th className="px-3 py-2 text-left">Status</th>
+                <th className="px-3 py-2 text-left">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {apps.map((a: any) => (
+                <tr key={a.id} className="border-t border-border hover:bg-muted/30">
+                  <td className="px-3 py-2 font-mono text-[11.5px]">{a.receipt_no}</td>
+                  <td className="px-3 py-2">
+                    <div className="font-semibold">{a.applicant_name}</div>
+                    <div className="text-[11px] text-muted-foreground">{a.mobile}</div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <div>{a.retailer_name}</div>
+                    {a.retailer_business && (
+                      <div className="text-[11px] text-muted-foreground">{a.retailer_business}</div>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 max-w-[220px] truncate" title={a.purpose}>
+                    {a.purpose || "—"}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums">
+                    ₹{Number(a.charged || 0).toFixed(0)}
+                  </td>
+                  <td className="px-3 py-2">
+                    <Badge
+                      variant="outline"
+                      className={cn("text-[10.5px]", STATUS_TONE[a.status] || "")}
+                    >
+                      {String(a.status || "").replace(/_/g, " ")}
+                    </Badge>
+                  </td>
+                  <td className="px-3 py-2 text-[11.5px] text-muted-foreground">
+                    {new Date(a.created_at).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Card>
   );
 }

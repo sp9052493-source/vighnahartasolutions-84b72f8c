@@ -373,14 +373,25 @@ function GazettePage() {
       {/* Quick info strip */}
       <div className="grid gap-3 sm:grid-cols-3">
         <InfoTile icon={Scale} label="Issued By" value="Department of Publication" sub="Government of India" />
-        <InfoTile icon={FileSignature} label="Turnaround" value="15 – 45 days" sub="After document verification" />
+        <InfoTile
+          icon={FileSignature}
+          label="Turnaround"
+          value={(((service as any)?.config?.turnaround_text as string) || "").trim() || "15 – 45 days"}
+          sub="After document verification"
+        />
         <InfoTile
           icon={IndianRupee}
           label="Service Fee"
           value={svcLoading ? "—" : formatINR(price)}
-          sub="Debited from wallet on submit"
+          sub={
+            Array.isArray((service as any)?.config?.payment_options) &&
+            (service as any).config.payment_options.length
+              ? `Pay via ${((service as any).config.payment_options as string[]).join(" · ")}`
+              : "Debited from wallet on submit"
+          }
         />
       </div>
+
 
       {sample?.url && (
         <a

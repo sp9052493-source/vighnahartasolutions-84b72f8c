@@ -53,6 +53,8 @@ const docSchema = z.object({
 const saveSchema = z.object({
   price: z.number().min(0).max(100000),
   active: z.boolean().default(true),
+  turnaround_text: z.string().trim().max(80).default(""),
+  payment_options: z.array(z.string().trim().min(1).max(40)).max(12).default([]),
   change_types: z.array(changeTypeSchema).min(1).max(30),
   conditional_fields: z.array(conditionalFieldSchema).max(40).default([]),
   required_docs: z.array(docSchema).min(1).max(40),
@@ -99,6 +101,8 @@ export const adminGetGazette = createServerFn({ method: "GET" })
       change_types: Array.isArray(cfg.change_types) ? cfg.change_types : [],
       conditional_fields: Array.isArray(data.extra_fields) ? data.extra_fields : [],
       required_docs: Array.isArray(data.required_docs) ? data.required_docs : [],
+      turnaround_text: typeof cfg.turnaround_text === "string" ? cfg.turnaround_text : "",
+      payment_options: Array.isArray(cfg.payment_options) ? cfg.payment_options : [],
       sample_pdf_path: samplePath,
       sample_pdf_name: cfg.sample_pdf_name || null,
       sample_pdf_url: sampleUrl,
@@ -157,6 +161,8 @@ export const adminSaveGazette = createServerFn({ method: "POST" })
         config: {
           ...existingCfg,
           change_types: data.change_types,
+          turnaround_text: data.turnaround_text,
+          payment_options: data.payment_options,
         } as any,
       })
       .eq("type", GAZETTE_TYPE);
@@ -276,4 +282,30 @@ export const getGazetteSampleUrl = createServerFn({ method: "GET" })
       name: cfg.sample_pdf_name || "sample.pdf",
       type: cfg.sample_pdf_type || "application/pdf",
     };
+  });
+
+// ---------------- Gazette Desk: recent applications ----------------
+
+export const adminListGazetteApplications = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: apps, error } = await supabaseAdmin
+      .from("aaple_sarkar_applications")
+      .select("id, receipt_no, applicant_name, mobile, purpose, status, charged, created_at, user_id, admin_remarks")
+      .eq("service_type", "gazette")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(error.message);
+    const ids = Array.from(new Set((apps || []).map((a: any) => a.user_id)));
+    const { data: profiles } = ids.length
+      ? await supabaseAdmin.from("profiles").select("id, full_name, business_name").in("id", ids)
+      : { data: [] as any[] };
+    const pMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+    return (apps || []).map((a: any) => ({
+      ...a,
+      retailer_name: pMap.get(a.user_id)?.full_name || "—",
+      retailer_business: pMap.get(a.user_id)?.business_name || "",
+    }));
   });
