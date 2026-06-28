@@ -40,6 +40,7 @@ import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/pa
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
 import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
+import { Route as AuthenticatedAdminGazetteDeskRouteImport } from './routes/_authenticated/admin.gazette-desk'
 import { Route as AuthenticatedAdminGazetteRouteImport } from './routes/_authenticated/admin.gazette'
 import { Route as AuthenticatedAdminGatewaysRouteImport } from './routes/_authenticated/admin.gateways'
 
@@ -203,6 +204,12 @@ const AuthenticatedAdminPagesRoute = AuthenticatedAdminPagesRouteImport.update({
   path: '/pages',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminGazetteDeskRoute =
+  AuthenticatedAdminGazetteDeskRouteImport.update({
+    id: '/gazette-desk',
+    path: '/gazette-desk',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminGazetteRoute =
   AuthenticatedAdminGazetteRouteImport.update({
     id: '/gazette',
@@ -245,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
+  '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
@@ -279,6 +287,7 @@ export interface FileRoutesByTo {
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
+  '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
@@ -315,6 +324,7 @@ export interface FileRoutesById {
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/_authenticated/admin/gazette': typeof AuthenticatedAdminGazetteRoute
+  '/_authenticated/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/admin/gateways'
     | '/admin/gazette'
+    | '/admin/gazette-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/admin/gateways'
     | '/admin/gazette'
+    | '/admin/gazette-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
@@ -420,6 +432,7 @@ export interface FileRouteTypes {
     | '/_authenticated/wallet'
     | '/_authenticated/admin/gateways'
     | '/_authenticated/admin/gazette'
+    | '/_authenticated/admin/gazette-desk'
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/sarkar-services'
     | '/_authenticated/admin/site'
@@ -659,6 +672,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPagesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/gazette-desk': {
+      id: '/_authenticated/admin/gazette-desk'
+      path: '/gazette-desk'
+      fullPath: '/admin/gazette-desk'
+      preLoaderRoute: typeof AuthenticatedAdminGazetteDeskRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/gazette': {
       id: '/_authenticated/admin/gazette'
       path: '/gazette'
@@ -679,6 +699,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminGatewaysRoute: typeof AuthenticatedAdminGatewaysRoute
   AuthenticatedAdminGazetteRoute: typeof AuthenticatedAdminGazetteRoute
+  AuthenticatedAdminGazetteDeskRoute: typeof AuthenticatedAdminGazetteDeskRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
@@ -687,6 +708,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminGatewaysRoute: AuthenticatedAdminGatewaysRoute,
   AuthenticatedAdminGazetteRoute: AuthenticatedAdminGazetteRoute,
+  AuthenticatedAdminGazetteDeskRoute: AuthenticatedAdminGazetteDeskRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,

@@ -29,14 +29,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
 });
 
-type Section = {
-  to: string;
-  hash?: string;
-  label: string;
-  icon: typeof LayoutGrid;
-  exact?: boolean;
-  key?: string;
-};
+type Section = { to: string; label: string; icon: typeof LayoutGrid; exact?: boolean };
 const SECTIONS: Section[] = [
   { to: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
   { to: "/admin/site", label: "Site & Brand", icon: Building2 },
@@ -45,7 +38,7 @@ const SECTIONS: Section[] = [
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
   { to: "/admin/sarkar-services", label: "Aaple Sarkar", icon: Landmark },
   { to: "/admin/gazette", label: "Gazette Editor", icon: Newspaper },
-  { to: "/admin/gazette", hash: "gazette-desk", label: "Gazette Desk", icon: Inbox, key: "gazette-desk" },
+  { to: "/admin/gazette-desk", label: "Gazette Desk", icon: Inbox },
   { to: "/members", label: "Members & KYC", icon: Users },
 ];
 
@@ -71,16 +64,11 @@ function AdminLayout() {
 
       <nav className="flex flex-wrap gap-2 rounded-xl border border-border bg-card p-2 shadow-card">
         {SECTIONS.map((s) => {
-          const active = s.exact
-            ? pathname === s.to
-            : s.hash
-              ? false
-              : pathname.startsWith(s.to);
+          const active = s.exact ? pathname === s.to : pathname === s.to || pathname.startsWith(s.to + "/");
           return (
             <Link
-              key={s.key ?? s.to}
+              key={s.to}
               to={s.to}
-              hash={s.hash}
               className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 active
                   ? "bg-primary text-primary-foreground shadow-sm"
@@ -102,13 +90,13 @@ function AdminHome() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {SECTIONS.filter((s) => !s.exact).map((s) => (
-        <Link key={s.key ?? s.to} to={s.to} hash={s.hash}>
+        <Link key={s.to} to={s.to}>
           <Card className="group h-full p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <s.icon className="h-5 w-5" />
             </div>
             <h3 className="mt-4 font-display text-lg font-bold">{s.label}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{DESC[(s.key ?? s.to) as keyof typeof DESC]}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{DESC[s.to as keyof typeof DESC]}</p>
             <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary group-hover:underline">
               Open →
             </div>
@@ -126,7 +114,7 @@ const DESC = {
   "/manage-services": "Service price, retailer & distributor commission, API provider and live endpoint.",
   "/admin/sarkar-services": "Aaple Sarkar certificates — pricing, descriptions, extra fields and required documents.",
   "/admin/gazette": "Gazette Certificate — change-type options, conditional fields, document rules and price.",
-  "gazette-desk": "Live queue of Gazette applications submitted by retailers — update status, add remarks and upload the issued certificate.",
+  "/admin/gazette-desk": "Live queue of Gazette applications submitted by retailers — update status, add remarks and upload the issued certificate.",
   "/members": "Create accounts, change email, reset password, upload photo & KYC documents.",
 } as const;
 
