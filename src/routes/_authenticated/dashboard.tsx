@@ -141,32 +141,59 @@ function MemberDashboard({ greeting, balance }: { greeting: string; balance: num
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <div className="overflow-hidden rounded-xl bg-hero p-6 text-primary-foreground shadow-elegant">
-        <p className="text-sm text-primary-foreground/70">Welcome back</p>
-        <h1 className="mt-1 text-2xl font-bold">{greeting}</h1>
-        <div className="mt-4 flex flex-wrap items-end gap-6">
-          <div>
-            <div className="text-xs uppercase tracking-wide text-primary-foreground/60">Available Balance</div>
-            <div className="font-display text-3xl font-bold">{formatINR(balance)}</div>
+      <div className="relative overflow-hidden rounded-2xl bg-hero p-7 text-primary-foreground shadow-elegant lg:p-9">
+        {/* Accent flourishes */}
+        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[oklch(0.76_0.16_64_/_0.25)] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-[oklch(0.4_0.12_270_/_0.4)] blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,oklch(0.82_0.17_64_/_0.6),transparent)]" />
+
+        <div className="relative flex flex-wrap items-start justify-between gap-6">
+          <div className="min-w-0 animate-in fade-in slide-in-from-left-4 duration-500">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary-foreground/75 backdrop-blur">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[oklch(0.82_0.17_64)]" />
+              Welcome back
+            </div>
+            <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight lg:text-4xl">
+              {greeting}
+            </h1>
+            <p className="mt-1 text-sm text-primary-foreground/65">
+              Your trusted gateway to government document services.
+            </p>
           </div>
-          <Link to="/services" className="ml-auto">
-            <Button className="gap-2 bg-accent-gradient text-[oklch(0.25_0.06_60)] hover:opacity-90">
+          <Link to="/services">
+            <Button className="gap-2 bg-accent-gradient text-[oklch(0.25_0.06_60)] shadow-lg shadow-[oklch(0.76_0.16_64_/_0.3)] transition-transform hover:-translate-y-0.5 hover:opacity-95">
               <FileStack className="h-4 w-4" /> New Request
             </Button>
           </Link>
         </div>
+
+        <div className="relative mt-7 flex flex-wrap items-end gap-x-10 gap-y-4 border-t border-white/10 pt-5">
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/55">
+              Available Balance
+            </div>
+            <div className="font-display text-4xl font-extrabold tracking-tight text-[oklch(0.92_0.12_70)] lg:text-5xl">
+              {formatINR(balance)}
+            </div>
+          </div>
+          <div className="hidden h-12 w-px bg-white/10 sm:block" />
+          <div className="flex items-center gap-2 text-xs text-primary-foreground/70">
+            <span className="inline-flex h-2 w-2 rounded-full bg-[oklch(0.62_0.14_155)] shadow-[0_0_12px_oklch(0.62_0.14_155)]" />
+            Account verified · Live
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatCard label="Total Requests" value={String(total)} icon={FileText} />
-        <StatCard label="Today" value={String(today)} icon={Clock} />
-        <StatCard label="Wallet" value={formatINR(balance)} icon={Wallet} />
+        <StatCard label="Total Requests" value={String(total)} icon={FileText} tone="primary" />
+        <StatCard label="Today" value={String(today)} icon={Clock} tone="accent" />
+        <StatCard label="Wallet" value={formatINR(balance)} icon={Wallet} tone="success" />
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatCard label="DL Transactions" value={String(dlCount)} icon={IdCard} />
-        <StatCard label="Ration Transactions" value={String(rationCount)} icon={Wheat} />
-        <StatCard label="Recharge Transactions" value={String(rechargeCount)} icon={CreditCard} />
+        <StatCard label="DL Transactions" value={String(dlCount)} icon={IdCard} tone="primary" />
+        <StatCard label="Ration Transactions" value={String(rationCount)} icon={Wheat} tone="accent" />
+        <StatCard label="Recharge Transactions" value={String(rechargeCount)} icon={CreditCard} tone="success" />
       </div>
 
       <Card className="overflow-hidden shadow-card">
