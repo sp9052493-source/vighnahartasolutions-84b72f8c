@@ -53,6 +53,8 @@ const docSchema = z.object({
 const saveSchema = z.object({
   price: z.number().min(0).max(100000),
   active: z.boolean().default(true),
+  turnaround_text: z.string().trim().max(80).default(""),
+  payment_options: z.array(z.string().trim().min(1).max(40)).max(12).default([]),
   change_types: z.array(changeTypeSchema).min(1).max(30),
   conditional_fields: z.array(conditionalFieldSchema).max(40).default([]),
   required_docs: z.array(docSchema).min(1).max(40),
