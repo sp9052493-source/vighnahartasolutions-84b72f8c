@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, Plug, Wifi, WifiOff, Plus, Trash2, Pencil, ShieldCheck } from "lucide-react";
+import { Loader2, Plug, Wifi, WifiOff, Plus, Trash2, Pencil, ShieldCheck, Landmark, ArrowRight } from "lucide-react";
 import { useServices } from "@/lib/queries";
 import { adminUpdateService, adminCreateService, adminDeleteService } from "@/lib/admin.functions";
 import { Card } from "@/components/ui/card";
@@ -143,6 +143,25 @@ function ManageServices() {
           <Plus className="h-4 w-4" /> New Service
         </Button>
       </div>
+
+      <Link
+        to="/admin/sarkar-services"
+        className="group flex items-center justify-between gap-4 rounded-xl border border-primary/30 bg-primary/5 p-4 transition-colors hover:bg-primary/10"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/15 text-primary">
+            <Landmark className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="font-display text-base font-bold">Aaple Sarkar Services</div>
+            <div className="text-xs text-muted-foreground">
+              Manage Income, Domicile, Caste & other certificates — pricing, extra fields, required documents and add new services.
+            </div>
+          </div>
+        </div>
+        <ArrowRight className="h-5 w-5 text-primary transition-transform group-hover:translate-x-1" />
+      </Link>
+
 
       <div className="space-y-4">
         {(services ?? []).map((s) => (
