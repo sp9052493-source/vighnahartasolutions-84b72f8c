@@ -105,31 +105,31 @@ function AdminDashboard() {
           </Link>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
+          <table className="w-full text-[14px] leading-relaxed">
+            <thead className="bg-muted/50 text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               <tr>
-                <th className="px-5 py-3">Member</th>
-                <th className="px-5 py-3">Service</th>
-                <th className="px-5 py-3">Number</th>
-                <th className="px-5 py-3">Cost</th>
-                <th className="px-5 py-3">Date</th>
+                <th className="px-6 py-3.5">Member</th>
+                <th className="px-6 py-3.5">Service</th>
+                <th className="px-6 py-3.5">Number</th>
+                <th className="px-6 py-3.5">Cost</th>
+                <th className="px-6 py-3.5">Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {(requests ?? []).slice(0, 12).map((r) => (
-                <tr key={r.id}>
-                  <td className="px-5 py-3 font-medium">{r.user_name}</td>
-                  <td className="px-5 py-3">{r.service_name}</td>
-                  <td className="px-5 py-3 font-mono text-xs">{r.input_value}</td>
-                  <td className="px-5 py-3">{formatINR(Number(r.cost))}</td>
-                  <td className="px-5 py-3 text-muted-foreground">
+                <tr key={r.id} className="transition-colors hover:bg-muted/30">
+                  <td className="px-6 py-3.5 font-semibold text-foreground">{r.user_name}</td>
+                  <td className="px-6 py-3.5 text-foreground/80">{r.service_name}</td>
+                  <td className="px-6 py-3.5 font-mono text-[12px] tracking-tight text-muted-foreground">{r.input_value}</td>
+                  <td className="px-6 py-3.5 font-semibold tabular-nums text-foreground">{formatINR(Number(r.cost))}</td>
+                  <td className="px-6 py-3.5 text-[13px] text-muted-foreground">
                     {new Date(r.created_at).toLocaleDateString("en-IN")}
                   </td>
                 </tr>
               ))}
               {(requests ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-6 py-12 text-center text-sm text-muted-foreground">
                     No requests yet.
                   </td>
                 </tr>
