@@ -117,7 +117,7 @@ function readFile(file: File): Promise<FileItem> {
 }
 
 const EMPTY_FORM = {
-  changeType: "" as ChangeType | "",
+  changeType: "" as string,
   oldValue: "",
   newValue: "",
   reason: "",
@@ -155,6 +155,7 @@ function GazettePage() {
   });
 
   const [form, setForm] = useState({ ...EMPTY_FORM });
+  const [extra, setExtra] = useState<Record<string, string>>({});
   const [docMap, setDocMap] = useState<Record<string, FileItem | null>>({});
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [receipt, setReceipt] = useState<{ receiptNo: string; charged: number } | null>(null);
@@ -163,7 +164,24 @@ function GazettePage() {
     setForm((p) => ({ ...p, [k]: v }));
 
   const price = Number(service?.price ?? 799);
+
+  // Pull dynamic config (admin-editable), with safe fallbacks.
+  const cfgChangeTypes = (((service as any)?.config?.change_types ?? []) as ChangeTypeCfg[])
+    .filter((c) => c && c.value && c.active !== false);
+  const CHANGE_TYPES: ChangeTypeCfg[] = cfgChangeTypes.length ? cfgChangeTypes : FALLBACK_CHANGE_TYPES;
+  const cfgFields = ((service?.extraFields ?? []) as ConditionalField[]).filter((f) => f && f.key);
+  const cfgDocs = ((service?.requiredDocs ?? []) as DocCfg[]).filter((d) => d && d.id);
+  const ALL_DOCS: DocCfg[] = cfgDocs.length ? cfgDocs : FALLBACK_DOCS;
+
   const selected = CHANGE_TYPES.find((c) => c.value === form.changeType);
+
+  // Filter conditional fields & docs by the chosen change type.
+  const visibleFields = cfgFields.filter(
+    (f) => !f.appearsFor || f.appearsFor.length === 0 || (selected && f.appearsFor.includes(selected.value)),
+  );
+  const visibleDocs = ALL_DOCS.filter(
+    (d) => !d.appearsFor || d.appearsFor.length === 0 || (selected && d.appearsFor.includes(selected.value)),
+  );
 
   async function onFile(slot: string, file: File | null) {
     if (!file) return setDocMap((p) => ({ ...p, [slot]: null }));
@@ -176,8 +194,12 @@ function GazettePage() {
   }
 
   const missingDocs = useMemo(
-    () => REQUIRED_DOCS.filter((d) => d.required && !docMap[d.id]),
-    [docMap],
+    () => visibleDocs.filter((d) => d.required && !docMap[d.id]),
+    [visibleDocs, docMap],
+  );
+  const missingFields = useMemo(
+    () => visibleFields.filter((f) => f.required && !(extra[f.key] || "").trim()),
+    [visibleFields, extra],
   );
 
   const mut = useMutation({
