@@ -101,6 +101,8 @@ export const adminGetGazette = createServerFn({ method: "GET" })
       change_types: Array.isArray(cfg.change_types) ? cfg.change_types : [],
       conditional_fields: Array.isArray(data.extra_fields) ? data.extra_fields : [],
       required_docs: Array.isArray(data.required_docs) ? data.required_docs : [],
+      turnaround_text: typeof cfg.turnaround_text === "string" ? cfg.turnaround_text : "",
+      payment_options: Array.isArray(cfg.payment_options) ? cfg.payment_options : [],
       sample_pdf_path: samplePath,
       sample_pdf_name: cfg.sample_pdf_name || null,
       sample_pdf_url: sampleUrl,
