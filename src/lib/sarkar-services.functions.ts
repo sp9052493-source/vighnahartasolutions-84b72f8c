@@ -34,13 +34,14 @@ const upsertSchema = z.object({
   desc_mr: z.string().trim().max(400).default(""),
   tone: z.string().trim().max(200).default("from-[oklch(0.55_0.15_255)] to-[oklch(0.4_0.12_265)]"),
   price: z.number().min(0).max(100000),
-  extra_fields: z.array(extraFieldSchema).max(20).default([]),
-  required_docs: z.array(requiredDocSchema).max(20).default([]),
+  extra_fields: z.array(extraFieldSchema).max(40).default([]),
+  required_docs: z.array(requiredDocSchema).max(40).default([]),
+  config: z.record(z.string(), z.any()).optional().default({}),
   active: z.boolean().default(true),
   sort_order: z.number().int().min(0).max(10000).default(100),
 });
 
-function rowToService(row: any): SarkarService & { id: string; active: boolean; sort_order: number } {
+function rowToService(row: any): SarkarService & { id: string; active: boolean; sort_order: number; config: Record<string, any> } {
   return {
     id: row.id,
     type: row.type,
@@ -54,6 +55,7 @@ function rowToService(row: any): SarkarService & { id: string; active: boolean; 
     requiredDocs: Array.isArray(row.required_docs) ? row.required_docs : [],
     active: !!row.active,
     sort_order: Number(row.sort_order || 0),
+    config: row.config && typeof row.config === "object" ? row.config : {},
   };
 }
 
