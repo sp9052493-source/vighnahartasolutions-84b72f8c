@@ -37,7 +37,6 @@ const SECTIONS: Section[] = [
   { to: "/admin/gateways", label: "Payment Gateways", icon: CreditCard },
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
   { to: "/admin/sarkar-services", label: "Aaple Sarkar", icon: Landmark },
-  { to: "/admin/gazette-desk", label: "Gazette Desk", icon: Inbox },
   { to: "/admin/gazette", label: "Gazette Editor", icon: Newspaper },
   { to: "/members", label: "Members & KYC", icon: Users },
 ];
@@ -114,7 +113,6 @@ const DESC = {
   "/manage-services": "Service price, retailer & distributor commission, API provider and live endpoint.",
   "/admin/sarkar-services": "Aaple Sarkar certificates — pricing, descriptions, extra fields and required documents.",
   "/admin/gazette": "Gazette Certificate — change-type options, conditional fields, document rules and price.",
-  "/admin/gazette-desk": "Live queue of Gazette applications submitted by retailers — update status, add remarks and upload the issued certificate.",
   "/members": "Create accounts, change email, reset password, upload photo & KYC documents.",
 } as const;
 
