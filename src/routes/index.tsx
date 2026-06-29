@@ -105,6 +105,7 @@ function Index() {
               alt="Secure government documents — Driving License, PAN, Aadhaar and Passport"
               width={1024}
               height={1024}
+              fetchPriority="high"
               className="mx-auto w-full max-w-md rounded-2xl shadow-elegant"
             />
           </div>
