@@ -10,6 +10,7 @@ import {
   Inbox,
   ExternalLink,
   X,
+  ShieldCheck,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
