@@ -20,16 +20,32 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Vighnaharta Solutions — Government Documents Services" },
+      { title: "Vighnaharta Solutions — Government Documents Portal for Retailers" },
       {
         name: "description",
         content:
-          "Vighnaharta Solutions lets retailers and distributors fetch Driving License, PAN, Aadhaar, Voter ID and Passport documents as PDF, with wallet and commission management.",
+          "B2B portal to fetch Driving License, PAN, Aadhaar, Voter ID and Passport as PDF — with wallet and commission management.",
       },
-      { property: "og:title", content: "Vighnaharta Solutions — Government Documents Services" },
+      { property: "og:title", content: "Vighnaharta Solutions — Document Services Portal" },
       {
         property: "og:description",
         content: "Secure retailer & distributor portal for government document services.",
+      },
+      { property: "og:url", content: "https://vighnahartasolutions.lovable.app/" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://vighnahartasolutions.lovable.app/" },
+      { rel: "preload", as: "image", href: heroImg, fetchpriority: "high" } as never,
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Vighnaharta Solutions",
+          url: "https://vighnahartasolutions.lovable.app",
+        }),
       },
     ],
   }),
