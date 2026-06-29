@@ -14,7 +14,10 @@ import {
   RotateCcw,
   CreditCard,
   ListChecks,
-  CloudUpload,
+  Inbox,
+  Landmark,
+  Newspaper,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useMe, useMyRequests, useMyOrders, formatINR } from "@/lib/queries";
 import { adminStats, adminListRequests } from "@/lib/admin.functions";
