@@ -114,16 +114,25 @@ function AdminDashboard() {
         <StatCard label="Wallet Float" value={formatINR(stats?.totalBalance ?? 0)} icon={IndianRupee} />
       </div>
 
-      <div>
-        <h2 className="font-display text-lg font-bold tracking-tight">Admin Desk</h2>
-        <p className="text-xs text-muted-foreground">Jump directly to the tools you use most.</p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <QuickAction to="/admin/gazette-desk" label="Gazette Desk" icon={Inbox} description="Review, update and upload issued certificates." />
-          <QuickAction to="/admin/sarkar-services" label="Aaple Sarkar" icon={Landmark} description="Manage services, pricing and required docs." />
-          <QuickAction to="/admin/gazette" label="Gazette Editor" icon={Newspaper} description="Configure change types, fields and pricing." />
-          <QuickAction to="/manage-services" label="Services & API" icon={SlidersHorizontal} description="Service pricing, commission and API endpoints." />
+      <Card className="overflow-hidden shadow-card">
+        <div className="flex items-center justify-between border-b border-border px-6 py-5">
+          <div>
+            <h2 className="font-display text-lg font-bold tracking-tight">Admin Desk</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">Jump directly to the tools you use most.</p>
+          </div>
+          <Link to="/admin">
+            <Button variant="ghost" size="sm" className="gap-1 text-xs font-semibold uppercase tracking-wider">
+              Control Center <ArrowUpRight className="h-4 w-4" />
+            </Button>
+          </Link>
         </div>
-      </div>
+        <div className="grid gap-4 bg-muted/20 p-5 sm:grid-cols-2 lg:grid-cols-4">
+          <QuickAction to="/admin/gazette-desk" label="Gazette Desk" icon={Inbox} description="Review queue, update status and upload certificates." />
+          <QuickAction to="/admin/sarkar-services" label="Aaple Sarkar" icon={Landmark} description="Manage services, pricing and required documents." />
+          <QuickAction to="/admin/gazette" label="Gazette Editor" icon={Newspaper} description="Configure change types, fields and pricing." />
+          <QuickAction to="/manage-services" label="Services & API" icon={SlidersHorizontal} description="Pricing, commission and API endpoint settings." />
+        </div>
+      </Card>
 
       <Card className="overflow-hidden shadow-card">
         <div className="flex items-center justify-between border-b border-border px-6 py-5">
