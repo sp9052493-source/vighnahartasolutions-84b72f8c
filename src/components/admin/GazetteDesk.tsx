@@ -10,6 +10,7 @@ import {
   Inbox,
   ExternalLink,
   X,
+  ShieldCheck,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
@@ -133,22 +134,26 @@ export function GazetteDesk() {
   }, [apps]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3 rounded-2xl border border-border bg-hero p-5 text-primary-foreground shadow-elegant">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20">
-          <Inbox className="h-6 w-6 text-[oklch(0.82_0.17_64)]" />
-        </div>
+    <div className="mx-auto max-w-5xl space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
         <div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-primary-foreground/65">
-            Operations
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-primary/70">
+            <ShieldCheck className="h-3 w-3" /> Admin Console
           </div>
-          <h1 className="font-display text-2xl font-extrabold leading-tight">
+          <h1 className="mt-1.5 font-display text-2xl font-extrabold tracking-tight lg:text-3xl">
             Gazette Desk
           </h1>
-          <p className="text-sm text-primary-foreground/75">
-            Live queue of Gazette applications submitted by retailers and distributors.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Live queue of Gazette applications submitted by retailers and distributors. Update
+            status, add remarks and upload the issued certificate — changes go live instantly.
           </p>
         </div>
+        <Link
+          to="/aaple-sarkar-requests"
+          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-xs font-semibold text-primary shadow-sm hover:bg-accent"
+        >
+          <ExternalLink className="h-3.5 w-3.5" /> Full workflow
+        </Link>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -168,6 +173,7 @@ export function GazetteDesk() {
           </Card>
         ))}
       </div>
+
 
       <Card className="space-y-4 p-5 shadow-card">
         <div className="flex flex-wrap items-center justify-between gap-2">
