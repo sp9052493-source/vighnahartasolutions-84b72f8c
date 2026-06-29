@@ -15,12 +15,39 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Us — Vighnaharta Solutions" },
-      { name: "description", content: `Reach the ${COMPANY.brand} support team. Call ${COMPANY.mobile}, email ${COMPANY.email}, or visit ${COMPANY.city}, ${COMPANY.state}.` },
+      { name: "description", content: `Reach the ${COMPANY.brand} support team. Call ${COMPANY.mobile} or email ${COMPANY.email}.` },
       { property: "og:title", content: "Contact Us — Vighnaharta Solutions" },
       { property: "og:description", content: `Get in touch with ${COMPANY.legalName} — operator of ${COMPANY.brand}.` },
-      { property: "og:url", content: "/contact" },
+      { property: "og:url", content: "https://vighnahartasolutions.lovable.app/contact" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://vighnahartasolutions.lovable.app/contact" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          name: "Contact Vighnaharta Solutions",
+          url: "https://vighnahartasolutions.lovable.app/contact",
+          mainEntity: {
+            "@type": "LocalBusiness",
+            name: COMPANY.brand,
+            legalName: COMPANY.legalName,
+            telephone: COMPANY.mobile,
+            email: COMPANY.email,
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: `${COMPANY.addressLine1}, ${COMPANY.addressLine2}`,
+              addressLocality: COMPANY.city,
+              addressRegion: COMPANY.state,
+              postalCode: COMPANY.pincode,
+              addressCountry: "IN",
+            },
+            openingHours: COMPANY.supportHours,
+          },
+        }),
+      },
+    ],
   }),
   component: ContactPage,
 });
