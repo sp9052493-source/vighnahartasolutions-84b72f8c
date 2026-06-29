@@ -99,6 +99,17 @@ function AdminDashboard() {
         <StatCard label="Wallet Float" value={formatINR(stats?.totalBalance ?? 0)} icon={IndianRupee} />
       </div>
 
+      <div>
+        <h2 className="font-display text-lg font-bold tracking-tight">Admin Desk</h2>
+        <p className="text-xs text-muted-foreground">Jump directly to the tools you use most.</p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <QuickAction to="/admin/gazette-desk" label="Gazette Desk" icon={Inbox} description="Review, update and upload issued certificates." />
+          <QuickAction to="/admin/sarkar-services" label="Aaple Sarkar" icon={Landmark} description="Manage services, pricing and required docs." />
+          <QuickAction to="/admin/gazette" label="Gazette Editor" icon={Newspaper} description="Configure change types, fields and pricing." />
+          <QuickAction to="/manage-services" label="Services & API" icon={SlidersHorizontal} description="Service pricing, commission and API endpoints." />
+        </div>
+      </div>
+
       <Card className="overflow-hidden shadow-card">
         <div className="flex items-center justify-between border-b border-border px-6 py-5">
           <div>
