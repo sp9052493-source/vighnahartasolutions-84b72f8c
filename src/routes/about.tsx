@@ -6,11 +6,12 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About Us — Vighnaharta Solutions" },
-      { name: "description", content: `${COMPANY.brand}, a unit of ${COMPANY.legalName}.` },
+      { name: "description", content: `${COMPANY.brand}, a unit of ${COMPANY.legalName}, providing secure government document services for retailers.` },
       { property: "og:title", content: "About Us — Vighnaharta Solutions" },
-      { property: "og:url", content: "/about" },
+      { property: "og:description", content: `${COMPANY.brand}, a unit of ${COMPANY.legalName}.` },
+      { property: "og:url", content: "https://vighnahartasolutions.lovable.app/about" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://vighnahartasolutions.lovable.app/about" }],
   }),
   component: () => (
     <MarkdownPage
