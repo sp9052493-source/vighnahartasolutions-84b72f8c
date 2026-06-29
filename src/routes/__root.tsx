@@ -80,27 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Vighnaharta Solutions — Government Documents Services" },
-      {
-        name: "description",
-        content:
-          "Vighnaharta Solutions — a secure B2B platform for retailers and distributors to fetch Driving License, PAN, Aadhaar, Voter ID and Passport documents as PDF.",
-      },
       { name: "author", content: "Vighnaharta Solutions" },
-      { property: "og:title", content: "Vighnaharta Solutions — Government Documents Services" },
-      {
-        property: "og:description",
-        content:
-          "Secure retailer & distributor portal for government document services with wallet and commission management.",
-      },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:site_name", content: "Vighnaharta Solutions" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Vighnaharta Solutions — Government Documents Services" },
-      { name: "description", content: "Vighnaharta Solutions is a portal for accessing and managing government documents like driving licenses and PAN cards." },
-      { property: "og:description", content: "Vighnaharta Solutions is a portal for accessing and managing government documents like driving licenses and PAN cards." },
-      { name: "twitter:description", content: "Vighnaharta Solutions is a portal for accessing and managing government documents like driving licenses and PAN cards." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2cde8eeb-71e7-4278-85fb-e1ab6c782fa4/id-preview-307363c0--73bc893e-977f-47db-b9f3-2833c5017e41.lovable.app-1782071998246.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2cde8eeb-71e7-4278-85fb-e1ab6c782fa4/id-preview-307363c0--73bc893e-977f-47db-b9f3-2833c5017e41.lovable.app-1782071998246.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -112,6 +96,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Vighnaharta Solutions",
+          legalName: "Vighnaharta Group Limited",
+          url: "https://vighnahartasolutions.lovable.app",
+          email: "officialworkmangesh@gmail.com",
+          telephone: "+91-82084-12436",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "At Shendurwada, Tq. Gangapur",
+            addressLocality: "Aurangabad",
+            addressRegion: "Maharashtra",
+            postalCode: "431109",
+            addressCountry: "IN",
+          },
+        }),
       },
     ],
   }),
