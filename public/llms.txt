@@ -1,0 +1,17 @@
+# Vighnaharta Solutions
+
+> Secure B2B portal for retailers and distributors in India to fetch government documents — Driving License, PAN, Aadhaar, Voter ID and Passport — as PDF, with wallet and commission management.
+
+Vighnaharta Solutions is operated by Vighnaharta Group Limited from Aurangabad, Maharashtra. The platform serves administrators, distributors and retailers with role-based access, prepaid wallets, and document retrieval workflows.
+
+## Pages
+
+- [Home](/): Overview of services, roles, and how the portal works.
+- [About](/about): Company background and business details.
+- [Contact](/contact): Phone, email, address and support hours.
+
+## Optional
+
+- [Privacy Policy](/privacy-policy): How user data is handled.
+- [Terms](/terms): Terms of use for the portal.
+- [Refund Policy](/refund-policy): Refund timelines and conditions.
