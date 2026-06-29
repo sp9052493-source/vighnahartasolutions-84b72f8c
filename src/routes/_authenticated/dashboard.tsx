@@ -63,6 +63,19 @@ function StatCard({
       </div>
     </Card>
   );
+function QuickAction({ to, label, icon: Icon, description }: { to: string; label: string; icon: typeof Wallet; description: string }) {
+  return (
+    <Link to={to}>
+      <Card className="group h-full p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <h3 className="mt-4 font-display text-lg font-bold">{label}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+        <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary group-hover:underline">Open →</div>
+      </Card>
+    </Link>
+  );
 }
 
 function Dashboard() {
