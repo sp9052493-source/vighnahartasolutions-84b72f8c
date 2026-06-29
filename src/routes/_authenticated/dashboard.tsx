@@ -63,6 +63,8 @@ function StatCard({
       </div>
     </Card>
   );
+}
+
 function QuickAction({ to, label, icon: Icon, description }: { to: string; label: string; icon: typeof Wallet; description: string }) {
   return (
     <Link to={to}>
