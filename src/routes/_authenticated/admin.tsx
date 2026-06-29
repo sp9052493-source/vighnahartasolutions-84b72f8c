@@ -37,8 +37,8 @@ const SECTIONS: Section[] = [
   { to: "/admin/gateways", label: "Payment Gateways", icon: CreditCard },
   { to: "/manage-services", label: "Services & API", icon: SlidersHorizontal },
   { to: "/admin/sarkar-services", label: "Aaple Sarkar", icon: Landmark },
-  { to: "/admin/gazette", label: "Gazette Editor", icon: Newspaper },
   { to: "/admin/gazette-desk", label: "Gazette Desk", icon: Inbox },
+  { to: "/admin/gazette", label: "Gazette Editor", icon: Newspaper },
   { to: "/members", label: "Members & KYC", icon: Users },
 ];
 
