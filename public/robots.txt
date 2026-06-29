@@ -7,3 +7,5 @@ Disallow: /requests
 Disallow: /services
 Disallow: /manage-services
 Disallow: /settings
+
+Sitemap: https://vighnahartasolutions.lovable.app/sitemap.xml
