@@ -14,7 +14,10 @@ import {
   RotateCcw,
   CreditCard,
   ListChecks,
-  CloudUpload,
+  Inbox,
+  Landmark,
+  Newspaper,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useMe, useMyRequests, useMyOrders, formatINR } from "@/lib/queries";
 import { adminStats, adminListRequests } from "@/lib/admin.functions";
@@ -62,6 +65,21 @@ function StatCard({
   );
 }
 
+function QuickAction({ to, label, icon: Icon, description }: { to: string; label: string; icon: typeof Wallet; description: string }) {
+  return (
+    <Link to={to}>
+      <Card className="group h-full p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <h3 className="mt-4 font-display text-lg font-bold">{label}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+        <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-primary group-hover:underline">Open →</div>
+      </Card>
+    </Link>
+  );
+}
+
 function Dashboard() {
   const { data: me } = useMe();
   const role = me?.role ?? "retailer";
@@ -94,6 +112,17 @@ function AdminDashboard() {
         <StatCard label="Distributors" value={String(stats?.distributors ?? 0)} icon={Users} tone="accent" />
         <StatCard label="Total Requests" value={String(stats?.requests ?? 0)} icon={FileText} tone="success" />
         <StatCard label="Wallet Float" value={formatINR(stats?.totalBalance ?? 0)} icon={IndianRupee} />
+      </div>
+
+      <div>
+        <h2 className="font-display text-lg font-bold tracking-tight">Admin Desk</h2>
+        <p className="text-xs text-muted-foreground">Jump directly to the tools you use most.</p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <QuickAction to="/admin/gazette-desk" label="Gazette Desk" icon={Inbox} description="Review, update and upload issued certificates." />
+          <QuickAction to="/admin/sarkar-services" label="Aaple Sarkar" icon={Landmark} description="Manage services, pricing and required docs." />
+          <QuickAction to="/admin/gazette" label="Gazette Editor" icon={Newspaper} description="Configure change types, fields and pricing." />
+          <QuickAction to="/manage-services" label="Services & API" icon={SlidersHorizontal} description="Service pricing, commission and API endpoints." />
+        </div>
       </div>
 
       <Card className="overflow-hidden shadow-card">
