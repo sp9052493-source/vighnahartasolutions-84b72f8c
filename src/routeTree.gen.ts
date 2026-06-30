@@ -20,6 +20,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
+import { Route as AuthenticatedUdyamApplicationsRouteImport } from './routes/_authenticated/udyam-applications'
+import { Route as AuthenticatedUdyamRouteImport } from './routes/_authenticated/udyam'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
@@ -41,6 +43,7 @@ import { Route as AuthenticatedAapleSarkarRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAadhaarToPanRouteImport } from './routes/_authenticated/aadhaar-to-pan'
 import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/paytm-return'
 import { Route as AuthenticatedGstIdRouteImport } from './routes/_authenticated/gst.$id'
+import { Route as AuthenticatedAdminUdyamRouteImport } from './routes/_authenticated/admin.udyam'
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
 import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
@@ -102,6 +105,17 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
   id: '/wallet',
   path: '/wallet',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUdyamApplicationsRoute =
+  AuthenticatedUdyamApplicationsRouteImport.update({
+    id: '/udyam-applications',
+    path: '/udyam-applications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedUdyamRoute = AuthenticatedUdyamRouteImport.update({
+  id: '/udyam',
+  path: '/udyam',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -215,6 +229,11 @@ const AuthenticatedGstIdRoute = AuthenticatedGstIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedGstRoute,
 } as any)
+const AuthenticatedAdminUdyamRoute = AuthenticatedAdminUdyamRouteImport.update({
+  id: '/udyam',
+  path: '/udyam',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminSiteRoute = AuthenticatedAdminSiteRouteImport.update({
   id: '/site',
   path: '/site',
@@ -290,6 +309,8 @@ export interface FileRoutesByFullPath {
   '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/udyam': typeof AuthenticatedUdyamRoute
+  '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
@@ -299,6 +320,7 @@ export interface FileRoutesByFullPath {
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
+  '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/gst/$id': typeof AuthenticatedGstIdRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
@@ -331,6 +353,8 @@ export interface FileRoutesByTo {
   '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/udyam': typeof AuthenticatedUdyamRoute
+  '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
@@ -340,6 +364,7 @@ export interface FileRoutesByTo {
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
+  '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/gst/$id': typeof AuthenticatedGstIdRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
@@ -374,6 +399,8 @@ export interface FileRoutesById {
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/udyam': typeof AuthenticatedUdyamRoute
+  '/_authenticated/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/_authenticated/admin/gazette': typeof AuthenticatedAdminGazetteRoute
@@ -383,6 +410,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
+  '/_authenticated/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/_authenticated/gst/$id': typeof AuthenticatedGstIdRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
@@ -417,6 +445,8 @@ export interface FileRouteTypes {
     | '/requests'
     | '/services'
     | '/settings'
+    | '/udyam'
+    | '/udyam-applications'
     | '/wallet'
     | '/admin/gateways'
     | '/admin/gazette'
@@ -426,6 +456,7 @@ export interface FileRouteTypes {
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
+    | '/admin/udyam'
     | '/gst/$id'
     | '/api/public/paytm-return'
   fileRoutesByTo: FileRoutesByTo
@@ -458,6 +489,8 @@ export interface FileRouteTypes {
     | '/requests'
     | '/services'
     | '/settings'
+    | '/udyam'
+    | '/udyam-applications'
     | '/wallet'
     | '/admin/gateways'
     | '/admin/gazette'
@@ -467,6 +500,7 @@ export interface FileRouteTypes {
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
+    | '/admin/udyam'
     | '/gst/$id'
     | '/api/public/paytm-return'
   id:
@@ -500,6 +534,8 @@ export interface FileRouteTypes {
     | '/_authenticated/requests'
     | '/_authenticated/services'
     | '/_authenticated/settings'
+    | '/_authenticated/udyam'
+    | '/_authenticated/udyam-applications'
     | '/_authenticated/wallet'
     | '/_authenticated/admin/gateways'
     | '/_authenticated/admin/gazette'
@@ -509,6 +545,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/sarkar-services'
     | '/_authenticated/admin/site'
+    | '/_authenticated/admin/udyam'
     | '/_authenticated/gst/$id'
     | '/api/public/paytm-return'
   fileRoutesById: FileRoutesById
@@ -604,6 +641,20 @@ declare module '@tanstack/react-router' {
       path: '/wallet'
       fullPath: '/wallet'
       preLoaderRoute: typeof AuthenticatedWalletRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/udyam-applications': {
+      id: '/_authenticated/udyam-applications'
+      path: '/udyam-applications'
+      fullPath: '/udyam-applications'
+      preLoaderRoute: typeof AuthenticatedUdyamApplicationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/udyam': {
+      id: '/_authenticated/udyam'
+      path: '/udyam'
+      fullPath: '/udyam'
+      preLoaderRoute: typeof AuthenticatedUdyamRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -753,6 +804,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGstIdRouteImport
       parentRoute: typeof AuthenticatedGstRoute
     }
+    '/_authenticated/admin/udyam': {
+      id: '/_authenticated/admin/udyam'
+      path: '/udyam'
+      fullPath: '/admin/udyam'
+      preLoaderRoute: typeof AuthenticatedAdminUdyamRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/site': {
       id: '/_authenticated/admin/site'
       path: '/site'
@@ -821,6 +879,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
+  AuthenticatedAdminUdyamRoute: typeof AuthenticatedAdminUdyamRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
@@ -832,6 +891,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,
+  AuthenticatedAdminUdyamRoute: AuthenticatedAdminUdyamRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
@@ -868,6 +928,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedUdyamRoute: typeof AuthenticatedUdyamRoute
+  AuthenticatedUdyamApplicationsRoute: typeof AuthenticatedUdyamApplicationsRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
 }
 
@@ -891,6 +953,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedUdyamRoute: AuthenticatedUdyamRoute,
+  AuthenticatedUdyamApplicationsRoute: AuthenticatedUdyamApplicationsRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,
 }
 

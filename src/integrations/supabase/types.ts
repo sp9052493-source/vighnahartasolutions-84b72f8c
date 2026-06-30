@@ -785,6 +785,223 @@ export type Database = {
         }
         Relationships: []
       }
+      udyam_application_documents: {
+        Row: {
+          application_id: string
+          created_at: string
+          doc_type: string
+          file_name: string
+          file_path: string
+          id: string
+          mime_type: string | null
+          size_bytes: number | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          doc_type: string
+          file_name: string
+          file_path: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          doc_type?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "udyam_application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "udyam_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      udyam_application_events: {
+        Row: {
+          actor_id: string | null
+          actor_role: string | null
+          application_id: string
+          created_at: string
+          event_type: string
+          from_status: Database["public"]["Enums"]["udyam_status"] | null
+          id: string
+          note: string | null
+          to_status: Database["public"]["Enums"]["udyam_status"] | null
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id: string
+          created_at?: string
+          event_type: string
+          from_status?: Database["public"]["Enums"]["udyam_status"] | null
+          id?: string
+          note?: string | null
+          to_status?: Database["public"]["Enums"]["udyam_status"] | null
+        }
+        Update: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id?: string
+          created_at?: string
+          event_type?: string
+          from_status?: Database["public"]["Enums"]["udyam_status"] | null
+          id?: string
+          note?: string | null
+          to_status?: Database["public"]["Enums"]["udyam_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "udyam_application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "udyam_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      udyam_applications: {
+        Row: {
+          aadhaar_number: string | null
+          account_number: string | null
+          acknowledgement_url: string | null
+          annual_turnover: number | null
+          application_no: string
+          bank_name: string | null
+          business_address: string | null
+          business_name: string | null
+          business_start_date: string | null
+          business_type: string | null
+          category: string | null
+          certificate_url: string | null
+          city: string | null
+          created_at: string
+          district: string | null
+          dob: string | null
+          email: string | null
+          employees_female: number | null
+          employees_male: number | null
+          employees_other: number | null
+          gender: string | null
+          gst_available: boolean | null
+          gst_number: string | null
+          id: string
+          ifsc: string | null
+          investment_amount: number | null
+          mobile: string | null
+          name_as_aadhaar: string | null
+          name_as_pan: string | null
+          pan_number: string | null
+          pincode: string | null
+          remarks: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["udyam_status"]
+          submitted_at: string | null
+          total_charged: number | null
+          updated_at: string
+          user_id: string
+          village: string | null
+          wallet_txn_id: string | null
+        }
+        Insert: {
+          aadhaar_number?: string | null
+          account_number?: string | null
+          acknowledgement_url?: string | null
+          annual_turnover?: number | null
+          application_no?: string
+          bank_name?: string | null
+          business_address?: string | null
+          business_name?: string | null
+          business_start_date?: string | null
+          business_type?: string | null
+          category?: string | null
+          certificate_url?: string | null
+          city?: string | null
+          created_at?: string
+          district?: string | null
+          dob?: string | null
+          email?: string | null
+          employees_female?: number | null
+          employees_male?: number | null
+          employees_other?: number | null
+          gender?: string | null
+          gst_available?: boolean | null
+          gst_number?: string | null
+          id?: string
+          ifsc?: string | null
+          investment_amount?: number | null
+          mobile?: string | null
+          name_as_aadhaar?: string | null
+          name_as_pan?: string | null
+          pan_number?: string | null
+          pincode?: string | null
+          remarks?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["udyam_status"]
+          submitted_at?: string | null
+          total_charged?: number | null
+          updated_at?: string
+          user_id: string
+          village?: string | null
+          wallet_txn_id?: string | null
+        }
+        Update: {
+          aadhaar_number?: string | null
+          account_number?: string | null
+          acknowledgement_url?: string | null
+          annual_turnover?: number | null
+          application_no?: string
+          bank_name?: string | null
+          business_address?: string | null
+          business_name?: string | null
+          business_start_date?: string | null
+          business_type?: string | null
+          category?: string | null
+          certificate_url?: string | null
+          city?: string | null
+          created_at?: string
+          district?: string | null
+          dob?: string | null
+          email?: string | null
+          employees_female?: number | null
+          employees_male?: number | null
+          employees_other?: number | null
+          gender?: string | null
+          gst_available?: boolean | null
+          gst_number?: string | null
+          id?: string
+          ifsc?: string | null
+          investment_amount?: number | null
+          mobile?: string | null
+          name_as_aadhaar?: string | null
+          name_as_pan?: string | null
+          pan_number?: string | null
+          pincode?: string | null
+          remarks?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["udyam_status"]
+          submitted_at?: string | null
+          total_charged?: number | null
+          updated_at?: string
+          user_id?: string
+          village?: string | null
+          wallet_txn_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -915,6 +1132,10 @@ export type Database = {
         Args: { p_amount: number; p_app_id: string; p_user_id: string }
         Returns: number
       }
+      charge_udyam_application: {
+        Args: { p_amount: number; p_app_id: string; p_user_id: string }
+        Returns: number
+      }
       complete_document_request: {
         Args: {
           p_doc_url: string
@@ -944,6 +1165,7 @@ export type Database = {
         }
       }
       generate_gst_application_no: { Args: never; Returns: string }
+      generate_udyam_application_no: { Args: never; Returns: string }
       get_my_role: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
@@ -961,6 +1183,15 @@ export type Database = {
       application_status:
         | "submitted"
         | "under_review"
+        | "approved"
+        | "rejected"
+        | "completed"
+      udyam_status:
+        | "draft"
+        | "submitted"
+        | "payment_received"
+        | "documents_verified"
+        | "processing"
         | "approved"
         | "rejected"
         | "completed"
@@ -1095,6 +1326,16 @@ export const Constants = {
       application_status: [
         "submitted",
         "under_review",
+        "approved",
+        "rejected",
+        "completed",
+      ],
+      udyam_status: [
+        "draft",
+        "submitted",
+        "payment_received",
+        "documents_verified",
+        "processing",
         "approved",
         "rejected",
         "completed",
