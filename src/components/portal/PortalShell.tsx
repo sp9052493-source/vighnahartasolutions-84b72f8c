@@ -26,15 +26,60 @@ import {
   Plus,
   Bell,
   ChevronRight,
+  ChevronDown,
+  User as UserIcon,
+  Clock,
+  ShieldCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, formatINR, type AppRole } from "@/lib/queries";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/vighnaharta-logo.png.asset.json";
+
+function useSessionStart() {
+  const [start, setStart] = useState<Date | null>(null);
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      const lastSignIn = data.session?.user?.last_sign_in_at;
+      setStart(lastSignIn ? new Date(lastSignIn) : new Date());
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user?.last_sign_in_at) {
+        setStart(new Date(session.user.last_sign_in_at));
+      }
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+  return start;
+}
+
+function formatDuration(ms: number) {
+  if (ms < 0) ms = 0;
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return `${h}h ${m.toString().padStart(2, "0")}m`;
+  if (m > 0) return `${m}m ${sec.toString().padStart(2, "0")}s`;
+  return `${sec}s`;
+}
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles: AppRole[] };
 type NavGroup = { label: string; items: NavItem[] };
@@ -201,7 +246,7 @@ function Brand() {
 function useClock() {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30_000);
+    const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
   return now;
@@ -214,6 +259,13 @@ export function PortalShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const role = me?.role ?? "retailer";
   const now = useClock();
+  const sessionStart = useSessionStart();
+  const sessionDuration = sessionStart ? formatDuration(now.getTime() - sessionStart.getTime()) : "--";
+  const loginAtStr = sessionStart
+    ? sessionStart.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) +
+      ", " +
+      sessionStart.toLocaleDateString("en-IN", { day: "2-digit", month: "short" })
+    : "--";
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -301,6 +353,18 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 <div className="font-display text-[13px] font-bold tabular-nums text-foreground">{timeStr} IST</div>
               </div>
 
+              {/* Session timer chip */}
+              <div className="hidden h-11 items-center gap-2 rounded-lg border border-[oklch(0.40_0.10_160_/_0.30)] bg-[linear-gradient(135deg,oklch(0.97_0.04_160),oklch(0.94_0.06_160))] px-3 leading-tight lg:flex">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[oklch(0.55_0.12_160)] text-white">
+                  <Clock className="h-3.5 w-3.5" />
+                </div>
+                <div className="text-right">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[oklch(0.38_0.10_160)]">Session</div>
+                  <div className="font-display text-[13px] font-extrabold tabular-nums text-[oklch(0.28_0.09_160)]">{sessionDuration}</div>
+                </div>
+              </div>
+
+
               {/* Balance pill — single source of truth for wallet balance */}
               <Link
                 to="/recharge"
@@ -325,20 +389,80 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[oklch(0.76_0.16_64)] ring-2 ring-card" />
               </Button>
 
-              {/* User chip */}
-              <div className="flex h-11 items-center gap-2.5 rounded-lg border border-border bg-card pl-1 pr-3.5 transition-all hover:border-primary/40 hover:shadow-sm">
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[linear-gradient(135deg,oklch(0.34_0.09_261),oklch(0.22_0.07_262))] text-xs font-bold text-primary-foreground ring-1 ring-[oklch(0.76_0.16_64_/_0.5)]">
-                  {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
-                </div>
-                <div className="hidden text-left leading-tight sm:block">
-                  <div className="max-w-[150px] truncate text-[12.5px] font-bold uppercase tracking-wide text-foreground">
-                    {me?.profile?.full_name || me?.email?.split("@")[0]}
+              {/* User chip with dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-11 items-center gap-2.5 rounded-lg border border-border bg-card pl-1 pr-2.5 transition-all hover:border-primary/40 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[linear-gradient(135deg,oklch(0.34_0.09_261),oklch(0.22_0.07_262))] text-xs font-bold text-primary-foreground ring-1 ring-[oklch(0.76_0.16_64_/_0.5)]">
+                      {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
+                    </div>
+                    <div className="hidden text-left leading-tight sm:block">
+                      <div className="max-w-[150px] truncate text-[12.5px] font-bold uppercase tracking-wide text-foreground">
+                        {me?.profile?.full_name || me?.email?.split("@")[0]}
+                      </div>
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[oklch(0.50_0.10_60)]">
+                        {ROLE_LABEL[role]}
+                      </div>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-72 p-0">
+                  <div className="bg-[linear-gradient(135deg,oklch(0.25_0.08_262),oklch(0.18_0.07_262))] px-4 py-3.5 text-sidebar-foreground">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[linear-gradient(135deg,oklch(0.82_0.17_64),oklch(0.70_0.16_50))] text-base font-bold text-[oklch(0.22_0.06_60)] shadow-md">
+                        {(me?.profile?.full_name || me?.email || "U").charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-[13.5px] font-bold">{me?.profile?.full_name || me?.email?.split("@")[0]}</div>
+                        <div className="truncate text-[11px] text-sidebar-foreground/70">{me?.email}</div>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex items-center gap-1.5 rounded-md bg-white/5 px-2 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.14em]">
+                      <ShieldCheck className="h-3.5 w-3.5 text-[oklch(0.82_0.17_64)]" />
+                      <span className="text-[oklch(0.82_0.17_64)]">{ROLE_LABEL[role]}</span>
+                    </div>
                   </div>
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[oklch(0.50_0.10_60)]">
-                    {ROLE_LABEL[role]}
+
+                  <div className="grid grid-cols-2 gap-2 border-b border-border bg-muted/30 px-3 py-3">
+                    <div className="rounded-md bg-background px-2.5 py-2 leading-tight">
+                      <div className="flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                        <Clock className="h-3 w-3" /> Session
+                      </div>
+                      <div className="mt-0.5 font-display text-[14px] font-extrabold tabular-nums text-foreground">{sessionDuration}</div>
+                    </div>
+                    <div className="rounded-md bg-background px-2.5 py-2 leading-tight">
+                      <div className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">Signed in</div>
+                      <div className="mt-0.5 font-display text-[12px] font-bold tabular-nums text-foreground">{loginAtStr}</div>
+                    </div>
                   </div>
-                </div>
-              </div>
+
+                  <DropdownMenuLabel className="px-3 pt-2 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                    Account
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem asChild className="cursor-pointer px-3 py-2">
+                    <Link to="/settings" className="flex items-center gap-2.5">
+                      <UserIcon className="h-4 w-4" /> Profile &amp; Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer px-3 py-2">
+                    <Link to="/wallet" className="flex items-center gap-2.5">
+                      <Wallet className="h-4 w-4" /> Wallet — {formatINR(me?.balance ?? 0)}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={signOut}
+                    className="cursor-pointer px-3 py-2.5 text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" /> Sign out securely
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
             </div>
           </div>
         </header>
