@@ -53,7 +53,7 @@ export function useServices() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("services")
-        .select("id, code, name, description, category, price, retailer_commission, distributor_commission, input_label, active, sort_order, created_at, api_enabled")
+        .select("id, code, name, description, category, price, input_label, active, sort_order, created_at")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data;
