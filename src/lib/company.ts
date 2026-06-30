@@ -10,16 +10,16 @@ export const COMPANY = {
   email: "official@vighnahartasolutions.in",
   addressLine1: "Vighnaharta Group Limited",
   addressLine2: "At Shendurwada, Tq. Gangapur",
-  city: "Aurangabad",
+  city: "Chhatrapati Sambhajinagar",
   state: "Maharashtra",
   pincode: "431109",
   country: "India",
   gstin: "",
   // Plain Google Maps query for the embed iframe.
-  mapsQuery: "Shendurwada, Gangapur, Aurangabad, Maharashtra, India",
+  mapsQuery: "Shendurwada, Gangapur, Chhatrapati Sambhajinagar, Maharashtra, India",
   supportHours: "Mon–Sat, 10:00 AM – 7:00 PM IST",
   refundDays: "5–7 business days",
-  jurisdiction: "Aurangabad, Maharashtra, India",
+  jurisdiction: "Chhatrapati Sambhajinagar, Maharashtra, India",
 };
 
 export const fullAddress = `${COMPANY.addressLine1}, ${COMPANY.addressLine2}, ${COMPANY.city}, ${COMPANY.state} – ${COMPANY.pincode}, ${COMPANY.country}`;
