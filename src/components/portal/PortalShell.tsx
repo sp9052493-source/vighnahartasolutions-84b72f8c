@@ -18,6 +18,7 @@ import {
   Landmark,
   Newspaper,
   FileCheck2,
+  Building2,
   ShieldCheck as ShieldCheckIcon,
   Search,
   Plus,
