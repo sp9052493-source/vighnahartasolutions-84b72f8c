@@ -17,6 +17,8 @@ import {
   Loader2,
   CheckCircle2,
   ArrowRight,
+  Briefcase,
+  Utensils,
   type LucideIcon,
 } from "lucide-react";
 import { useServices, useMe, formatINR } from "@/lib/queries";
