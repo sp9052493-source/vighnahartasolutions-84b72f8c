@@ -115,7 +115,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           address: {
             "@type": "PostalAddress",
             streetAddress: "At Shendurwada, Tq. Gangapur",
-            addressLocality: "Aurangabad",
+            addressLocality: "Chhatrapati Sambhajinagar",
             addressRegion: "Maharashtra",
             postalCode: "431109",
             addressCountry: "IN",
