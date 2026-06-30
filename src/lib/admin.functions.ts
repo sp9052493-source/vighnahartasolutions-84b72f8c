@@ -288,6 +288,21 @@ export const adminDeleteService = createServerFn({ method: "POST" })
     return { ok: true, softDeleted: false };
   });
 
+export const adminListServices = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("services")
+      .select("*")
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+
+
 
 const updateUserSchema = z.object({
   userId: z.string().uuid(),

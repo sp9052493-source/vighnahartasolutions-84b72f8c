@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2, Plug, Wifi, WifiOff, Plus, Trash2, Pencil, ShieldCheck, Landmark, ArrowRight } from "lucide-react";
-import { useServices } from "@/lib/queries";
-import { adminUpdateService, adminCreateService, adminDeleteService } from "@/lib/admin.functions";
+import { adminUpdateService, adminCreateService, adminDeleteService, adminListServices } from "@/lib/admin.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -122,7 +121,8 @@ function toPayload(f: ServiceForm) {
 }
 
 function ManageServices() {
-  const { data: services } = useServices();
+  const listFn = useServerFn(adminListServices);
+  const { data: services } = useQuery({ queryKey: ["admin-services"], queryFn: () => listFn() });
   const [dialog, setDialog] = useState<{ mode: "create" } | { mode: "edit"; service: any } | null>(null);
 
   return (
@@ -164,7 +164,7 @@ function ManageServices() {
 
 
       <div className="space-y-4">
-        {(services ?? []).map((s) => (
+        {(services ?? []).map((s: any) => (
           <ServiceRow key={s.id} service={s} onEdit={() => setDialog({ mode: "edit", service: s })} />
         ))}
         {(services ?? []).length === 0 && (
@@ -210,7 +210,7 @@ function ServiceRow({ service, onEdit }: { service: any; onEdit: () => void }) {
       }),
     onSuccess: () => {
       toast.success(`${service.name} updated`);
-      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
     },
     onError: (e: any, vars) => {
       // Revert local toggle state on failure
@@ -224,7 +224,7 @@ function ServiceRow({ service, onEdit }: { service: any; onEdit: () => void }) {
     mutationFn: () => deleteFn({ data: { id: service.id } }),
     onSuccess: (res: any) => {
       toast.success(res?.softDeleted ? `${service.name} deactivated (has history)` : `${service.name} removed`);
-      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
       setConfirmDel(false);
     },
     onError: (e: any) => toast.error(e?.message || "Failed"),
@@ -382,7 +382,7 @@ function ServiceDialog({
     },
     onSuccess: () => {
       toast.success(mode === "edit" ? "Service updated" : "Service created");
-      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
       onClose();
     },
     onError: (e: any) => toast.error(e?.message || "Failed"),
