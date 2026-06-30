@@ -87,9 +87,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
-      { rel: "icon", type: "image/png", href: "/__l5e/assets-v1/b1f00919-6974-4ab5-aedd-ac692a72db03/vighnaharta-logo.png" },
-      { rel: "apple-touch-icon", href: "/__l5e/assets-v1/b1f00919-6974-4ab5-aedd-ac692a72db03/vighnaharta-logo.png" },
-      { rel: "shortcut icon", href: "/__l5e/assets-v1/b1f00919-6974-4ab5-aedd-ac692a72db03/vighnaharta-logo.png" },
+      { rel: "icon", type: "image/png", href: "/vighnaharta-logo.png" },
+      { rel: "apple-touch-icon", href: "/vighnaharta-logo.png" },
+      { rel: "shortcut icon", href: "/vighnaharta-logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
