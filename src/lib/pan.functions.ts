@@ -9,6 +9,14 @@ const panSchema = z.object({
     .regex(/^\d{12}$/, "Aadhaar number must be exactly 12 digits"),
 });
 
+const panDetailsSchema = z.object({
+  pan_no: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN format (e.g. ABCDE1234F)"),
+});
+
 /**
  * Securely proxies the APIZONE Aadhaar → PAN finder API.
  * The API key is read server-side from process.env.APIZONE_API_KEY and is
