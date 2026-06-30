@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://vighnahartasolutions.lovable.app/" },
-      { rel: "preload", as: "image", href: heroImg, fetchpriority: "high" } as never,
+      { rel: "preload", as: "image", href: heroImg, fetchPriority: "high" } as never,
     ],
     scripts: [
       {
