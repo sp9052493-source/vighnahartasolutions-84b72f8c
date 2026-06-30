@@ -199,6 +199,277 @@ export type Database = {
           },
         ]
       }
+      gst_application_documents: {
+        Row: {
+          application_id: string
+          doc_type: string
+          file_name: string
+          id: string
+          mime_type: string
+          size_bytes: number
+          storage_path: string
+          uploaded_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          application_id: string
+          doc_type: string
+          file_name: string
+          id?: string
+          mime_type: string
+          size_bytes: number
+          storage_path: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          doc_type?: string
+          file_name?: string
+          id?: string
+          mime_type?: string
+          size_bytes?: number
+          storage_path?: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gst_application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "gst_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gst_application_events: {
+        Row: {
+          actor_id: string | null
+          actor_role: string | null
+          application_id: string
+          created_at: string
+          event_type: string
+          from_status: string | null
+          id: string
+          message: string | null
+          metadata: Json
+          to_status: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id: string
+          created_at?: string
+          event_type: string
+          from_status?: string | null
+          id?: string
+          message?: string | null
+          metadata?: Json
+          to_status?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id?: string
+          created_at?: string
+          event_type?: string
+          from_status?: string | null
+          id?: string
+          message?: string | null
+          metadata?: Json
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gst_application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "gst_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gst_applications: {
+        Row: {
+          aadhaar_last4: string | null
+          acknowledgement_path: string | null
+          address_line1: string
+          address_line2: string | null
+          admin_remarks: string | null
+          applicant_name: string
+          application_no: string
+          arn_no: string | null
+          assigned_to: string | null
+          bank_account_name: string | null
+          bank_account_no: string | null
+          bank_branch: string | null
+          bank_ifsc: string | null
+          bank_name: string | null
+          business_name: string
+          certificate_path: string | null
+          city: string
+          commencement_date: string | null
+          constitution: string
+          created_at: string
+          district: string
+          email: string
+          estimated_turnover: number | null
+          existing_registration: string | null
+          govt_fee: number
+          gstin: string | null
+          hsn_codes: Json
+          id: string
+          internal_notes: string | null
+          mobile: string
+          nature_of_business: string
+          pan: string
+          pin_code: string
+          service_charge: number
+          signatory_designation: string | null
+          signatory_email: string | null
+          signatory_mobile: string | null
+          signatory_name: string | null
+          signatory_pan: string | null
+          state: string
+          status: string
+          total_charged: number
+          trade_name: string | null
+          updated_at: string
+          user_id: string
+          wallet_txn_id: string | null
+        }
+        Insert: {
+          aadhaar_last4?: string | null
+          acknowledgement_path?: string | null
+          address_line1: string
+          address_line2?: string | null
+          admin_remarks?: string | null
+          applicant_name: string
+          application_no: string
+          arn_no?: string | null
+          assigned_to?: string | null
+          bank_account_name?: string | null
+          bank_account_no?: string | null
+          bank_branch?: string | null
+          bank_ifsc?: string | null
+          bank_name?: string | null
+          business_name: string
+          certificate_path?: string | null
+          city: string
+          commencement_date?: string | null
+          constitution: string
+          created_at?: string
+          district: string
+          email: string
+          estimated_turnover?: number | null
+          existing_registration?: string | null
+          govt_fee?: number
+          gstin?: string | null
+          hsn_codes?: Json
+          id?: string
+          internal_notes?: string | null
+          mobile: string
+          nature_of_business: string
+          pan: string
+          pin_code: string
+          service_charge?: number
+          signatory_designation?: string | null
+          signatory_email?: string | null
+          signatory_mobile?: string | null
+          signatory_name?: string | null
+          signatory_pan?: string | null
+          state: string
+          status?: string
+          total_charged?: number
+          trade_name?: string | null
+          updated_at?: string
+          user_id: string
+          wallet_txn_id?: string | null
+        }
+        Update: {
+          aadhaar_last4?: string | null
+          acknowledgement_path?: string | null
+          address_line1?: string
+          address_line2?: string | null
+          admin_remarks?: string | null
+          applicant_name?: string
+          application_no?: string
+          arn_no?: string | null
+          assigned_to?: string | null
+          bank_account_name?: string | null
+          bank_account_no?: string | null
+          bank_branch?: string | null
+          bank_ifsc?: string | null
+          bank_name?: string | null
+          business_name?: string
+          certificate_path?: string | null
+          city?: string
+          commencement_date?: string | null
+          constitution?: string
+          created_at?: string
+          district?: string
+          email?: string
+          estimated_turnover?: number | null
+          existing_registration?: string | null
+          govt_fee?: number
+          gstin?: string | null
+          hsn_codes?: Json
+          id?: string
+          internal_notes?: string | null
+          mobile?: string
+          nature_of_business?: string
+          pan?: string
+          pin_code?: string
+          service_charge?: number
+          signatory_designation?: string | null
+          signatory_email?: string | null
+          signatory_mobile?: string | null
+          signatory_name?: string | null
+          signatory_pan?: string | null
+          state?: string
+          status?: string
+          total_charged?: number
+          trade_name?: string | null
+          updated_at?: string
+          user_id?: string
+          wallet_txn_id?: string | null
+        }
+        Relationships: []
+      }
+      gst_service_config: {
+        Row: {
+          active: boolean
+          govt_fee: number
+          id: string
+          instructions_en: string
+          instructions_mr: string
+          service_charge: number
+          turnaround_text: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          govt_fee?: number
+          id?: string
+          instructions_en?: string
+          instructions_mr?: string
+          service_charge?: number
+          turnaround_text?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          govt_fee?: number
+          id?: string
+          instructions_en?: string
+          instructions_mr?: string
+          service_charge?: number
+          turnaround_text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_gateways: {
         Row: {
           display_name: string
@@ -640,6 +911,10 @@ export type Database = {
         Args: { p_amount: number; p_description: string; p_user_id: string }
         Returns: number
       }
+      charge_gst_application: {
+        Args: { p_amount: number; p_app_id: string; p_user_id: string }
+        Returns: number
+      }
       complete_document_request: {
         Args: {
           p_doc_url: string
@@ -668,6 +943,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      generate_gst_application_no: { Args: never; Returns: string }
       get_my_role: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]

@@ -17,6 +17,7 @@ import {
   Wheat,
   Landmark,
   Newspaper,
+  FileCheck2,
   ShieldCheck as ShieldCheckIcon,
   Search,
   Plus,
@@ -52,6 +53,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/aadhaar-to-pan", label: "Aadhaar → PAN", icon: CreditCard, roles: ["distributor", "retailer"] },
       { to: "/aaple-sarkar", label: "Aaple Sarkar", icon: Landmark, roles: ["distributor", "retailer"] },
       { to: "/gazette", label: "Gazette Certificate", icon: Newspaper, roles: ["distributor", "retailer"] },
+      { to: "/gst", label: "GST Registration", icon: FileCheck2, roles: ["distributor", "retailer"] },
+      { to: "/gst-requests", label: "My GST Applications", icon: FileText, roles: ["distributor", "retailer"] },
     ],
   },
   {
@@ -70,6 +73,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/admin", label: "Admin Control", icon: ShieldCheckIcon, roles: ["admin"] },
       { to: "/manage-services", label: "Service Pricing", icon: SlidersHorizontal, roles: ["admin"] },
       { to: "/aaple-sarkar-requests", label: "Aaple Sarkar Desk", icon: Landmark, roles: ["admin"] },
+      { to: "/admin/gst-desk", label: "GST Desk", icon: FileCheck2, roles: ["admin"] },
+      { to: "/admin/gst", label: "GST Settings", icon: SlidersHorizontal, roles: ["admin"] },
     ],
   },
   {

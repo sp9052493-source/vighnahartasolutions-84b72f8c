@@ -28,6 +28,8 @@ import { Route as AuthenticatedRcPrintRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRationPrintRouteImport } from './routes/_authenticated/ration-print'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authenticated/manage-services'
+import { Route as AuthenticatedGstRequestsRouteImport } from './routes/_authenticated/gst-requests'
+import { Route as AuthenticatedGstRouteImport } from './routes/_authenticated/gst'
 import { Route as AuthenticatedGazetteRouteImport } from './routes/_authenticated/gazette'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedDlPrintRouteImport } from './routes/_authenticated/dl-print'
@@ -37,9 +39,12 @@ import { Route as AuthenticatedAapleSarkarRequestsRouteImport } from './routes/_
 import { Route as AuthenticatedAapleSarkarRouteImport } from './routes/_authenticated/aaple-sarkar'
 import { Route as AuthenticatedAadhaarToPanRouteImport } from './routes/_authenticated/aadhaar-to-pan'
 import { Route as ApiPublicPaytmReturnRouteImport } from './routes/api/public/paytm-return'
+import { Route as AuthenticatedGstIdRouteImport } from './routes/_authenticated/gst.$id'
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
 import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
+import { Route as AuthenticatedAdminGstDeskRouteImport } from './routes/_authenticated/admin.gst-desk'
+import { Route as AuthenticatedAdminGstRouteImport } from './routes/_authenticated/admin.gst'
 import { Route as AuthenticatedAdminGazetteDeskRouteImport } from './routes/_authenticated/admin.gazette-desk'
 import { Route as AuthenticatedAdminGazetteRouteImport } from './routes/_authenticated/admin.gazette'
 import { Route as AuthenticatedAdminGatewaysRouteImport } from './routes/_authenticated/admin.gateways'
@@ -140,6 +145,17 @@ const AuthenticatedManageServicesRoute =
     path: '/manage-services',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGstRequestsRoute =
+  AuthenticatedGstRequestsRouteImport.update({
+    id: '/gst-requests',
+    path: '/gst-requests',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedGstRoute = AuthenticatedGstRouteImport.update({
+  id: '/gst',
+  path: '/gst',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedGazetteRoute = AuthenticatedGazetteRouteImport.update({
   id: '/gazette',
   path: '/gazette',
@@ -188,6 +204,11 @@ const ApiPublicPaytmReturnRoute = ApiPublicPaytmReturnRouteImport.update({
   path: '/api/public/paytm-return',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedGstIdRoute = AuthenticatedGstIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedGstRoute,
+} as any)
 const AuthenticatedAdminSiteRoute = AuthenticatedAdminSiteRouteImport.update({
   id: '/site',
   path: '/site',
@@ -202,6 +223,17 @@ const AuthenticatedAdminSarkarServicesRoute =
 const AuthenticatedAdminPagesRoute = AuthenticatedAdminPagesRouteImport.update({
   id: '/pages',
   path: '/pages',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminGstDeskRoute =
+  AuthenticatedAdminGstDeskRouteImport.update({
+    id: '/gst-desk',
+    path: '/gst-desk',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminGstRoute = AuthenticatedAdminGstRouteImport.update({
+  id: '/gst',
+  path: '/gst',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
 const AuthenticatedAdminGazetteDeskRoute =
@@ -241,6 +273,8 @@ export interface FileRoutesByFullPath {
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/gazette': typeof AuthenticatedGazetteRoute
+  '/gst': typeof AuthenticatedGstRouteWithChildren
+  '/gst-requests': typeof AuthenticatedGstRequestsRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
   '/ration-print': typeof AuthenticatedRationPrintRoute
@@ -253,9 +287,12 @@ export interface FileRoutesByFullPath {
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
+  '/admin/gst': typeof AuthenticatedAdminGstRoute
+  '/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
+  '/gst/$id': typeof AuthenticatedGstIdRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRoutesByTo {
@@ -276,6 +313,8 @@ export interface FileRoutesByTo {
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/gazette': typeof AuthenticatedGazetteRoute
+  '/gst': typeof AuthenticatedGstRouteWithChildren
+  '/gst-requests': typeof AuthenticatedGstRequestsRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
   '/ration-print': typeof AuthenticatedRationPrintRoute
@@ -288,9 +327,12 @@ export interface FileRoutesByTo {
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
+  '/admin/gst': typeof AuthenticatedAdminGstRoute
+  '/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
+  '/gst/$id': typeof AuthenticatedGstIdRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRoutesById {
@@ -313,6 +355,8 @@ export interface FileRoutesById {
   '/_authenticated/dl-print': typeof AuthenticatedDlPrintRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/gazette': typeof AuthenticatedGazetteRoute
+  '/_authenticated/gst': typeof AuthenticatedGstRouteWithChildren
+  '/_authenticated/gst-requests': typeof AuthenticatedGstRequestsRoute
   '/_authenticated/manage-services': typeof AuthenticatedManageServicesRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
   '/_authenticated/ration-print': typeof AuthenticatedRationPrintRoute
@@ -325,9 +369,12 @@ export interface FileRoutesById {
   '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/_authenticated/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/_authenticated/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
+  '/_authenticated/admin/gst': typeof AuthenticatedAdminGstRoute
+  '/_authenticated/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
+  '/_authenticated/gst/$id': typeof AuthenticatedGstIdRoute
   '/api/public/paytm-return': typeof ApiPublicPaytmReturnRoute
 }
 export interface FileRouteTypes {
@@ -350,6 +397,8 @@ export interface FileRouteTypes {
     | '/dl-print'
     | '/drafts'
     | '/gazette'
+    | '/gst'
+    | '/gst-requests'
     | '/manage-services'
     | '/members'
     | '/ration-print'
@@ -362,9 +411,12 @@ export interface FileRouteTypes {
     | '/admin/gateways'
     | '/admin/gazette'
     | '/admin/gazette-desk'
+    | '/admin/gst'
+    | '/admin/gst-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
+    | '/gst/$id'
     | '/api/public/paytm-return'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -385,6 +437,8 @@ export interface FileRouteTypes {
     | '/dl-print'
     | '/drafts'
     | '/gazette'
+    | '/gst'
+    | '/gst-requests'
     | '/manage-services'
     | '/members'
     | '/ration-print'
@@ -397,9 +451,12 @@ export interface FileRouteTypes {
     | '/admin/gateways'
     | '/admin/gazette'
     | '/admin/gazette-desk'
+    | '/admin/gst'
+    | '/admin/gst-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/site'
+    | '/gst/$id'
     | '/api/public/paytm-return'
   id:
     | '__root__'
@@ -421,6 +478,8 @@ export interface FileRouteTypes {
     | '/_authenticated/dl-print'
     | '/_authenticated/drafts'
     | '/_authenticated/gazette'
+    | '/_authenticated/gst'
+    | '/_authenticated/gst-requests'
     | '/_authenticated/manage-services'
     | '/_authenticated/members'
     | '/_authenticated/ration-print'
@@ -433,9 +492,12 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/gateways'
     | '/_authenticated/admin/gazette'
     | '/_authenticated/admin/gazette-desk'
+    | '/_authenticated/admin/gst'
+    | '/_authenticated/admin/gst-desk'
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/sarkar-services'
     | '/_authenticated/admin/site'
+    | '/_authenticated/gst/$id'
     | '/api/public/paytm-return'
   fileRoutesById: FileRoutesById
 }
@@ -588,6 +650,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedManageServicesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/gst-requests': {
+      id: '/_authenticated/gst-requests'
+      path: '/gst-requests'
+      fullPath: '/gst-requests'
+      preLoaderRoute: typeof AuthenticatedGstRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/gst': {
+      id: '/_authenticated/gst'
+      path: '/gst'
+      fullPath: '/gst'
+      preLoaderRoute: typeof AuthenticatedGstRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/gazette': {
       id: '/_authenticated/gazette'
       path: '/gazette'
@@ -651,6 +727,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaytmReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/gst/$id': {
+      id: '/_authenticated/gst/$id'
+      path: '/$id'
+      fullPath: '/gst/$id'
+      preLoaderRoute: typeof AuthenticatedGstIdRouteImport
+      parentRoute: typeof AuthenticatedGstRoute
+    }
     '/_authenticated/admin/site': {
       id: '/_authenticated/admin/site'
       path: '/site'
@@ -670,6 +753,20 @@ declare module '@tanstack/react-router' {
       path: '/pages'
       fullPath: '/admin/pages'
       preLoaderRoute: typeof AuthenticatedAdminPagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/gst-desk': {
+      id: '/_authenticated/admin/gst-desk'
+      path: '/gst-desk'
+      fullPath: '/admin/gst-desk'
+      preLoaderRoute: typeof AuthenticatedAdminGstDeskRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/gst': {
+      id: '/_authenticated/admin/gst'
+      path: '/gst'
+      fullPath: '/admin/gst'
+      preLoaderRoute: typeof AuthenticatedAdminGstRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/gazette-desk': {
@@ -700,6 +797,8 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminGatewaysRoute: typeof AuthenticatedAdminGatewaysRoute
   AuthenticatedAdminGazetteRoute: typeof AuthenticatedAdminGazetteRoute
   AuthenticatedAdminGazetteDeskRoute: typeof AuthenticatedAdminGazetteDeskRoute
+  AuthenticatedAdminGstRoute: typeof AuthenticatedAdminGstRoute
+  AuthenticatedAdminGstDeskRoute: typeof AuthenticatedAdminGstDeskRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
@@ -709,6 +808,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminGatewaysRoute: AuthenticatedAdminGatewaysRoute,
   AuthenticatedAdminGazetteRoute: AuthenticatedAdminGazetteRoute,
   AuthenticatedAdminGazetteDeskRoute: AuthenticatedAdminGazetteDeskRoute,
+  AuthenticatedAdminGstRoute: AuthenticatedAdminGstRoute,
+  AuthenticatedAdminGstDeskRoute: AuthenticatedAdminGstDeskRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,
@@ -716,6 +817,17 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedGstRouteChildren {
+  AuthenticatedGstIdRoute: typeof AuthenticatedGstIdRoute
+}
+
+const AuthenticatedGstRouteChildren: AuthenticatedGstRouteChildren = {
+  AuthenticatedGstIdRoute: AuthenticatedGstIdRoute,
+}
+
+const AuthenticatedGstRouteWithChildren =
+  AuthenticatedGstRoute._addFileChildren(AuthenticatedGstRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAadhaarToPanRoute: typeof AuthenticatedAadhaarToPanRoute
@@ -726,6 +838,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDlPrintRoute: typeof AuthenticatedDlPrintRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedGazetteRoute: typeof AuthenticatedGazetteRoute
+  AuthenticatedGstRoute: typeof AuthenticatedGstRouteWithChildren
+  AuthenticatedGstRequestsRoute: typeof AuthenticatedGstRequestsRoute
   AuthenticatedManageServicesRoute: typeof AuthenticatedManageServicesRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
   AuthenticatedRationPrintRoute: typeof AuthenticatedRationPrintRoute
@@ -746,6 +860,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDlPrintRoute: AuthenticatedDlPrintRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedGazetteRoute: AuthenticatedGazetteRoute,
+  AuthenticatedGstRoute: AuthenticatedGstRouteWithChildren,
+  AuthenticatedGstRequestsRoute: AuthenticatedGstRequestsRoute,
   AuthenticatedManageServicesRoute: AuthenticatedManageServicesRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
   AuthenticatedRationPrintRoute: AuthenticatedRationPrintRoute,
