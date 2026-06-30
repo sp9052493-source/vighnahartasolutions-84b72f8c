@@ -177,10 +177,12 @@ function Services() {
   const [value, setValue] = useState("");
   const [result, setResult] = useState<any | null>(null);
 
-  const FORM_ROUTES: Record<string, "/udyam" | "/gst" | "/aaple-sarkar"> = {
+  const FORM_ROUTES: Record<string, "/udyam" | "/gst" | "/aaple-sarkar" | "/shopact" | "/fssai"> = {
     UDYAM: "/udyam",
     GST: "/gst",
     AAPLE_SARKAR: "/aaple-sarkar",
+    SHOPACT: "/shopact",
+    FSSAI: "/fssai",
   };
 
 
