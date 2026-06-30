@@ -121,7 +121,8 @@ function toPayload(f: ServiceForm) {
 }
 
 function ManageServices() {
-  const { data: services } = useServices();
+  const listFn = useServerFn(adminListServices);
+  const { data: services } = useQuery({ queryKey: ["admin-services"], queryFn: () => listFn() });
   const [dialog, setDialog] = useState<{ mode: "create" } | { mode: "edit"; service: any } | null>(null);
 
   return (
