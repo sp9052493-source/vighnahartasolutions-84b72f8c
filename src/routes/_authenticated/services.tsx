@@ -286,6 +286,11 @@ function Services() {
                 <Button
                   size="sm"
                   onClick={() => {
+                    const route = FORM_ROUTES[s.code];
+                    if (route) {
+                      navigate({ to: route });
+                      return;
+                    }
                     setActive(s);
                     setValue("");
                   }}
