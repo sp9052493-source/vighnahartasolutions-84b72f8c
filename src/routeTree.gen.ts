@@ -35,6 +35,7 @@ import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authe
 import { Route as AuthenticatedGstRequestsRouteImport } from './routes/_authenticated/gst-requests'
 import { Route as AuthenticatedGstRouteImport } from './routes/_authenticated/gst'
 import { Route as AuthenticatedGazetteRouteImport } from './routes/_authenticated/gazette'
+import { Route as AuthenticatedFssaiRouteImport } from './routes/_authenticated/fssai'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedDlPrintRouteImport } from './routes/_authenticated/dl-print'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -188,6 +189,11 @@ const AuthenticatedGazetteRoute = AuthenticatedGazetteRouteImport.update({
   path: '/gazette',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFssaiRoute = AuthenticatedFssaiRouteImport.update({
+  id: '/fssai',
+  path: '/fssai',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDraftsRoute = AuthenticatedDraftsRouteImport.update({
   id: '/drafts',
   path: '/drafts',
@@ -310,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/drafts': typeof AuthenticatedDraftsRoute
+  '/fssai': typeof AuthenticatedFssaiRoute
   '/gazette': typeof AuthenticatedGazetteRoute
   '/gst': typeof AuthenticatedGstRouteWithChildren
   '/gst-requests': typeof AuthenticatedGstRequestsRoute
@@ -356,6 +363,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/drafts': typeof AuthenticatedDraftsRoute
+  '/fssai': typeof AuthenticatedFssaiRoute
   '/gazette': typeof AuthenticatedGazetteRoute
   '/gst': typeof AuthenticatedGstRouteWithChildren
   '/gst-requests': typeof AuthenticatedGstRequestsRoute
@@ -404,6 +412,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dl-print': typeof AuthenticatedDlPrintRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
+  '/_authenticated/fssai': typeof AuthenticatedFssaiRoute
   '/_authenticated/gazette': typeof AuthenticatedGazetteRoute
   '/_authenticated/gst': typeof AuthenticatedGstRouteWithChildren
   '/_authenticated/gst-requests': typeof AuthenticatedGstRequestsRoute
@@ -452,6 +461,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dl-print'
     | '/drafts'
+    | '/fssai'
     | '/gazette'
     | '/gst'
     | '/gst-requests'
@@ -498,6 +508,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dl-print'
     | '/drafts'
+    | '/fssai'
     | '/gazette'
     | '/gst'
     | '/gst-requests'
@@ -545,6 +556,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/dl-print'
     | '/_authenticated/drafts'
+    | '/_authenticated/fssai'
     | '/_authenticated/gazette'
     | '/_authenticated/gst'
     | '/_authenticated/gst-requests'
@@ -773,6 +785,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGazetteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/fssai': {
+      id: '/_authenticated/fssai'
+      path: '/fssai'
+      fullPath: '/fssai'
+      preLoaderRoute: typeof AuthenticatedFssaiRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/drafts': {
       id: '/_authenticated/drafts'
       path: '/drafts'
@@ -957,6 +976,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDlPrintRoute: typeof AuthenticatedDlPrintRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
+  AuthenticatedFssaiRoute: typeof AuthenticatedFssaiRoute
   AuthenticatedGazetteRoute: typeof AuthenticatedGazetteRoute
   AuthenticatedGstRoute: typeof AuthenticatedGstRouteWithChildren
   AuthenticatedGstRequestsRoute: typeof AuthenticatedGstRequestsRoute
@@ -983,6 +1003,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDlPrintRoute: AuthenticatedDlPrintRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
+  AuthenticatedFssaiRoute: AuthenticatedFssaiRoute,
   AuthenticatedGazetteRoute: AuthenticatedGazetteRoute,
   AuthenticatedGstRoute: AuthenticatedGstRouteWithChildren,
   AuthenticatedGstRequestsRoute: AuthenticatedGstRequestsRoute,
