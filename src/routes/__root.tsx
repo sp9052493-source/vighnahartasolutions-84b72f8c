@@ -110,8 +110,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: "Vighnaharta Solutions",
           legalName: "Vighnaharta Group Limited",
           url: "https://vighnahartasolutions.lovable.app",
-          email: "officialworkmangesh@gmail.com",
-          telephone: "+91-82084-12436",
+          email: "official@vighnahartasolutions.in",
+          telephone: "+91-87881-14190",
           address: {
             "@type": "PostalAddress",
             streetAddress: "At Shendurwada, Tq. Gangapur",
