@@ -152,9 +152,17 @@ function Services() {
   const { data: services } = useServices();
   const { data: me } = useMe();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [active, setActive] = useState<any | null>(null);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<any | null>(null);
+
+  const FORM_ROUTES: Record<string, "/udyam" | "/gst" | "/aaple-sarkar"> = {
+    UDYAM: "/udyam",
+    GST: "/gst",
+    AAPLE_SARKAR: "/aaple-sarkar",
+  };
+
 
   const processFn = useServerFn(processDocumentRequest);
   const mutation = useMutation({
