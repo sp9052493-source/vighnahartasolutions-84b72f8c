@@ -19,6 +19,8 @@ import {
   Newspaper,
   FileCheck2,
   Building2,
+  Briefcase,
+  Utensils,
   ShieldCheck as ShieldCheckIcon,
   Search,
   Plus,

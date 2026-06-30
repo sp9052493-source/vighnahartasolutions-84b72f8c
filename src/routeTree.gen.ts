@@ -59,6 +59,7 @@ import { Route as AuthenticatedAdminGstRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminGazetteDeskRouteImport } from './routes/_authenticated/admin.gazette-desk'
 import { Route as AuthenticatedAdminGazetteRouteImport } from './routes/_authenticated/admin.gazette'
 import { Route as AuthenticatedAdminGatewaysRouteImport } from './routes/_authenticated/admin.gateways'
+import { Route as AuthenticatedAdminFssaiSettingsRouteImport } from './routes/_authenticated/admin.fssai-settings'
 import { Route as AuthenticatedAdminFssaiRouteImport } from './routes/_authenticated/admin.fssai'
 
 const TermsRoute = TermsRouteImport.update({
@@ -327,6 +328,12 @@ const AuthenticatedAdminGatewaysRoute =
     path: '/gateways',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFssaiSettingsRoute =
+  AuthenticatedAdminFssaiSettingsRouteImport.update({
+    id: '/fssai-settings',
+    path: '/fssai-settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminFssaiRoute = AuthenticatedAdminFssaiRouteImport.update({
   id: '/fssai',
   path: '/fssai',
@@ -370,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/fssai': typeof AuthenticatedAdminFssaiRoute
+  '/admin/fssai-settings': typeof AuthenticatedAdminFssaiSettingsRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
@@ -422,6 +430,7 @@ export interface FileRoutesByTo {
   '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/admin/fssai': typeof AuthenticatedAdminFssaiRoute
+  '/admin/fssai-settings': typeof AuthenticatedAdminFssaiSettingsRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
@@ -476,6 +485,7 @@ export interface FileRoutesById {
   '/_authenticated/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/admin/fssai': typeof AuthenticatedAdminFssaiRoute
+  '/_authenticated/admin/fssai-settings': typeof AuthenticatedAdminFssaiSettingsRoute
   '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/_authenticated/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/_authenticated/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
@@ -530,6 +540,7 @@ export interface FileRouteTypes {
     | '/udyam-applications'
     | '/wallet'
     | '/admin/fssai'
+    | '/admin/fssai-settings'
     | '/admin/gateways'
     | '/admin/gazette'
     | '/admin/gazette-desk'
@@ -582,6 +593,7 @@ export interface FileRouteTypes {
     | '/udyam-applications'
     | '/wallet'
     | '/admin/fssai'
+    | '/admin/fssai-settings'
     | '/admin/gateways'
     | '/admin/gazette'
     | '/admin/gazette-desk'
@@ -635,6 +647,7 @@ export interface FileRouteTypes {
     | '/_authenticated/udyam-applications'
     | '/_authenticated/wallet'
     | '/_authenticated/admin/fssai'
+    | '/_authenticated/admin/fssai-settings'
     | '/_authenticated/admin/gateways'
     | '/_authenticated/admin/gazette'
     | '/_authenticated/admin/gazette-desk'
@@ -1017,6 +1030,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminGatewaysRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/fssai-settings': {
+      id: '/_authenticated/admin/fssai-settings'
+      path: '/fssai-settings'
+      fullPath: '/admin/fssai-settings'
+      preLoaderRoute: typeof AuthenticatedAdminFssaiSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/fssai': {
       id: '/_authenticated/admin/fssai'
       path: '/fssai'
@@ -1029,6 +1049,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminFssaiRoute: typeof AuthenticatedAdminFssaiRoute
+  AuthenticatedAdminFssaiSettingsRoute: typeof AuthenticatedAdminFssaiSettingsRoute
   AuthenticatedAdminGatewaysRoute: typeof AuthenticatedAdminGatewaysRoute
   AuthenticatedAdminGazetteRoute: typeof AuthenticatedAdminGazetteRoute
   AuthenticatedAdminGazetteDeskRoute: typeof AuthenticatedAdminGazetteDeskRoute
@@ -1045,6 +1066,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminFssaiRoute: AuthenticatedAdminFssaiRoute,
+  AuthenticatedAdminFssaiSettingsRoute: AuthenticatedAdminFssaiSettingsRoute,
   AuthenticatedAdminGatewaysRoute: AuthenticatedAdminGatewaysRoute,
   AuthenticatedAdminGazetteRoute: AuthenticatedAdminGazetteRoute,
   AuthenticatedAdminGazetteDeskRoute: AuthenticatedAdminGazetteDeskRoute,
