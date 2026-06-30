@@ -50,6 +50,7 @@ import { Route as AuthenticatedGstIdRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminUdyamSettingsRouteImport } from './routes/_authenticated/admin.udyam-settings'
 import { Route as AuthenticatedAdminUdyamRouteImport } from './routes/_authenticated/admin.udyam'
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
+import { Route as AuthenticatedAdminShopactSettingsRouteImport } from './routes/_authenticated/admin.shopact-settings'
 import { Route as AuthenticatedAdminShopactRouteImport } from './routes/_authenticated/admin.shopact'
 import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
@@ -274,6 +275,12 @@ const AuthenticatedAdminSiteRoute = AuthenticatedAdminSiteRouteImport.update({
   path: '/site',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminShopactSettingsRoute =
+  AuthenticatedAdminShopactSettingsRouteImport.update({
+    id: '/shopact-settings',
+    path: '/shopact-settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminShopactRoute =
   AuthenticatedAdminShopactRouteImport.update({
     id: '/shopact',
@@ -371,6 +378,7 @@ export interface FileRoutesByFullPath {
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/shopact': typeof AuthenticatedAdminShopactRoute
+  '/admin/shopact-settings': typeof AuthenticatedAdminShopactSettingsRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -422,6 +430,7 @@ export interface FileRoutesByTo {
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/admin/shopact': typeof AuthenticatedAdminShopactRoute
+  '/admin/shopact-settings': typeof AuthenticatedAdminShopactSettingsRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -475,6 +484,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
   '/_authenticated/admin/shopact': typeof AuthenticatedAdminShopactRoute
+  '/_authenticated/admin/shopact-settings': typeof AuthenticatedAdminShopactSettingsRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
   '/_authenticated/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/_authenticated/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -528,6 +538,7 @@ export interface FileRouteTypes {
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/shopact'
+    | '/admin/shopact-settings'
     | '/admin/site'
     | '/admin/udyam'
     | '/admin/udyam-settings'
@@ -579,6 +590,7 @@ export interface FileRouteTypes {
     | '/admin/pages'
     | '/admin/sarkar-services'
     | '/admin/shopact'
+    | '/admin/shopact-settings'
     | '/admin/site'
     | '/admin/udyam'
     | '/admin/udyam-settings'
@@ -631,6 +643,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/sarkar-services'
     | '/_authenticated/admin/shopact'
+    | '/_authenticated/admin/shopact-settings'
     | '/_authenticated/admin/site'
     | '/_authenticated/admin/udyam'
     | '/_authenticated/admin/udyam-settings'
@@ -941,6 +954,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSiteRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/shopact-settings': {
+      id: '/_authenticated/admin/shopact-settings'
+      path: '/shopact-settings'
+      fullPath: '/admin/shopact-settings'
+      preLoaderRoute: typeof AuthenticatedAdminShopactSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/shopact': {
       id: '/_authenticated/admin/shopact'
       path: '/shopact'
@@ -1017,6 +1037,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
   AuthenticatedAdminShopactRoute: typeof AuthenticatedAdminShopactRoute
+  AuthenticatedAdminShopactSettingsRoute: typeof AuthenticatedAdminShopactSettingsRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
   AuthenticatedAdminUdyamRoute: typeof AuthenticatedAdminUdyamRoute
   AuthenticatedAdminUdyamSettingsRoute: typeof AuthenticatedAdminUdyamSettingsRoute
@@ -1032,6 +1053,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
   AuthenticatedAdminShopactRoute: AuthenticatedAdminShopactRoute,
+  AuthenticatedAdminShopactSettingsRoute:
+    AuthenticatedAdminShopactSettingsRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,
   AuthenticatedAdminUdyamRoute: AuthenticatedAdminUdyamRoute,
   AuthenticatedAdminUdyamSettingsRoute: AuthenticatedAdminUdyamSettingsRoute,
