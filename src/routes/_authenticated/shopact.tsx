@@ -345,10 +345,26 @@ function ShopactPage() {
         <div className="text-[12px] text-muted-foreground">
           {appId ? `Application ID: ${detail.data?.app?.application_no ?? "—"}` : "Not saved yet"}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {(() => {
+            const STEPS = ["instructions","owner","residential","business","employees","documents","review"];
+            const idx = STEPS.indexOf(tab);
+            const prev = idx > 0 ? STEPS[idx - 1] : null;
+            const next = idx >= 0 && idx < STEPS.length - 1 ? STEPS[idx + 1] : null;
+            return (
+              <>
+                <Button variant="ghost" size="sm" disabled={!prev} onClick={() => prev && setTab(prev)}>
+                  <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+                </Button>
+                <Button variant="secondary" size="sm" disabled={!next} onClick={() => next && setTab(next)}>
+                  Next <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </>
+            );
+          })()}
           <Button variant="outline" onClick={onSaveDraft} disabled={saveMutation.isPending || !!isLocked}>
             {saveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-            Save Draft
+            {appId ? "Update Draft" : "Save Draft"}
           </Button>
           <Button onClick={onSubmit} disabled={submitMutation.isPending || !!isLocked || !appId}>
             {submitMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
