@@ -274,9 +274,12 @@ export const fetchPanDetails = createServerFn({ method: "POST" })
       }
 
       const text = (await res.text()).trim();
-      console.log("[PAN-DETAILS] API response ←", `status=${res.status} bytes=${text.length}`);
+      console.log("[PAN-DETAILS] API response ←", `status=${res.status} bytes=${text.length} body=${text.slice(0, 300)}`);
 
-      if (!res.ok) throw new Error(`PROVIDER_${res.status}`);
+      // Don't fail on non-2xx until we've tried to parse — many providers
+      // return 404/422 with a useful JSON error body (e.g. "No record found").
+      const httpFailed = !res.ok;
+
 
       let json: any = null;
       try {
@@ -330,14 +333,18 @@ export const fetchPanDetails = createServerFn({ method: "POST" })
           if (lower.includes("not found") || lower.includes("no record") || lower.includes("invalid"))
             throw new Error("PAN_NOT_FOUND");
           if (!statusOk) throw new Error(providerMessage || "PAN_NOT_FOUND");
+          if (httpFailed) throw new Error(providerMessage || `PROVIDER_${res.status}`);
         }
+
       } else {
         const lower = text.toLowerCase();
         console.warn("[PAN-DETAILS] provider error text:", text.slice(0, 200));
         if (lower.includes("not found") || lower.includes("no record")) throw new Error("PAN_NOT_FOUND");
         if (lower.includes("invalid")) throw new Error("INVALID_PAN");
+        if (httpFailed) throw new Error(`PROVIDER_${res.status}`);
         throw new Error(text.slice(0, 200) || "Provider returned an unexpected response.");
       }
+
     } catch (e: any) {
       const raw = e?.message || "Network error while contacting the PAN provider.";
       let friendly = raw;
