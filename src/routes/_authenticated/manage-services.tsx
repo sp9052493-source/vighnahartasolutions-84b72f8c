@@ -210,7 +210,7 @@ function ServiceRow({ service, onEdit }: { service: any; onEdit: () => void }) {
       }),
     onSuccess: () => {
       toast.success(`${service.name} updated`);
-      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
     },
     onError: (e: any, vars) => {
       // Revert local toggle state on failure
@@ -224,7 +224,7 @@ function ServiceRow({ service, onEdit }: { service: any; onEdit: () => void }) {
     mutationFn: () => deleteFn({ data: { id: service.id } }),
     onSuccess: (res: any) => {
       toast.success(res?.softDeleted ? `${service.name} deactivated (has history)` : `${service.name} removed`);
-      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
       setConfirmDel(false);
     },
     onError: (e: any) => toast.error(e?.message || "Failed"),
@@ -382,7 +382,7 @@ function ServiceDialog({
     },
     onSuccess: () => {
       toast.success(mode === "edit" ? "Service updated" : "Service created");
-      queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-services"] });
       onClose();
     },
     onError: (e: any) => toast.error(e?.message || "Failed"),
