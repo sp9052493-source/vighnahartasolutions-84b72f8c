@@ -17,6 +17,8 @@ import {
   Wallet as WalletIcon,
   Users as UsersIcon,
   Landmark as BankIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
