@@ -80,6 +80,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/admin/gst-desk", label: "GST Desk", icon: FileCheck2, roles: ["admin"] },
       { to: "/admin/gst", label: "GST Settings", icon: SlidersHorizontal, roles: ["admin"] },
       { to: "/admin/udyam", label: "Udyam Aadhaar Desk", icon: Building2, roles: ["admin"] },
+      { to: "/admin/udyam-settings", label: "Udyam Settings", icon: SlidersHorizontal, roles: ["admin"] },
+
     ],
   },
   {
