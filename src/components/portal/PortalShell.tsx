@@ -61,6 +61,10 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/gst-requests", label: "My GST Applications", icon: FileText, roles: ["distributor", "retailer"] },
       { to: "/udyam", label: "Udyam Aadhaar", icon: Building2, roles: ["distributor", "retailer"] },
       { to: "/udyam-applications", label: "My Udyam Applications", icon: FileText, roles: ["distributor", "retailer"] },
+      { to: "/shopact", label: "Shop Act Registration", icon: Briefcase, roles: ["distributor", "retailer"] },
+      { to: "/shopact-applications", label: "My Shop Act Applications", icon: FileText, roles: ["distributor", "retailer"] },
+      { to: "/fssai", label: "Food License (FSSAI)", icon: Utensils, roles: ["distributor", "retailer"] },
+      { to: "/fssai-applications", label: "My Food License Applications", icon: FileText, roles: ["distributor", "retailer"] },
     ],
   },
   {
