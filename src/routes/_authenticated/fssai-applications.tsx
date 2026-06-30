@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Utensils, Plus } from "lucide-react";
+import { Utensils, Plus, Pencil, Eye } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -86,7 +86,15 @@ function Page() {
                     <td className="px-4 py-3 text-right text-muted-foreground">{new Date(r.created_at).toLocaleDateString("en-IN")}</td>
                     <td className="px-4 py-3 text-right">
                       <Link to="/fssai" search={{ id: r.id }}>
-                        <Button variant="ghost" size="sm">{r.status === "draft" ? "Continue" : "View"}</Button>
+                        {r.status === "draft" ? (
+                          <Button variant="outline" size="sm" className="border-amber-400/60 bg-amber-50 text-amber-800 hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-200">
+                            <Pencil className="mr-1 h-3.5 w-3.5" /> Edit Draft
+                          </Button>
+                        ) : (
+                          <Button variant="ghost" size="sm">
+                            <Eye className="mr-1 h-3.5 w-3.5" /> View
+                          </Button>
+                        )}
                       </Link>
                     </td>
                   </tr>
