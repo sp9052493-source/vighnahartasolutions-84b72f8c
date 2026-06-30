@@ -73,6 +73,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/admin", label: "Admin Control", icon: ShieldCheckIcon, roles: ["admin"] },
       { to: "/manage-services", label: "Service Pricing", icon: SlidersHorizontal, roles: ["admin"] },
       { to: "/aaple-sarkar-requests", label: "Aaple Sarkar Desk", icon: Landmark, roles: ["admin"] },
+      { to: "/admin/gst-desk", label: "GST Desk", icon: FileCheck2, roles: ["admin"] },
+      { to: "/admin/gst", label: "GST Settings", icon: SlidersHorizontal, roles: ["admin"] },
     ],
   },
   {
