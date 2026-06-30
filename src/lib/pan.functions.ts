@@ -187,3 +187,205 @@ export const findPanFromAadhaar = createServerFn({ method: "POST" })
       reference: result.reference,
     };
   });
+
+/**
+ * Securely proxies the APIZONE PAN Details / verification API.
+ * Validates PAN format, debits wallet via atomic SQL, logs every attempt
+ * (success and failure) in document_requests so admins get a full audit trail.
+ * The APIZONE_API_KEY secret is read server-side only.
+ */
+export const fetchPanDetails = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => panDetailsSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { userId, supabase } = context;
+    const pan = data.pan_no.toUpperCase();
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("status")
+      .eq("id", userId)
+      .single();
+    if (profile?.status !== "active") {
+      throw new Error("Your account is suspended. Contact your administrator.");
+    }
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: service, error: svcErr } = await supabaseAdmin
+      .from("services")
+      .select("id, code, name, price, active, api_enabled, api_endpoint")
+      .eq("code", "PAN")
+      .single();
+    if (svcErr || !service || !service.active) {
+      throw new Error("PAN Details service is currently unavailable.");
+    }
+
+    const { data: wallet } = await supabase
+      .from("wallets")
+      .select("balance")
+      .eq("user_id", userId)
+      .single();
+    if (Number(wallet?.balance ?? 0) < Number(service.price)) {
+      throw new Error("Insufficient wallet balance. Please top up to continue.");
+    }
+
+    const apiKey = process.env.APIZONE_API_KEY;
+    if (!apiKey) {
+      throw new Error("PAN Details service is not configured. Please contact support.");
+    }
+
+    async function logFailure(message: string) {
+      await supabaseAdmin.from("document_requests").insert({
+        user_id: userId,
+        service_id: service!.id,
+        service_name: service!.name,
+        input_value: pan,
+        status: "failed",
+        cost: 0,
+        error_message: message.slice(0, 500),
+      });
+    }
+
+    const endpoint =
+      service.api_endpoint?.trim() ||
+      "https://www.apizone.info/api/verify_pan/pan_details.php";
+
+    let details: Record<string, string> = {};
+    let providerMessage = "";
+    try {
+      const url = new URL(endpoint);
+      url.searchParams.set("api_key", apiKey);
+      url.searchParams.set("pan_no", pan);
+
+      console.log("[PAN-DETAILS] API request →", `pan=****${pan.slice(-4)}`);
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 25_000);
+      let res: Response;
+      try {
+        res = await fetch(url.toString(), {
+          method: "GET",
+          headers: { Accept: "application/json, text/plain, */*" },
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+
+      const text = (await res.text()).trim();
+      console.log("[PAN-DETAILS] API response ←", `status=${res.status} bytes=${text.length}`);
+
+      if (!res.ok) throw new Error(`PROVIDER_${res.status}`);
+
+      let json: any = null;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        /* not JSON */
+      }
+
+      if (json && typeof json === "object") {
+        const node = json.data && typeof json.data === "object" ? json.data : json;
+        providerMessage = String(json.message || json.status_message || "").trim();
+        const statusOk =
+          String(json.status ?? "").includes("200") ||
+          json.status === true ||
+          /success|valid/i.test(String(json.message ?? ""));
+
+        const mapping: Array<[string, string[]]> = [
+          ["PAN Number", ["pan_no", "pan", "pan_number", "PAN"]],
+          ["Full Name", ["full_name", "name", "pan_holder_name", "holder_name"]],
+          ["First Name", ["first_name"]],
+          ["Middle Name", ["middle_name"]],
+          ["Last Name", ["last_name", "surname"]],
+          ["Father's Name", ["father_name", "fathers_name"]],
+          ["Date of Birth", ["dob", "date_of_birth", "birth_date"]],
+          ["Gender", ["gender"]],
+          ["Category", ["category", "pan_type", "type"]],
+          ["Aadhaar Linked", ["aadhaar_linked", "aadhaar_seeding_status", "is_aadhaar_linked"]],
+          ["PAN Status", ["pan_status", "status_description"]],
+          ["Email", ["email"]],
+          ["Mobile", ["mobile", "phone"]],
+        ];
+
+        for (const [label, keys] of mapping) {
+          for (const k of keys) {
+            const v = node?.[k];
+            if (v !== undefined && v !== null && String(v).trim() !== "") {
+              details[label] = String(v).trim();
+              break;
+            }
+          }
+        }
+
+        if (!details["PAN Number"]) details["PAN Number"] = pan;
+
+        const hasIdentity =
+          details["Full Name"] || details["First Name"] || details["Date of Birth"];
+
+        if (!hasIdentity) {
+          const lower = providerMessage.toLowerCase();
+          console.warn("[PAN-DETAILS] provider error JSON:", providerMessage);
+          if (lower.includes("not found") || lower.includes("no record") || lower.includes("invalid"))
+            throw new Error("PAN_NOT_FOUND");
+          if (!statusOk) throw new Error(providerMessage || "PAN_NOT_FOUND");
+        }
+      } else {
+        const lower = text.toLowerCase();
+        console.warn("[PAN-DETAILS] provider error text:", text.slice(0, 200));
+        if (lower.includes("not found") || lower.includes("no record")) throw new Error("PAN_NOT_FOUND");
+        if (lower.includes("invalid")) throw new Error("INVALID_PAN");
+        throw new Error(text.slice(0, 200) || "Provider returned an unexpected response.");
+      }
+    } catch (e: any) {
+      const raw = e?.message || "Network error while contacting the PAN provider.";
+      let friendly = raw;
+      if (raw === "PAN_NOT_FOUND") friendly = "No PAN record found for the entered number.";
+      else if (raw === "INVALID_PAN") friendly = "Invalid PAN number. Please check and retry.";
+      else if (raw.startsWith("PROVIDER_"))
+        friendly = "PAN provider is temporarily unavailable. Please try again.";
+      else if (e?.name === "AbortError" || /timeout|abort/i.test(raw))
+        friendly = "PAN provider timed out. Please try again.";
+      else if (/fetch|network|ENOTFOUND|ECONN/i.test(raw))
+        friendly = "Network error. Please check your connection and try again.";
+      console.error("[PAN-DETAILS] failure:", friendly);
+      await logFailure(friendly);
+      throw new Error(friendly);
+    }
+
+    const result = {
+      reference: "PAND" + Math.random().toString(36).slice(2, 10).toUpperCase(),
+      fetched_at: new Date().toISOString(),
+      mode: "LIVE",
+      provider: "apizone",
+      document: "PAN_DETAILS",
+      fields: details,
+    };
+
+    const { data: req, error } = await supabaseAdmin.rpc("complete_document_request", {
+      p_user_id: userId,
+      p_service_id: service.id,
+      p_input: pan,
+      p_result: result,
+      p_doc_url: "",
+    });
+
+    if (error) {
+      if (error.message.includes("INSUFFICIENT_BALANCE")) {
+        await logFailure("Insufficient wallet balance.");
+        throw new Error("Insufficient wallet balance. Please top up to continue.");
+      }
+      await logFailure(error.message);
+      throw new Error(error.message);
+    }
+
+    console.log("[PAN-DETAILS] success: charged & logged", `ref=${result.reference}`);
+    return {
+      request: req,
+      pan,
+      fields: details,
+      message: providerMessage || "PAN details fetched successfully.",
+      reference: result.reference,
+    };
+  });
