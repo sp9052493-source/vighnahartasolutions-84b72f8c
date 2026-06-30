@@ -53,6 +53,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/aadhaar-to-pan", label: "Aadhaar → PAN", icon: CreditCard, roles: ["distributor", "retailer"] },
       { to: "/aaple-sarkar", label: "Aaple Sarkar", icon: Landmark, roles: ["distributor", "retailer"] },
       { to: "/gazette", label: "Gazette Certificate", icon: Newspaper, roles: ["distributor", "retailer"] },
+      { to: "/gst", label: "GST Registration", icon: FileCheck2, roles: ["distributor", "retailer"] },
+      { to: "/gst-requests", label: "My GST Applications", icon: FileText, roles: ["distributor", "retailer"] },
     ],
   },
   {
