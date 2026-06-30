@@ -164,7 +164,7 @@ function ManageServices() {
 
 
       <div className="space-y-4">
-        {(services ?? []).map((s) => (
+        {(services ?? []).map((s: any) => (
           <ServiceRow key={s.id} service={s} onEdit={() => setDialog({ mode: "edit", service: s })} />
         ))}
         {(services ?? []).length === 0 && (
