@@ -353,6 +353,18 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 <div className="font-display text-[13px] font-bold tabular-nums text-foreground">{timeStr} IST</div>
               </div>
 
+              {/* Session timer chip */}
+              <div className="hidden h-11 items-center gap-2 rounded-lg border border-[oklch(0.40_0.10_160_/_0.30)] bg-[linear-gradient(135deg,oklch(0.97_0.04_160),oklch(0.94_0.06_160))] px-3 leading-tight lg:flex">
+                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[oklch(0.55_0.12_160)] text-white">
+                  <Clock className="h-3.5 w-3.5" />
+                </div>
+                <div className="text-right">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-[oklch(0.38_0.10_160)]">Session</div>
+                  <div className="font-display text-[13px] font-extrabold tabular-nums text-[oklch(0.28_0.09_160)]">{sessionDuration}</div>
+                </div>
+              </div>
+
+
               {/* Balance pill — single source of truth for wallet balance */}
               <Link
                 to="/recharge"
