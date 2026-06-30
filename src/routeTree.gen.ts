@@ -22,6 +22,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as AuthenticatedUdyamApplicationsRouteImport } from './routes/_authenticated/udyam-applications'
 import { Route as AuthenticatedUdyamRouteImport } from './routes/_authenticated/udyam'
+import { Route as AuthenticatedShopactApplicationsRouteImport } from './routes/_authenticated/shopact-applications'
 import { Route as AuthenticatedShopactRouteImport } from './routes/_authenticated/shopact'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
@@ -121,6 +122,12 @@ const AuthenticatedUdyamRoute = AuthenticatedUdyamRouteImport.update({
   path: '/udyam',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShopactApplicationsRoute =
+  AuthenticatedShopactApplicationsRouteImport.update({
+    id: '/shopact-applications',
+    path: '/shopact-applications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedShopactRoute = AuthenticatedShopactRouteImport.update({
   id: '/shopact',
   path: '/shopact',
@@ -330,6 +337,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/shopact': typeof AuthenticatedShopactRoute
+  '/shopact-applications': typeof AuthenticatedShopactApplicationsRoute
   '/udyam': typeof AuthenticatedUdyamRoute
   '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
@@ -377,6 +385,7 @@ export interface FileRoutesByTo {
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/shopact': typeof AuthenticatedShopactRoute
+  '/shopact-applications': typeof AuthenticatedShopactApplicationsRoute
   '/udyam': typeof AuthenticatedUdyamRoute
   '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
@@ -426,6 +435,7 @@ export interface FileRoutesById {
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/shopact': typeof AuthenticatedShopactRoute
+  '/_authenticated/shopact-applications': typeof AuthenticatedShopactApplicationsRoute
   '/_authenticated/udyam': typeof AuthenticatedUdyamRoute
   '/_authenticated/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
@@ -475,6 +485,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/shopact'
+    | '/shopact-applications'
     | '/udyam'
     | '/udyam-applications'
     | '/wallet'
@@ -522,6 +533,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/shopact'
+    | '/shopact-applications'
     | '/udyam'
     | '/udyam-applications'
     | '/wallet'
@@ -570,6 +582,7 @@ export interface FileRouteTypes {
     | '/_authenticated/services'
     | '/_authenticated/settings'
     | '/_authenticated/shopact'
+    | '/_authenticated/shopact-applications'
     | '/_authenticated/udyam'
     | '/_authenticated/udyam-applications'
     | '/_authenticated/wallet'
@@ -692,6 +705,13 @@ declare module '@tanstack/react-router' {
       path: '/udyam'
       fullPath: '/udyam'
       preLoaderRoute: typeof AuthenticatedUdyamRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/shopact-applications': {
+      id: '/_authenticated/shopact-applications'
+      path: '/shopact-applications'
+      fullPath: '/shopact-applications'
+      preLoaderRoute: typeof AuthenticatedShopactApplicationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/shopact': {
@@ -990,6 +1010,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedShopactRoute: typeof AuthenticatedShopactRoute
+  AuthenticatedShopactApplicationsRoute: typeof AuthenticatedShopactApplicationsRoute
   AuthenticatedUdyamRoute: typeof AuthenticatedUdyamRoute
   AuthenticatedUdyamApplicationsRoute: typeof AuthenticatedUdyamApplicationsRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
@@ -1017,6 +1038,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedShopactRoute: AuthenticatedShopactRoute,
+  AuthenticatedShopactApplicationsRoute: AuthenticatedShopactApplicationsRoute,
   AuthenticatedUdyamRoute: AuthenticatedUdyamRoute,
   AuthenticatedUdyamApplicationsRoute: AuthenticatedUdyamApplicationsRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,
