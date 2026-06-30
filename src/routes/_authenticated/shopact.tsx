@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import {
   Briefcase, CheckCircle2, FileUp, Info, Loader2, Save, Send, Trash2,
   User as UserIcon, Wallet as WalletIcon, Users as UsersIcon, Home,
+  ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
