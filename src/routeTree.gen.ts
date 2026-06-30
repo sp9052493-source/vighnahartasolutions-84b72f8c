@@ -50,6 +50,7 @@ import { Route as AuthenticatedGstIdRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminUdyamSettingsRouteImport } from './routes/_authenticated/admin.udyam-settings'
 import { Route as AuthenticatedAdminUdyamRouteImport } from './routes/_authenticated/admin.udyam'
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
+import { Route as AuthenticatedAdminShopactRouteImport } from './routes/_authenticated/admin.shopact'
 import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminGstDeskRouteImport } from './routes/_authenticated/admin.gst-desk'
@@ -272,6 +273,12 @@ const AuthenticatedAdminSiteRoute = AuthenticatedAdminSiteRouteImport.update({
   path: '/site',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminShopactRoute =
+  AuthenticatedAdminShopactRouteImport.update({
+    id: '/shopact',
+    path: '/shopact',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminSarkarServicesRoute =
   AuthenticatedAdminSarkarServicesRouteImport.update({
     id: '/sarkar-services',
@@ -356,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
+  '/admin/shopact': typeof AuthenticatedAdminShopactRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -405,6 +413,7 @@ export interface FileRoutesByTo {
   '/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
+  '/admin/shopact': typeof AuthenticatedAdminShopactRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -456,6 +465,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
+  '/_authenticated/admin/shopact': typeof AuthenticatedAdminShopactRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
   '/_authenticated/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/_authenticated/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -507,6 +517,7 @@ export interface FileRouteTypes {
     | '/admin/gst-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
+    | '/admin/shopact'
     | '/admin/site'
     | '/admin/udyam'
     | '/admin/udyam-settings'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/admin/gst-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
+    | '/admin/shopact'
     | '/admin/site'
     | '/admin/udyam'
     | '/admin/udyam-settings'
@@ -606,6 +618,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/gst-desk'
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/sarkar-services'
+    | '/_authenticated/admin/shopact'
     | '/_authenticated/admin/site'
     | '/_authenticated/admin/udyam'
     | '/_authenticated/admin/udyam-settings'
@@ -916,6 +929,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSiteRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/shopact': {
+      id: '/_authenticated/admin/shopact'
+      path: '/shopact'
+      fullPath: '/admin/shopact'
+      preLoaderRoute: typeof AuthenticatedAdminShopactRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/sarkar-services': {
       id: '/_authenticated/admin/sarkar-services'
       path: '/sarkar-services'
@@ -976,6 +996,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminGstDeskRoute: typeof AuthenticatedAdminGstDeskRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
+  AuthenticatedAdminShopactRoute: typeof AuthenticatedAdminShopactRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
   AuthenticatedAdminUdyamRoute: typeof AuthenticatedAdminUdyamRoute
   AuthenticatedAdminUdyamSettingsRoute: typeof AuthenticatedAdminUdyamSettingsRoute
@@ -989,6 +1010,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminGstDeskRoute: AuthenticatedAdminGstDeskRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
+  AuthenticatedAdminShopactRoute: AuthenticatedAdminShopactRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,
   AuthenticatedAdminUdyamRoute: AuthenticatedAdminUdyamRoute,
   AuthenticatedAdminUdyamSettingsRoute: AuthenticatedAdminUdyamSettingsRoute,
