@@ -259,6 +259,13 @@ export function PortalShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const role = me?.role ?? "retailer";
   const now = useClock();
+  const sessionStart = useSessionStart();
+  const sessionDuration = sessionStart ? formatDuration(now.getTime() - sessionStart.getTime()) : "--";
+  const loginAtStr = sessionStart
+    ? sessionStart.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) +
+      ", " +
+      sessionStart.toLocaleDateString("en-IN", { day: "2-digit", month: "short" })
+    : "--";
 
   async function signOut() {
     await queryClient.cancelQueries();
