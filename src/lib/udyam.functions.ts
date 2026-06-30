@@ -90,15 +90,67 @@ async function getServicePrice(supabaseAdmin: any, userId: string): Promise<numb
     .select("id, price")
     .eq("code", SERVICE_CODE)
     .maybeSingle();
-  if (!svc) throw new Error("Udyam service is not configured.");
-  const { data: override } = await supabaseAdmin
-    .from("user_service_pricing")
-    .select("price")
-    .eq("user_id", userId)
-    .eq("service_id", svc.id)
+  const { data: cfg } = await supabaseAdmin
+    .from("udyam_service_config")
+    .select("service_charge, govt_fee")
+    .limit(1)
     .maybeSingle();
-  return Number(override?.price ?? svc.price ?? 0);
+  if (svc?.id) {
+    const { data: override } = await supabaseAdmin
+      .from("user_service_pricing")
+      .select("price")
+      .eq("user_id", userId)
+      .eq("service_id", svc.id)
+      .maybeSingle();
+    if (override?.price != null) return Number(override.price);
+  }
+  if (cfg) return Number(cfg.service_charge ?? 0) + Number(cfg.govt_fee ?? 0);
+  if (svc) return Number(svc.price ?? 0);
+  throw new Error("Udyam service is not configured.");
 }
+
+// ---------- Admin config: read / save ----------
+export const getUdyamConfig = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("udyam_service_config")
+      .select("*")
+      .limit(1)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return data;
+  });
+
+export const adminSaveUdyamConfig = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        service_charge: z.number().min(0).max(100000),
+        govt_fee: z.number().min(0).max(100000),
+        active: z.boolean(),
+        turnaround_text: z.string().trim().max(80),
+        instructions_en: z.string().trim().max(8000),
+        instructions_mr: z.string().trim().max(8000),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { id, ...patch } = data;
+    const { error } = await supabaseAdmin.from("udyam_service_config").update(patch).eq("id", id);
+    if (error) throw new Error(error.message);
+    // Keep services.price in sync for any UI that reads from it
+    await supabaseAdmin
+      .from("services")
+      .update({ price: Number(patch.service_charge) + Number(patch.govt_fee), active: patch.active })
+      .eq("code", SERVICE_CODE);
+    return { ok: true };
+  });
+
 
 // ---------- Retailer: save draft ----------
 export const saveUdyamDraft = createServerFn({ method: "POST" })
