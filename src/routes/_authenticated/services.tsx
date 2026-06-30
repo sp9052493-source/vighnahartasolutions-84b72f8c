@@ -118,6 +118,24 @@ const META: Record<string, Meta> = {
     docs: ["Applicant Aadhaar", "Service-specific supporting documents"],
     tagline: "Maharashtra State certificates",
   },
+  UDYAM: {
+    icon: FileText,
+    tone: "from-[oklch(0.55_0.14_295)] to-[oklch(0.38_0.12_290)]",
+    ring: "ring-[oklch(0.55_0.14_295_/_0.22)]",
+    category: "MSME",
+    issuer: "Ministry of MSME, Govt. of India",
+    docs: ["Aadhaar, PAN, Bank passbook", "Business proof, photo"],
+    tagline: "MSME Udyam Aadhaar registration",
+  },
+  GST: {
+    icon: FileText,
+    tone: "from-[oklch(0.6_0.15_165)] to-[oklch(0.42_0.13_165)]",
+    ring: "ring-[oklch(0.6_0.15_165_/_0.22)]",
+    category: "GST",
+    issuer: "GSTN, Govt. of India",
+    docs: ["PAN, Aadhaar, photo", "Business & bank proof"],
+    tagline: "GST Registration filing",
+  },
 };
 
 const DEFAULT_META: Meta = {
