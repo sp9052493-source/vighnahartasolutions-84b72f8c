@@ -199,6 +199,223 @@ export type Database = {
           },
         ]
       }
+      fssai_application_documents: {
+        Row: {
+          application_id: string
+          created_at: string
+          doc_type: string
+          file_name: string
+          file_path: string
+          id: string
+          mime_type: string | null
+          size_bytes: number | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          doc_type: string
+          file_name: string
+          file_path: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          doc_type?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fssai_application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "fssai_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fssai_application_events: {
+        Row: {
+          actor_id: string | null
+          actor_role: string | null
+          application_id: string
+          created_at: string
+          event_type: string
+          from_status: Database["public"]["Enums"]["fssai_status"] | null
+          id: string
+          note: string | null
+          to_status: Database["public"]["Enums"]["fssai_status"] | null
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id: string
+          created_at?: string
+          event_type: string
+          from_status?: Database["public"]["Enums"]["fssai_status"] | null
+          id?: string
+          note?: string | null
+          to_status?: Database["public"]["Enums"]["fssai_status"] | null
+        }
+        Update: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id?: string
+          created_at?: string
+          event_type?: string
+          from_status?: Database["public"]["Enums"]["fssai_status"] | null
+          id?: string
+          note?: string | null
+          to_status?: Database["public"]["Enums"]["fssai_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fssai_application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "fssai_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fssai_applications: {
+        Row: {
+          aadhaar_number: string | null
+          applicant_name: string | null
+          application_no: string
+          business_address: string | null
+          business_city: string | null
+          business_district: string | null
+          business_name: string | null
+          business_pincode: string | null
+          business_state: string | null
+          business_type: string | null
+          certificate_url: string | null
+          created_at: string
+          dob: string | null
+          email: string | null
+          father_name: string | null
+          food_category: string | null
+          gender: string | null
+          id: string
+          license_type: string | null
+          mobile: string | null
+          pan_number: string | null
+          remarks: string | null
+          status: Database["public"]["Enums"]["fssai_status"]
+          submitted_at: string | null
+          total_charged: number | null
+          updated_at: string
+          user_id: string
+          validity_years: number | null
+          wallet_txn_id: string | null
+        }
+        Insert: {
+          aadhaar_number?: string | null
+          applicant_name?: string | null
+          application_no?: string
+          business_address?: string | null
+          business_city?: string | null
+          business_district?: string | null
+          business_name?: string | null
+          business_pincode?: string | null
+          business_state?: string | null
+          business_type?: string | null
+          certificate_url?: string | null
+          created_at?: string
+          dob?: string | null
+          email?: string | null
+          father_name?: string | null
+          food_category?: string | null
+          gender?: string | null
+          id?: string
+          license_type?: string | null
+          mobile?: string | null
+          pan_number?: string | null
+          remarks?: string | null
+          status?: Database["public"]["Enums"]["fssai_status"]
+          submitted_at?: string | null
+          total_charged?: number | null
+          updated_at?: string
+          user_id: string
+          validity_years?: number | null
+          wallet_txn_id?: string | null
+        }
+        Update: {
+          aadhaar_number?: string | null
+          applicant_name?: string | null
+          application_no?: string
+          business_address?: string | null
+          business_city?: string | null
+          business_district?: string | null
+          business_name?: string | null
+          business_pincode?: string | null
+          business_state?: string | null
+          business_type?: string | null
+          certificate_url?: string | null
+          created_at?: string
+          dob?: string | null
+          email?: string | null
+          father_name?: string | null
+          food_category?: string | null
+          gender?: string | null
+          id?: string
+          license_type?: string | null
+          mobile?: string | null
+          pan_number?: string | null
+          remarks?: string | null
+          status?: Database["public"]["Enums"]["fssai_status"]
+          submitted_at?: string | null
+          total_charged?: number | null
+          updated_at?: string
+          user_id?: string
+          validity_years?: number | null
+          wallet_txn_id?: string | null
+        }
+        Relationships: []
+      }
+      fssai_service_config: {
+        Row: {
+          active: boolean
+          basic_price: number
+          central_price: number
+          distributor_commission: number
+          id: string
+          instructions: string | null
+          state_price: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          basic_price?: number
+          central_price?: number
+          distributor_commission?: number
+          id?: string
+          instructions?: string | null
+          state_price?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          basic_price?: number
+          central_price?: number
+          distributor_commission?: number
+          id?: string
+          instructions?: string | null
+          state_price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gst_application_documents: {
         Row: {
           application_id: string
@@ -692,6 +909,238 @@ export type Database = {
         }
         Relationships: []
       }
+      shopact_application_documents: {
+        Row: {
+          application_id: string
+          created_at: string
+          doc_type: string
+          file_name: string
+          file_path: string
+          id: string
+          mime_type: string | null
+          size_bytes: number | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          doc_type: string
+          file_name: string
+          file_path: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          doc_type?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopact_application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "shopact_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shopact_application_events: {
+        Row: {
+          actor_id: string | null
+          actor_role: string | null
+          application_id: string
+          created_at: string
+          event_type: string
+          from_status: Database["public"]["Enums"]["shopact_status"] | null
+          id: string
+          note: string | null
+          to_status: Database["public"]["Enums"]["shopact_status"] | null
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id: string
+          created_at?: string
+          event_type: string
+          from_status?: Database["public"]["Enums"]["shopact_status"] | null
+          id?: string
+          note?: string | null
+          to_status?: Database["public"]["Enums"]["shopact_status"] | null
+        }
+        Update: {
+          actor_id?: string | null
+          actor_role?: string | null
+          application_id?: string
+          created_at?: string
+          event_type?: string
+          from_status?: Database["public"]["Enums"]["shopact_status"] | null
+          id?: string
+          note?: string | null
+          to_status?: Database["public"]["Enums"]["shopact_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopact_application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "shopact_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shopact_applications: {
+        Row: {
+          aadhaar_number: string | null
+          application_no: string
+          business_address: string | null
+          business_city: string | null
+          business_district: string | null
+          business_name: string | null
+          business_nature: string | null
+          business_pincode: string | null
+          business_start_date: string | null
+          business_state: string | null
+          business_type: string | null
+          certificate_url: string | null
+          created_at: string
+          dob: string | null
+          email: string | null
+          employees_female: number | null
+          employees_male: number | null
+          employees_other: number | null
+          father_name: string | null
+          gender: string | null
+          id: string
+          mobile: string | null
+          owner_name: string | null
+          pan_number: string | null
+          remarks: string | null
+          res_address: string | null
+          res_city: string | null
+          res_district: string | null
+          res_pincode: string | null
+          res_state: string | null
+          status: Database["public"]["Enums"]["shopact_status"]
+          submitted_at: string | null
+          total_charged: number | null
+          updated_at: string
+          user_id: string
+          wallet_txn_id: string | null
+        }
+        Insert: {
+          aadhaar_number?: string | null
+          application_no?: string
+          business_address?: string | null
+          business_city?: string | null
+          business_district?: string | null
+          business_name?: string | null
+          business_nature?: string | null
+          business_pincode?: string | null
+          business_start_date?: string | null
+          business_state?: string | null
+          business_type?: string | null
+          certificate_url?: string | null
+          created_at?: string
+          dob?: string | null
+          email?: string | null
+          employees_female?: number | null
+          employees_male?: number | null
+          employees_other?: number | null
+          father_name?: string | null
+          gender?: string | null
+          id?: string
+          mobile?: string | null
+          owner_name?: string | null
+          pan_number?: string | null
+          remarks?: string | null
+          res_address?: string | null
+          res_city?: string | null
+          res_district?: string | null
+          res_pincode?: string | null
+          res_state?: string | null
+          status?: Database["public"]["Enums"]["shopact_status"]
+          submitted_at?: string | null
+          total_charged?: number | null
+          updated_at?: string
+          user_id: string
+          wallet_txn_id?: string | null
+        }
+        Update: {
+          aadhaar_number?: string | null
+          application_no?: string
+          business_address?: string | null
+          business_city?: string | null
+          business_district?: string | null
+          business_name?: string | null
+          business_nature?: string | null
+          business_pincode?: string | null
+          business_start_date?: string | null
+          business_state?: string | null
+          business_type?: string | null
+          certificate_url?: string | null
+          created_at?: string
+          dob?: string | null
+          email?: string | null
+          employees_female?: number | null
+          employees_male?: number | null
+          employees_other?: number | null
+          father_name?: string | null
+          gender?: string | null
+          id?: string
+          mobile?: string | null
+          owner_name?: string | null
+          pan_number?: string | null
+          remarks?: string | null
+          res_address?: string | null
+          res_city?: string | null
+          res_district?: string | null
+          res_pincode?: string | null
+          res_state?: string | null
+          status?: Database["public"]["Enums"]["shopact_status"]
+          submitted_at?: string | null
+          total_charged?: number | null
+          updated_at?: string
+          user_id?: string
+          wallet_txn_id?: string | null
+        }
+        Relationships: []
+      }
+      shopact_service_config: {
+        Row: {
+          active: boolean
+          distributor_commission: number
+          id: string
+          instructions: string | null
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          distributor_commission?: number
+          id?: string
+          instructions?: string | null
+          price?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          distributor_commission?: number
+          id?: string
+          instructions?: string | null
+          price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_pages: {
         Row: {
           content_md: string
@@ -1164,7 +1613,15 @@ export type Database = {
         Args: { p_amount: number; p_description: string; p_user_id: string }
         Returns: number
       }
+      charge_fssai_application: {
+        Args: { p_amount: number; p_app_id: string; p_user_id: string }
+        Returns: number
+      }
       charge_gst_application: {
+        Args: { p_amount: number; p_app_id: string; p_user_id: string }
+        Returns: number
+      }
+      charge_shopact_application: {
         Args: { p_amount: number; p_app_id: string; p_user_id: string }
         Returns: number
       }
@@ -1200,7 +1657,9 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      generate_fssai_application_no: { Args: never; Returns: string }
       generate_gst_application_no: { Args: never; Returns: string }
+      generate_shopact_application_no: { Args: never; Returns: string }
       generate_udyam_application_no: { Args: never; Returns: string }
       get_my_role: {
         Args: never
@@ -1219,6 +1678,26 @@ export type Database = {
       application_status:
         | "submitted"
         | "under_review"
+        | "approved"
+        | "rejected"
+        | "completed"
+      fssai_status:
+        | "draft"
+        | "submitted"
+        | "payment_received"
+        | "documents_verified"
+        | "processing"
+        | "need_more_documents"
+        | "approved"
+        | "rejected"
+        | "completed"
+      shopact_status:
+        | "draft"
+        | "submitted"
+        | "payment_received"
+        | "documents_verified"
+        | "processing"
+        | "need_more_documents"
         | "approved"
         | "rejected"
         | "completed"
@@ -1362,6 +1841,28 @@ export const Constants = {
       application_status: [
         "submitted",
         "under_review",
+        "approved",
+        "rejected",
+        "completed",
+      ],
+      fssai_status: [
+        "draft",
+        "submitted",
+        "payment_received",
+        "documents_verified",
+        "processing",
+        "need_more_documents",
+        "approved",
+        "rejected",
+        "completed",
+      ],
+      shopact_status: [
+        "draft",
+        "submitted",
+        "payment_received",
+        "documents_verified",
+        "processing",
+        "need_more_documents",
         "approved",
         "rejected",
         "completed",

@@ -22,6 +22,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as AuthenticatedUdyamApplicationsRouteImport } from './routes/_authenticated/udyam-applications'
 import { Route as AuthenticatedUdyamRouteImport } from './routes/_authenticated/udyam'
+import { Route as AuthenticatedShopactApplicationsRouteImport } from './routes/_authenticated/shopact-applications'
+import { Route as AuthenticatedShopactRouteImport } from './routes/_authenticated/shopact'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
@@ -34,6 +36,8 @@ import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authe
 import { Route as AuthenticatedGstRequestsRouteImport } from './routes/_authenticated/gst-requests'
 import { Route as AuthenticatedGstRouteImport } from './routes/_authenticated/gst'
 import { Route as AuthenticatedGazetteRouteImport } from './routes/_authenticated/gazette'
+import { Route as AuthenticatedFssaiApplicationsRouteImport } from './routes/_authenticated/fssai-applications'
+import { Route as AuthenticatedFssaiRouteImport } from './routes/_authenticated/fssai'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedDlPrintRouteImport } from './routes/_authenticated/dl-print'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -46,6 +50,8 @@ import { Route as AuthenticatedGstIdRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminUdyamSettingsRouteImport } from './routes/_authenticated/admin.udyam-settings'
 import { Route as AuthenticatedAdminUdyamRouteImport } from './routes/_authenticated/admin.udyam'
 import { Route as AuthenticatedAdminSiteRouteImport } from './routes/_authenticated/admin.site'
+import { Route as AuthenticatedAdminShopactSettingsRouteImport } from './routes/_authenticated/admin.shopact-settings'
+import { Route as AuthenticatedAdminShopactRouteImport } from './routes/_authenticated/admin.shopact'
 import { Route as AuthenticatedAdminSarkarServicesRouteImport } from './routes/_authenticated/admin.sarkar-services'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminGstDeskRouteImport } from './routes/_authenticated/admin.gst-desk'
@@ -53,6 +59,8 @@ import { Route as AuthenticatedAdminGstRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminGazetteDeskRouteImport } from './routes/_authenticated/admin.gazette-desk'
 import { Route as AuthenticatedAdminGazetteRouteImport } from './routes/_authenticated/admin.gazette'
 import { Route as AuthenticatedAdminGatewaysRouteImport } from './routes/_authenticated/admin.gateways'
+import { Route as AuthenticatedAdminFssaiSettingsRouteImport } from './routes/_authenticated/admin.fssai-settings'
+import { Route as AuthenticatedAdminFssaiRouteImport } from './routes/_authenticated/admin.fssai'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -119,6 +127,17 @@ const AuthenticatedUdyamRoute = AuthenticatedUdyamRouteImport.update({
   path: '/udyam',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShopactApplicationsRoute =
+  AuthenticatedShopactApplicationsRouteImport.update({
+    id: '/shopact-applications',
+    path: '/shopact-applications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedShopactRoute = AuthenticatedShopactRouteImport.update({
+  id: '/shopact',
+  path: '/shopact',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -180,6 +199,17 @@ const AuthenticatedGstRoute = AuthenticatedGstRouteImport.update({
 const AuthenticatedGazetteRoute = AuthenticatedGazetteRouteImport.update({
   id: '/gazette',
   path: '/gazette',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFssaiApplicationsRoute =
+  AuthenticatedFssaiApplicationsRouteImport.update({
+    id: '/fssai-applications',
+    path: '/fssai-applications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedFssaiRoute = AuthenticatedFssaiRouteImport.update({
+  id: '/fssai',
+  path: '/fssai',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDraftsRoute = AuthenticatedDraftsRouteImport.update({
@@ -246,6 +276,18 @@ const AuthenticatedAdminSiteRoute = AuthenticatedAdminSiteRouteImport.update({
   path: '/site',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminShopactSettingsRoute =
+  AuthenticatedAdminShopactSettingsRouteImport.update({
+    id: '/shopact-settings',
+    path: '/shopact-settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminShopactRoute =
+  AuthenticatedAdminShopactRouteImport.update({
+    id: '/shopact',
+    path: '/shopact',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminSarkarServicesRoute =
   AuthenticatedAdminSarkarServicesRouteImport.update({
     id: '/sarkar-services',
@@ -286,6 +328,17 @@ const AuthenticatedAdminGatewaysRoute =
     path: '/gateways',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFssaiSettingsRoute =
+  AuthenticatedAdminFssaiSettingsRouteImport.update({
+    id: '/fssai-settings',
+    path: '/fssai-settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFssaiRoute = AuthenticatedAdminFssaiRouteImport.update({
+  id: '/fssai',
+  path: '/fssai',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -304,6 +357,8 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/drafts': typeof AuthenticatedDraftsRoute
+  '/fssai': typeof AuthenticatedFssaiRoute
+  '/fssai-applications': typeof AuthenticatedFssaiApplicationsRoute
   '/gazette': typeof AuthenticatedGazetteRoute
   '/gst': typeof AuthenticatedGstRouteWithChildren
   '/gst-requests': typeof AuthenticatedGstRequestsRoute
@@ -316,9 +371,13 @@ export interface FileRoutesByFullPath {
   '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shopact': typeof AuthenticatedShopactRoute
+  '/shopact-applications': typeof AuthenticatedShopactApplicationsRoute
   '/udyam': typeof AuthenticatedUdyamRoute
   '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/admin/fssai': typeof AuthenticatedAdminFssaiRoute
+  '/admin/fssai-settings': typeof AuthenticatedAdminFssaiSettingsRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
@@ -326,6 +385,8 @@ export interface FileRoutesByFullPath {
   '/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
+  '/admin/shopact': typeof AuthenticatedAdminShopactRoute
+  '/admin/shopact-settings': typeof AuthenticatedAdminShopactSettingsRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -349,6 +410,8 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dl-print': typeof AuthenticatedDlPrintRoute
   '/drafts': typeof AuthenticatedDraftsRoute
+  '/fssai': typeof AuthenticatedFssaiRoute
+  '/fssai-applications': typeof AuthenticatedFssaiApplicationsRoute
   '/gazette': typeof AuthenticatedGazetteRoute
   '/gst': typeof AuthenticatedGstRouteWithChildren
   '/gst-requests': typeof AuthenticatedGstRequestsRoute
@@ -361,9 +424,13 @@ export interface FileRoutesByTo {
   '/requests': typeof AuthenticatedRequestsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shopact': typeof AuthenticatedShopactRoute
+  '/shopact-applications': typeof AuthenticatedShopactApplicationsRoute
   '/udyam': typeof AuthenticatedUdyamRoute
   '/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/admin/fssai': typeof AuthenticatedAdminFssaiRoute
+  '/admin/fssai-settings': typeof AuthenticatedAdminFssaiSettingsRoute
   '/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
@@ -371,6 +438,8 @@ export interface FileRoutesByTo {
   '/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
+  '/admin/shopact': typeof AuthenticatedAdminShopactRoute
+  '/admin/shopact-settings': typeof AuthenticatedAdminShopactSettingsRoute
   '/admin/site': typeof AuthenticatedAdminSiteRoute
   '/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -396,6 +465,8 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dl-print': typeof AuthenticatedDlPrintRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
+  '/_authenticated/fssai': typeof AuthenticatedFssaiRoute
+  '/_authenticated/fssai-applications': typeof AuthenticatedFssaiApplicationsRoute
   '/_authenticated/gazette': typeof AuthenticatedGazetteRoute
   '/_authenticated/gst': typeof AuthenticatedGstRouteWithChildren
   '/_authenticated/gst-requests': typeof AuthenticatedGstRequestsRoute
@@ -408,9 +479,13 @@ export interface FileRoutesById {
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/shopact': typeof AuthenticatedShopactRoute
+  '/_authenticated/shopact-applications': typeof AuthenticatedShopactApplicationsRoute
   '/_authenticated/udyam': typeof AuthenticatedUdyamRoute
   '/_authenticated/udyam-applications': typeof AuthenticatedUdyamApplicationsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
+  '/_authenticated/admin/fssai': typeof AuthenticatedAdminFssaiRoute
+  '/_authenticated/admin/fssai-settings': typeof AuthenticatedAdminFssaiSettingsRoute
   '/_authenticated/admin/gateways': typeof AuthenticatedAdminGatewaysRoute
   '/_authenticated/admin/gazette': typeof AuthenticatedAdminGazetteRoute
   '/_authenticated/admin/gazette-desk': typeof AuthenticatedAdminGazetteDeskRoute
@@ -418,6 +493,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/gst-desk': typeof AuthenticatedAdminGstDeskRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/sarkar-services': typeof AuthenticatedAdminSarkarServicesRoute
+  '/_authenticated/admin/shopact': typeof AuthenticatedAdminShopactRoute
+  '/_authenticated/admin/shopact-settings': typeof AuthenticatedAdminShopactSettingsRoute
   '/_authenticated/admin/site': typeof AuthenticatedAdminSiteRoute
   '/_authenticated/admin/udyam': typeof AuthenticatedAdminUdyamRoute
   '/_authenticated/admin/udyam-settings': typeof AuthenticatedAdminUdyamSettingsRoute
@@ -443,6 +520,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dl-print'
     | '/drafts'
+    | '/fssai'
+    | '/fssai-applications'
     | '/gazette'
     | '/gst'
     | '/gst-requests'
@@ -455,9 +534,13 @@ export interface FileRouteTypes {
     | '/requests'
     | '/services'
     | '/settings'
+    | '/shopact'
+    | '/shopact-applications'
     | '/udyam'
     | '/udyam-applications'
     | '/wallet'
+    | '/admin/fssai'
+    | '/admin/fssai-settings'
     | '/admin/gateways'
     | '/admin/gazette'
     | '/admin/gazette-desk'
@@ -465,6 +548,8 @@ export interface FileRouteTypes {
     | '/admin/gst-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
+    | '/admin/shopact'
+    | '/admin/shopact-settings'
     | '/admin/site'
     | '/admin/udyam'
     | '/admin/udyam-settings'
@@ -488,6 +573,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dl-print'
     | '/drafts'
+    | '/fssai'
+    | '/fssai-applications'
     | '/gazette'
     | '/gst'
     | '/gst-requests'
@@ -500,9 +587,13 @@ export interface FileRouteTypes {
     | '/requests'
     | '/services'
     | '/settings'
+    | '/shopact'
+    | '/shopact-applications'
     | '/udyam'
     | '/udyam-applications'
     | '/wallet'
+    | '/admin/fssai'
+    | '/admin/fssai-settings'
     | '/admin/gateways'
     | '/admin/gazette'
     | '/admin/gazette-desk'
@@ -510,6 +601,8 @@ export interface FileRouteTypes {
     | '/admin/gst-desk'
     | '/admin/pages'
     | '/admin/sarkar-services'
+    | '/admin/shopact'
+    | '/admin/shopact-settings'
     | '/admin/site'
     | '/admin/udyam'
     | '/admin/udyam-settings'
@@ -534,6 +627,8 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/dl-print'
     | '/_authenticated/drafts'
+    | '/_authenticated/fssai'
+    | '/_authenticated/fssai-applications'
     | '/_authenticated/gazette'
     | '/_authenticated/gst'
     | '/_authenticated/gst-requests'
@@ -546,9 +641,13 @@ export interface FileRouteTypes {
     | '/_authenticated/requests'
     | '/_authenticated/services'
     | '/_authenticated/settings'
+    | '/_authenticated/shopact'
+    | '/_authenticated/shopact-applications'
     | '/_authenticated/udyam'
     | '/_authenticated/udyam-applications'
     | '/_authenticated/wallet'
+    | '/_authenticated/admin/fssai'
+    | '/_authenticated/admin/fssai-settings'
     | '/_authenticated/admin/gateways'
     | '/_authenticated/admin/gazette'
     | '/_authenticated/admin/gazette-desk'
@@ -556,6 +655,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/gst-desk'
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/sarkar-services'
+    | '/_authenticated/admin/shopact'
+    | '/_authenticated/admin/shopact-settings'
     | '/_authenticated/admin/site'
     | '/_authenticated/admin/udyam'
     | '/_authenticated/admin/udyam-settings'
@@ -670,6 +771,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUdyamRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/shopact-applications': {
+      id: '/_authenticated/shopact-applications'
+      path: '/shopact-applications'
+      fullPath: '/shopact-applications'
+      preLoaderRoute: typeof AuthenticatedShopactApplicationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/shopact': {
+      id: '/_authenticated/shopact'
+      path: '/shopact'
+      fullPath: '/shopact'
+      preLoaderRoute: typeof AuthenticatedShopactRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -752,6 +867,20 @@ declare module '@tanstack/react-router' {
       path: '/gazette'
       fullPath: '/gazette'
       preLoaderRoute: typeof AuthenticatedGazetteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/fssai-applications': {
+      id: '/_authenticated/fssai-applications'
+      path: '/fssai-applications'
+      fullPath: '/fssai-applications'
+      preLoaderRoute: typeof AuthenticatedFssaiApplicationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/fssai': {
+      id: '/_authenticated/fssai'
+      path: '/fssai'
+      fullPath: '/fssai'
+      preLoaderRoute: typeof AuthenticatedFssaiRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/drafts': {
@@ -838,6 +967,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSiteRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/shopact-settings': {
+      id: '/_authenticated/admin/shopact-settings'
+      path: '/shopact-settings'
+      fullPath: '/admin/shopact-settings'
+      preLoaderRoute: typeof AuthenticatedAdminShopactSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/shopact': {
+      id: '/_authenticated/admin/shopact'
+      path: '/shopact'
+      fullPath: '/admin/shopact'
+      preLoaderRoute: typeof AuthenticatedAdminShopactRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/sarkar-services': {
       id: '/_authenticated/admin/sarkar-services'
       path: '/sarkar-services'
@@ -887,10 +1030,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminGatewaysRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/fssai-settings': {
+      id: '/_authenticated/admin/fssai-settings'
+      path: '/fssai-settings'
+      fullPath: '/admin/fssai-settings'
+      preLoaderRoute: typeof AuthenticatedAdminFssaiSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/fssai': {
+      id: '/_authenticated/admin/fssai'
+      path: '/fssai'
+      fullPath: '/admin/fssai'
+      preLoaderRoute: typeof AuthenticatedAdminFssaiRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminFssaiRoute: typeof AuthenticatedAdminFssaiRoute
+  AuthenticatedAdminFssaiSettingsRoute: typeof AuthenticatedAdminFssaiSettingsRoute
   AuthenticatedAdminGatewaysRoute: typeof AuthenticatedAdminGatewaysRoute
   AuthenticatedAdminGazetteRoute: typeof AuthenticatedAdminGazetteRoute
   AuthenticatedAdminGazetteDeskRoute: typeof AuthenticatedAdminGazetteDeskRoute
@@ -898,12 +1057,16 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminGstDeskRoute: typeof AuthenticatedAdminGstDeskRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminSarkarServicesRoute: typeof AuthenticatedAdminSarkarServicesRoute
+  AuthenticatedAdminShopactRoute: typeof AuthenticatedAdminShopactRoute
+  AuthenticatedAdminShopactSettingsRoute: typeof AuthenticatedAdminShopactSettingsRoute
   AuthenticatedAdminSiteRoute: typeof AuthenticatedAdminSiteRoute
   AuthenticatedAdminUdyamRoute: typeof AuthenticatedAdminUdyamRoute
   AuthenticatedAdminUdyamSettingsRoute: typeof AuthenticatedAdminUdyamSettingsRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminFssaiRoute: AuthenticatedAdminFssaiRoute,
+  AuthenticatedAdminFssaiSettingsRoute: AuthenticatedAdminFssaiSettingsRoute,
   AuthenticatedAdminGatewaysRoute: AuthenticatedAdminGatewaysRoute,
   AuthenticatedAdminGazetteRoute: AuthenticatedAdminGazetteRoute,
   AuthenticatedAdminGazetteDeskRoute: AuthenticatedAdminGazetteDeskRoute,
@@ -911,6 +1074,9 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminGstDeskRoute: AuthenticatedAdminGstDeskRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminSarkarServicesRoute: AuthenticatedAdminSarkarServicesRoute,
+  AuthenticatedAdminShopactRoute: AuthenticatedAdminShopactRoute,
+  AuthenticatedAdminShopactSettingsRoute:
+    AuthenticatedAdminShopactSettingsRoute,
   AuthenticatedAdminSiteRoute: AuthenticatedAdminSiteRoute,
   AuthenticatedAdminUdyamRoute: AuthenticatedAdminUdyamRoute,
   AuthenticatedAdminUdyamSettingsRoute: AuthenticatedAdminUdyamSettingsRoute,
@@ -938,6 +1104,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDlPrintRoute: typeof AuthenticatedDlPrintRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
+  AuthenticatedFssaiRoute: typeof AuthenticatedFssaiRoute
+  AuthenticatedFssaiApplicationsRoute: typeof AuthenticatedFssaiApplicationsRoute
   AuthenticatedGazetteRoute: typeof AuthenticatedGazetteRoute
   AuthenticatedGstRoute: typeof AuthenticatedGstRouteWithChildren
   AuthenticatedGstRequestsRoute: typeof AuthenticatedGstRequestsRoute
@@ -950,6 +1118,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedShopactRoute: typeof AuthenticatedShopactRoute
+  AuthenticatedShopactApplicationsRoute: typeof AuthenticatedShopactApplicationsRoute
   AuthenticatedUdyamRoute: typeof AuthenticatedUdyamRoute
   AuthenticatedUdyamApplicationsRoute: typeof AuthenticatedUdyamApplicationsRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
@@ -963,6 +1133,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDlPrintRoute: AuthenticatedDlPrintRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
+  AuthenticatedFssaiRoute: AuthenticatedFssaiRoute,
+  AuthenticatedFssaiApplicationsRoute: AuthenticatedFssaiApplicationsRoute,
   AuthenticatedGazetteRoute: AuthenticatedGazetteRoute,
   AuthenticatedGstRoute: AuthenticatedGstRouteWithChildren,
   AuthenticatedGstRequestsRoute: AuthenticatedGstRequestsRoute,
@@ -975,6 +1147,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedShopactRoute: AuthenticatedShopactRoute,
+  AuthenticatedShopactApplicationsRoute: AuthenticatedShopactApplicationsRoute,
   AuthenticatedUdyamRoute: AuthenticatedUdyamRoute,
   AuthenticatedUdyamApplicationsRoute: AuthenticatedUdyamApplicationsRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,

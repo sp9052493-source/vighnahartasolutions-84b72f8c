@@ -1,93 +1,89 @@
-## Udyam Aadhaar Registration Module
+## Shop Act + Food License (FSSAI) Modules
 
-A complete CSC-style Udyam Aadhaar Registration service for retailers, plus an admin "Udyam Aadhaar Desk" — mirroring the existing GST and Aaple Sarkar modules already in the project.
+Build two new service modules end-to-end, mirroring the existing Udyam/GST pattern already in the codebase. Both follow the same proven architecture so they slot into the portal without breaking auth, wallet, dashboard, or other services.
 
-### 1. Database (Supabase migration)
+### Architecture (mirrors Udyam)
 
-**New tables (in `public`):**
+For each module (`shopact`, `fssai`):
 
-- `udyam_applications` — one row per application
-  - identity: `id`, `user_id` (retailer), `application_no` (unique, auto `UDYAM-YYYYMM-000001`)
-  - personal: `aadhaar_number`, `pan_number`, `name_as_aadhaar`, `name_as_pan`, `dob`, `mobile`, `email`, `gender`, `category`
-  - business: `business_name`, `business_type`, `business_start_date`, `business_address`, `state`, `district`, `city`, `village`, `pincode`, `investment_amount`, `annual_turnover`, `gst_available` (bool), `gst_number` (nullable)
-  - bank: `bank_name`, `ifsc`, `account_number`
-  - employees: `employees_male`, `employees_female`, `employees_other`
-  - workflow: `status` (enum), `remarks`, `certificate_url`, `acknowledgement_url`, `total_charged`, `wallet_txn_id`
-  - timestamps: `created_at`, `updated_at`, `submitted_at`
-
-- `udyam_application_documents` — uploaded files
-  - `id`, `application_id`, `doc_type` (aadhaar/pan/passbook/business_proof/photo/supporting), `file_path`, `file_name`, `mime_type`, `size_bytes`, `uploaded_at`
-
-- `udyam_application_events` — activity log for status changes & remarks
-  - `id`, `application_id`, `actor_id`, `actor_role`, `event_type`, `from_status`, `to_status`, `note`, `created_at`
-
-**Enum:** `udyam_status` = `draft | submitted | payment_received | documents_verified | processing | approved | rejected | completed`
-
-**Sequence:** `udyam_application_seq` for the readable `UDYAM-YYYYMM-XXXXXX` number (function `generate_udyam_application_no`).
-
-**RPC `charge_udyam_application(p_user_id, p_app_id, p_amount)`** — atomic wallet debit identical in shape to `charge_gst_application`. Throws `INSUFFICIENT_BALANCE`.
-
-**Storage:** reuse existing private `documents` bucket; files at `udyam/<userId>/<applicationId>/<docType>_<stamp>.<ext>`.
-
-**RLS + GRANTs (`authenticated` + `service_role`):**
-- Retailers: full access to their own application rows, docs, events.
-- Admins (`has_role(auth.uid(),'admin')`): full access to all.
-- Service config row inserted into existing `services` table so it shows up in the retailer service grid and uses the standard pricing/wallet flow.
-
-### 2. Server functions (`src/lib/udyam.functions.ts`)
-
-All gated by `requireSupabaseAuth`:
-- `saveUdyamDraft({...})` — upsert draft (status stays `draft`, no wallet charge).
-- `submitUdyamApplication({ applicationId })` — validate required fields, run `charge_udyam_application`, set status `submitted`, log event, return app row.
-- `uploadUdyamDocument({ applicationId, docType, fileName, mimeType, base64 })` — server stores file via `supabaseAdmin` storage to private bucket, inserts `udyam_application_documents` row.
-- `listMyUdyamApplications()` / `getMyUdyamApplication(id)` — retailer-scoped reads.
-- `getUdyamDocumentUrl({ documentId })` — signed URL, ownership-checked (retailer owns OR admin).
-
-Admin-only (extra `has_role` check):
-- `adminListUdyamApplications({ status?, search? })`
-- `adminGetUdyamApplication(id)` (with docs + events)
-- `adminUpdateUdyamStatus({ applicationId, status, remarks })` — logs event, optionally notifies.
-- `adminUploadUdyamCertificate({ applicationId, base64, fileName, kind: 'certificate' | 'acknowledgement' })`
-
-### 3. Retailer UI
-
-- **`src/routes/_authenticated/udyam.tsx`** — multi-section form (Instructions → Personal → Business → Bank → Employees → Documents → Review/Submit) using existing shadcn `Form`, `Tabs`/stepper, zod validation. Save as Draft + Final Submit. Upload progress per file. Loads an existing draft if present.
-- **`src/routes/_authenticated/udyam-applications.tsx`** — "My Udyam Applications" list with status badges, search, real-time updates via `supabase.channel('udyam_applications').on('postgres_changes', { filter: 'user_id=eq.<uid>' })`. View / download certificate + acknowledgement when issued.
-- Add Udyam tile to the existing services dashboard.
-
-### 4. Admin UI
-
-- **`src/routes/_authenticated/admin.udyam.tsx`** — Udyam Aadhaar Desk
-  - 5 dashboard count cards (Pending / Under Review / Approved / Rejected / Completed)
-  - Searchable + status-filtered table (Name, Mobile, Aadhaar, PAN, Application ID)
-  - Row → detail sheet (`UdyamDesk.tsx` component): full application, all uploaded docs with preview/download, remarks textarea, status dropdown, certificate + acknowledgement upload, activity log timeline
-  - Export buttons: Excel (`xlsx`) and PDF (`jspdf` — already in deps)
-- Add menu item in admin nav.
-
-### 5. Status flow, notifications, security
-
-- Allowed transitions enforced server-side in `adminUpdateUdyamStatus`.
-- Each transition writes a `udyam_application_events` row → retailer sees live timeline via realtime subscription.
-- All file access through signed URLs only (private bucket).
-- Wallet only debited on Final Submit; refund-on-reject is **out of scope** unless asked (admin can adjust wallet manually via existing tool).
-
-### 6. Out of scope
-
-- SMS/email push notifications (in-app realtime + toast only — matches existing modules).
-- Government API integration (form data captured; submission to real Udyam portal is manual by admin, same pattern as GST).
-
-### Files to create/edit
-
-```text
-supabase migration                              (new)
-src/lib/udyam.functions.ts                       (new)
-src/lib/udyam.shared.ts                          (zod schemas, enums)
-src/routes/_authenticated/udyam.tsx              (new — retailer form)
-src/routes/_authenticated/udyam-applications.tsx (new — retailer list)
-src/routes/_authenticated/admin.udyam.tsx        (new — admin desk route)
-src/components/admin/UdyamDesk.tsx               (new — admin desk UI)
-src/components/portal/PortalShell.tsx            (edit — add nav links)
-src/routes/_authenticated/services.tsx           (edit — Udyam tile)
+```
+supabase/
+  migrations/<ts>_<module>.sql          -- tables, sequences, RPCs, RLS, GRANTs
+src/lib/
+  <module>.shared.ts                    -- statuses, doc types, enums
+  <module>.functions.ts                 -- createServerFn: save draft, submit, list, admin update, upload doc
+src/components/admin/
+  <Module>Desk.tsx                      -- admin desk (search, filters, cards, status update, export)
+src/routes/_authenticated/
+  <module>.tsx                          -- retailer multi-step form
+  <module>-applications.tsx             -- retailer "My Applications" list
+  admin.<module>.tsx                    -- admin desk route
+  admin.<module>-settings.tsx           -- admin pricing/config
 ```
 
-Approve to proceed and I'll ship it in one pass (migration first for your approval, then code).
+### Database (per module)
+
+Tables (parallel to `udyam_*`):
+- `shopact_applications` / `fssai_applications` — all form fields, status, application_no, total_charged, wallet_txn_id, timestamps, user_id
+- `shopact_application_documents` / `fssai_application_documents` — doc_type, storage path, mime, size
+- `shopact_application_events` / `fssai_application_events` — activity/audit log (actor, from_status, to_status, note)
+- `shopact_service_config` / `fssai_service_config` — singleton settings: price, instructions, doc list overrides
+- Sequences `shopact_application_seq`, `fssai_application_seq`
+- RPCs `generate_shopact_application_no()` → `SHOPACT-YYYY-000001`, `generate_fssai_application_no()` → `FSSAI-YYYY-000001`
+- RPCs `charge_shopact_application(...)`, `charge_fssai_application(...)` — wallet debit + txn link, copying the proven `charge_udyam_application` shape
+- Indexes on `(user_id, created_at)`, `(status)`, `application_no`
+- RLS: retailer own rows only; admins via `has_role(auth.uid(),'admin')`; full GRANTs to `authenticated` + `service_role`
+- Storage: reuse existing private `documents` bucket (already RLS-gated, signed URL flow via `documents.server.ts`)
+
+### Server functions (per module)
+
+- `save<Module>Draft` — partial schema with `.optional()` on regex fields + `s()` null coalesce (same pattern as the recent Udyam fixes)
+- `submit<Module>Application` — strict schema, generates application_no, charges wallet via RPC, inserts event row
+- `listMy<Module>Applications`, `get<Module>Application`
+- `adminList<Module>Applications` (search/filter/paginate), `adminUpdate<Module>Status` (writes event row), `adminUploadFinalCertificate`
+- `upload<Module>Document` — base64 → `uploadDocumentPdf`-style helper, inserts doc row
+- All use `requireSupabaseAuth`; admin endpoints check `has_role`
+
+### Retailer UI
+
+- Multi-step form with progress bar (Stepper component reused from Udyam)
+- Auto-save draft on step change + debounce
+- Document upload tiles with preview, replace, mime/size validation
+- Submit screen shows wallet price, confirms balance
+- `My Applications` list: search, status filter, pagination, realtime via `supabase.channel` (same hook pattern as `udyam-applications.tsx`)
+- Timeline view from events table; download certificate when admin uploads
+- Toast + dashboard notification on status change
+
+### Admin UI
+
+- Desk page: dashboard cards (today / pending / approved / rejected / need-docs / revenue), advanced search, filters, table with pagination
+- Detail drawer: full form preview, document previews via signed URLs, status update, remarks, certificate upload, receipt
+- Export Excel (xlsx) + PDF + Print actions on the table
+- Settings page: price, instructions, required document list
+
+### Integration points
+
+- `services.tsx` — add two service tiles ("Shop Act Registration", "Food License (FSSAI)")
+- `PortalShell.tsx` — add retailer nav entries + admin nav entries (alongside existing Udyam/GST entries)
+- `admin.tsx` SECTIONS — add Shop Act Desk + Food License Desk
+- Dashboard counts — extend existing dashboard query to include new tables
+
+### Status flow (both modules)
+
+`draft → submitted → payment_received → documents_verified → processing → need_more_documents ⇄ processing → approved → completed` (or `rejected`). Stored in shared `*_STATUS` constants with label + tone color tokens (matches `udyam.shared.ts`).
+
+### Non-breaking guarantees
+
+- No edits to auto-generated files (`client.ts`, `client.server.ts`, `types.ts`, `auth-middleware.ts`)
+- No schema changes to existing tables; only additive migrations
+- Existing routes (GST, Udyam, PAN, RC, DL, Ration, Gazette, wallet, dashboard, auth) untouched except small additive nav/service-tile edits
+- Reuses existing `documents` storage bucket and signed-URL helpers
+
+### Delivery order
+
+1. Two migrations (Shop Act + FSSAI tables, RPCs, RLS, GRANTs) — submitted via migration tool for approval
+2. After approval & types regen: shared constants, server functions, retailer form, retailer list, admin desk, admin settings — for each module in parallel
+3. Wire nav + service tiles + admin sections
+4. Smoke check build
+
+Heads-up: this is a large build (~20 new files, two migrations). I'll proceed straight through once you approve.

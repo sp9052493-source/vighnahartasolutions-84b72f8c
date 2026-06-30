@@ -17,6 +17,8 @@ import {
   Loader2,
   CheckCircle2,
   ArrowRight,
+  Briefcase,
+  Utensils,
   type LucideIcon,
 } from "lucide-react";
 import { useServices, useMe, formatINR } from "@/lib/queries";
@@ -136,6 +138,24 @@ const META: Record<string, Meta> = {
     docs: ["PAN, Aadhaar, photo", "Business & bank proof"],
     tagline: "GST Registration filing",
   },
+  SHOPACT: {
+    icon: Briefcase,
+    tone: "from-[oklch(0.55_0.15_30)] to-[oklch(0.40_0.13_25)]",
+    ring: "ring-[oklch(0.55_0.15_30_/_0.22)]",
+    category: "Labour Dept",
+    issuer: "Government of Maharashtra",
+    docs: ["Aadhaar, PAN, owner photo", "Shop photo, rent agreement, electric bill"],
+    tagline: "Shop & Establishment (Gumasta) Registration",
+  },
+  FSSAI: {
+    icon: Utensils,
+    tone: "from-[oklch(0.62_0.16_140)] to-[oklch(0.46_0.14_140)]",
+    ring: "ring-[oklch(0.62_0.16_140_/_0.22)]",
+    category: "Food Safety",
+    issuer: "FSSAI, Ministry of Health",
+    docs: ["Aadhaar, PAN, applicant photo", "Premises photo, NOC, electric bill"],
+    tagline: "Basic / State / Central Food License",
+  },
 };
 
 const DEFAULT_META: Meta = {
@@ -157,10 +177,12 @@ function Services() {
   const [value, setValue] = useState("");
   const [result, setResult] = useState<any | null>(null);
 
-  const FORM_ROUTES: Record<string, "/udyam" | "/gst" | "/aaple-sarkar"> = {
+  const FORM_ROUTES: Record<string, "/udyam" | "/gst" | "/aaple-sarkar" | "/shopact" | "/fssai"> = {
     UDYAM: "/udyam",
     GST: "/gst",
     AAPLE_SARKAR: "/aaple-sarkar",
+    SHOPACT: "/shopact",
+    FSSAI: "/fssai",
   };
 
 
