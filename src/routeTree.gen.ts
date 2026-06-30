@@ -26,6 +26,7 @@ import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedRechargeRouteImport } from './routes/_authenticated/recharge'
 import { Route as AuthenticatedRcPrintRouteImport } from './routes/_authenticated/rc-print'
 import { Route as AuthenticatedRationPrintRouteImport } from './routes/_authenticated/ration-print'
+import { Route as AuthenticatedPanDetailsRouteImport } from './routes/_authenticated/pan-details'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedManageServicesRouteImport } from './routes/_authenticated/manage-services'
 import { Route as AuthenticatedGstRequestsRouteImport } from './routes/_authenticated/gst-requests'
@@ -134,6 +135,11 @@ const AuthenticatedRationPrintRoute =
     path: '/ration-print',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPanDetailsRoute = AuthenticatedPanDetailsRouteImport.update({
+  id: '/pan-details',
+  path: '/pan-details',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMembersRoute = AuthenticatedMembersRouteImport.update({
   id: '/members',
   path: '/members',
@@ -277,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/gst-requests': typeof AuthenticatedGstRequestsRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
+  '/pan-details': typeof AuthenticatedPanDetailsRoute
   '/ration-print': typeof AuthenticatedRationPrintRoute
   '/rc-print': typeof AuthenticatedRcPrintRoute
   '/recharge': typeof AuthenticatedRechargeRoute
@@ -317,6 +324,7 @@ export interface FileRoutesByTo {
   '/gst-requests': typeof AuthenticatedGstRequestsRoute
   '/manage-services': typeof AuthenticatedManageServicesRoute
   '/members': typeof AuthenticatedMembersRoute
+  '/pan-details': typeof AuthenticatedPanDetailsRoute
   '/ration-print': typeof AuthenticatedRationPrintRoute
   '/rc-print': typeof AuthenticatedRcPrintRoute
   '/recharge': typeof AuthenticatedRechargeRoute
@@ -359,6 +367,7 @@ export interface FileRoutesById {
   '/_authenticated/gst-requests': typeof AuthenticatedGstRequestsRoute
   '/_authenticated/manage-services': typeof AuthenticatedManageServicesRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
+  '/_authenticated/pan-details': typeof AuthenticatedPanDetailsRoute
   '/_authenticated/ration-print': typeof AuthenticatedRationPrintRoute
   '/_authenticated/rc-print': typeof AuthenticatedRcPrintRoute
   '/_authenticated/recharge': typeof AuthenticatedRechargeRoute
@@ -401,6 +410,7 @@ export interface FileRouteTypes {
     | '/gst-requests'
     | '/manage-services'
     | '/members'
+    | '/pan-details'
     | '/ration-print'
     | '/rc-print'
     | '/recharge'
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/gst-requests'
     | '/manage-services'
     | '/members'
+    | '/pan-details'
     | '/ration-print'
     | '/rc-print'
     | '/recharge'
@@ -482,6 +493,7 @@ export interface FileRouteTypes {
     | '/_authenticated/gst-requests'
     | '/_authenticated/manage-services'
     | '/_authenticated/members'
+    | '/_authenticated/pan-details'
     | '/_authenticated/ration-print'
     | '/_authenticated/rc-print'
     | '/_authenticated/recharge'
@@ -634,6 +646,13 @@ declare module '@tanstack/react-router' {
       path: '/ration-print'
       fullPath: '/ration-print'
       preLoaderRoute: typeof AuthenticatedRationPrintRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pan-details': {
+      id: '/_authenticated/pan-details'
+      path: '/pan-details'
+      fullPath: '/pan-details'
+      preLoaderRoute: typeof AuthenticatedPanDetailsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/members': {
@@ -842,6 +861,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedGstRequestsRoute: typeof AuthenticatedGstRequestsRoute
   AuthenticatedManageServicesRoute: typeof AuthenticatedManageServicesRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
+  AuthenticatedPanDetailsRoute: typeof AuthenticatedPanDetailsRoute
   AuthenticatedRationPrintRoute: typeof AuthenticatedRationPrintRoute
   AuthenticatedRcPrintRoute: typeof AuthenticatedRcPrintRoute
   AuthenticatedRechargeRoute: typeof AuthenticatedRechargeRoute
@@ -864,6 +884,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedGstRequestsRoute: AuthenticatedGstRequestsRoute,
   AuthenticatedManageServicesRoute: AuthenticatedManageServicesRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
+  AuthenticatedPanDetailsRoute: AuthenticatedPanDetailsRoute,
   AuthenticatedRationPrintRoute: AuthenticatedRationPrintRoute,
   AuthenticatedRcPrintRoute: AuthenticatedRcPrintRoute,
   AuthenticatedRechargeRoute: AuthenticatedRechargeRoute,
