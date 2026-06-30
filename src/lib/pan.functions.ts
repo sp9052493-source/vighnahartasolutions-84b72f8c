@@ -333,9 +333,9 @@ export const fetchPanDetails = createServerFn({ method: "POST" })
           if (lower.includes("not found") || lower.includes("no record") || lower.includes("invalid"))
             throw new Error("PAN_NOT_FOUND");
           if (!statusOk) throw new Error(providerMessage || "PAN_NOT_FOUND");
-        if (!hasIdentity && httpFailed) {
-          throw new Error(providerMessage || `PROVIDER_${res.status}`);
+          if (httpFailed) throw new Error(providerMessage || `PROVIDER_${res.status}`);
         }
+
       } else {
         const lower = text.toLowerCase();
         console.warn("[PAN-DETAILS] provider error text:", text.slice(0, 200));
