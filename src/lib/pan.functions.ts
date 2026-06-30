@@ -274,9 +274,12 @@ export const fetchPanDetails = createServerFn({ method: "POST" })
       }
 
       const text = (await res.text()).trim();
-      console.log("[PAN-DETAILS] API response ←", `status=${res.status} bytes=${text.length}`);
+      console.log("[PAN-DETAILS] API response ←", `status=${res.status} bytes=${text.length} body=${text.slice(0, 300)}`);
 
-      if (!res.ok) throw new Error(`PROVIDER_${res.status}`);
+      // Don't fail on non-2xx until we've tried to parse — many providers
+      // return 404/422 with a useful JSON error body (e.g. "No record found").
+      const httpFailed = !res.ok;
+
 
       let json: any = null;
       try {
