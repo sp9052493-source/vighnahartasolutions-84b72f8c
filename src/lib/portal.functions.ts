@@ -145,7 +145,6 @@ export const processDocumentRequest = createServerFn({ method: "POST" })
         ? await fetchFromProvider(service as any, data.inputValue)
         : buildResult(service.code, data.inputValue);
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: req, error } = await supabaseAdmin.rpc("complete_document_request", {
       p_user_id: userId,
       p_service_id: service.id,
