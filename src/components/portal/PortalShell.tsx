@@ -18,6 +18,7 @@ import {
   Landmark,
   Newspaper,
   FileCheck2,
+  Building2,
   ShieldCheck as ShieldCheckIcon,
   Search,
   Plus,
@@ -56,6 +57,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/gazette", label: "Gazette Certificate", icon: Newspaper, roles: ["distributor", "retailer"] },
       { to: "/gst", label: "GST Registration", icon: FileCheck2, roles: ["distributor", "retailer"] },
       { to: "/gst-requests", label: "My GST Applications", icon: FileText, roles: ["distributor", "retailer"] },
+      { to: "/udyam", label: "Udyam Aadhaar", icon: Building2, roles: ["distributor", "retailer"] },
+      { to: "/udyam-applications", label: "My Udyam Applications", icon: FileText, roles: ["distributor", "retailer"] },
     ],
   },
   {
@@ -76,6 +79,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/aaple-sarkar-requests", label: "Aaple Sarkar Desk", icon: Landmark, roles: ["admin"] },
       { to: "/admin/gst-desk", label: "GST Desk", icon: FileCheck2, roles: ["admin"] },
       { to: "/admin/gst", label: "GST Settings", icon: SlidersHorizontal, roles: ["admin"] },
+      { to: "/admin/udyam", label: "Udyam Aadhaar Desk", icon: Building2, roles: ["admin"] },
     ],
   },
   {
