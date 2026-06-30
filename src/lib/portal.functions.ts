@@ -130,7 +130,8 @@ export const processDocumentRequest = createServerFn({ method: "POST" })
       throw new Error("Your account is suspended. Contact your administrator.");
     }
 
-    const { data: service, error: svcErr } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: service, error: svcErr } = await supabaseAdmin
       .from("services")
       .select("id, code, name, price, active, api_enabled, api_endpoint, api_provider")
       .eq("id", data.serviceId)
