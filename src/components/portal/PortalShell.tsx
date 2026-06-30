@@ -87,7 +87,10 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/admin/gst", label: "GST Settings", icon: SlidersHorizontal, roles: ["admin"] },
       { to: "/admin/udyam", label: "Udyam Aadhaar Desk", icon: Building2, roles: ["admin"] },
       { to: "/admin/udyam-settings", label: "Udyam Settings", icon: SlidersHorizontal, roles: ["admin"] },
-
+      { to: "/admin/shopact", label: "Shop Act Desk", icon: Briefcase, roles: ["admin"] },
+      { to: "/admin/shopact-settings", label: "Shop Act Settings", icon: SlidersHorizontal, roles: ["admin"] },
+      { to: "/admin/fssai", label: "Food License Desk", icon: Utensils, roles: ["admin"] },
+      { to: "/admin/fssai-settings", label: "Food License Settings", icon: SlidersHorizontal, roles: ["admin"] },
     ],
   },
   {
