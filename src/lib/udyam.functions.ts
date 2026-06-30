@@ -78,10 +78,40 @@ const formSchema = z.object({
   employees_other: z.number().int().min(0).max(100000),
 });
 
-// Lenient version for drafts (everything optional)
-const draftSchema = formSchema.partial().extend({
-  id: z.string().uuid().optional(),
-});
+// Lenient version for drafts (everything optional, regex fields allow empty)
+const draftSchema = z
+  .object({
+    id: z.string().uuid().optional(),
+    aadhaar_number: z.string().regex(/^(\d{12})?$/, "Enter a valid 12-digit Aadhaar").optional(),
+    pan_number: z.string().regex(/^([A-Z]{5}\d{4}[A-Z])?$/, "Enter a valid PAN").optional(),
+    name_as_aadhaar: z.string().trim().max(120).optional(),
+    name_as_pan: z.string().trim().max(120).optional(),
+    dob: z.string().regex(/^(\d{4}-\d{2}-\d{2})?$/, "Enter a valid date").optional(),
+    mobile: z.string().regex(/^([6-9]\d{9})?$/, "Enter a valid 10-digit mobile").optional(),
+    email: z.string().trim().max(160).optional(),
+    gender: z.string().trim().max(20).optional(),
+    category: z.string().trim().max(20).optional(),
+    business_name: z.string().trim().max(160).optional(),
+    business_type: z.string().trim().max(60).optional(),
+    business_start_date: z.string().regex(/^(\d{4}-\d{2}-\d{2})?$/, "Enter a valid date").optional(),
+    business_address: z.string().trim().max(300).optional(),
+    state: z.string().trim().max(80).optional(),
+    district: z.string().trim().max(80).optional(),
+    city: z.string().trim().max(80).optional(),
+    village: z.string().trim().max(120).optional(),
+    pincode: z.string().regex(/^(\d{6})?$/, "Enter a valid 6-digit PIN").optional(),
+    investment_amount: z.number().min(0).max(1e12).optional(),
+    annual_turnover: z.number().min(0).max(1e12).optional(),
+    gst_available: z.boolean().optional(),
+    gst_number: z.string().trim().max(20).optional(),
+    bank_name: z.string().trim().max(120).optional(),
+    ifsc: z.string().regex(/^([A-Z]{4}0[A-Z0-9]{6})?$/, "Enter a valid IFSC").optional(),
+    account_number: z.string().regex(/^(\d{9,18})?$/, "Enter a valid account number").optional(),
+    employees_male: z.number().int().min(0).max(100000).optional(),
+    employees_female: z.number().int().min(0).max(100000).optional(),
+    employees_other: z.number().int().min(0).max(100000).optional(),
+  });
+
 
 // ---------- Service price helper ----------
 async function getServicePrice(supabaseAdmin: any, userId: string): Promise<number> {
