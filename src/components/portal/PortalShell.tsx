@@ -17,6 +17,7 @@ import {
   Wheat,
   Landmark,
   Newspaper,
+  FileCheck2,
   ShieldCheck as ShieldCheckIcon,
   Search,
   Plus,
