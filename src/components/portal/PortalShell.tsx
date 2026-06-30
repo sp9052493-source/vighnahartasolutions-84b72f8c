@@ -57,6 +57,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: "/gazette", label: "Gazette Certificate", icon: Newspaper, roles: ["distributor", "retailer"] },
       { to: "/gst", label: "GST Registration", icon: FileCheck2, roles: ["distributor", "retailer"] },
       { to: "/gst-requests", label: "My GST Applications", icon: FileText, roles: ["distributor", "retailer"] },
+      { to: "/udyam", label: "Udyam Aadhaar", icon: Building2, roles: ["distributor", "retailer"] },
+      { to: "/udyam-applications", label: "My Udyam Applications", icon: FileText, roles: ["distributor", "retailer"] },
     ],
   },
   {
